@@ -20,7 +20,7 @@ function validatePassword(password) {
     maxLength: password.Length <= PASSWORD_RULES.maxLength,
     hasUppercase: PASSWORD_RULES.hasUppercase.test(password),
     hasLowercase: PASSWORD_RULES.hasLowercase.test(password),
-    hasDigit: PASSWORD_RULES.hasLowercase.test(password),
+    hasDigit: PASSWORD_RULES.hasDigit.test(password),
     hasSpecialChar: PASSWORD_RULES.hasSpecialChar.test(password),
   };
 }
