@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Layout from "./components/layout/Layout";
 
-import { AuthContext } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 import ProtectedRoute from "./components/routing/ProtectedRoute";
 
@@ -20,7 +20,7 @@ import "./styles/base.css";
 
 function App() {
   return (
-    <AuthContext>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -52,7 +52,7 @@ function App() {
           <Route path="*" element={<NotPageFound />} />
         </Routes>
       </BrowserRouter>
-    </AuthContext>
+    </AuthProvider>
   );
 }
 
