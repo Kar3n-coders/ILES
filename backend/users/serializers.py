@@ -9,24 +9,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-class Meta:
-    model = CustomUser
-    fields = [
-        'id',
-        'username',
-        'email',
-        'first_name',
-        'last_name',
-        'role',
-        'role_display',
-        'phone_number',
-        'university',
-        'course',
-        'department',
-        'date_joined',
-    ]
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'role',
+            'role_display',
+            'phone_number',
+            'university',
+            'course',
+            'department',
+            'date_joined',
+        ]
 
-    read_only_fields = ['id', 'date-joined']
+        read_only_fields = ['id', 'date_joined']
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -40,43 +40,43 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         style={'input_type': 'password'}
     )
 
-class Meta:
-    model = CustomUser
-    fields = [
-        'username',
-        'email',
-        'password',
-        'password_confirm',
-        'first_name',
-        'last_name',
-        'role',
-        'phone_number',
-        'university',
-        'course',
-        'department',
-    ]
+    class Meta:
+        model = CustomUser
+        fields = [
+            'username',
+            'email',
+            'password',
+            'password_confirm',
+            'first_name',
+            'last_name',
+            'role',
+            'phone_number',
+            'university',
+            'course',
+            'department',
+        ]
 
-def validate_password(self, value):
-    try:
-        validate_password(value)
-    except DjangoValidationError as e:
-        raise serializers.ValidationError(list(e.messages))
-    return value
+    def validate_password(self, value):
+        try:
+            validate_password(value)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(list(e.messages))
+        return value
 
-def validate(self, data):
-    if data['password'] != data['password_confirm']:
-        raise serializers.ValidationError({
-            "password_confirm": "Passwords do not match."
-        })
-    return data 
+    def validate(self, data):
+        if data['password'] != data['password_confirm']:
+            raise serializers.ValidationError({
+                "password_confirm": "Passwords do not match."
+            })
+        return data 
 
-def create(self, validated_data):
-    validated_data.pop('password_confirm')
-    password = validated_data.pop('password')
-    user = CustomUser.objects.create_user(
-        password=password,
-        **validated_data
-    )
-    return user
+    def create(self, validated_data):
+        validated_data.pop('password_confirm')
+        password = validated_data.pop('password')
+        user = CustomUser.objects.create_user(
+            password=password,
+            **validated_data
+        )
+        return user
 
 
