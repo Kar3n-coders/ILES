@@ -5,20 +5,19 @@ import Sidebar from "./Sidebar";
 import "./Layout.css";
 
 function Layout() {
-    return (
-        <div classname="layout">
-            <Navbar />
+  return (
+    <div className="layout">
+      <Navbar />
 
-            <div classname="layout__body">
-                <Sidebar />
+      <div className="layout__body">
+        <Sidebar />
 
-                <main className="layout__main" id="main-content" role="main">
-                    <Outlet />
-                </main>
-            </div>
-        </div>
-    );
+        <main className="layout__main" id="main-content" role="main">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 }
-
 
 export default Layout;
