@@ -83,7 +83,7 @@ class LogReviewCreateSerializer(serializers.ModelSerializer):
 
         if action == "approved":
             logbook.status = "approved"
-        elif action == "revision_requested"
+        elif action == "revision_requested":
             logbook.status = "draft"
         else:
             logbook.status = "reviewed"

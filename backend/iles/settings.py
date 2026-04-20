@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # THIRD-PARTY
     "rest_framework",
-    "corsheaders"
+    "corsheaders",
     # LOCAL
     "users",
     "evaluation",
@@ -133,7 +133,8 @@ STATIC_URL = "static/"
 
 # CORS SETTINGS
 # Allow requests from the React development server
-CORS_ALLOW_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # Allow cookies and auth headers cross-origin
 CORS_ALLOW_CREDENTIALS = True

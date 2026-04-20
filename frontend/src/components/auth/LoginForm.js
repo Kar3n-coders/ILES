@@ -16,8 +16,8 @@ const PASSWORD_RULES = {
 
 function validatePassword(password) {
   return {
-    minLength: password.Length >= PASSWORD_RULES.minLength,
-    maxLength: password.Length <= PASSWORD_RULES.maxLength,
+    minLength: password.length >= PASSWORD_RULES.minLength,
+    maxLength: password.length <= PASSWORD_RULES.maxLength,
     hasUppercase: PASSWORD_RULES.hasUppercase.test(password),
     hasLowercase: PASSWORD_RULES.hasLowercase.test(password),
     hasDigit: PASSWORD_RULES.hasDigit.test(password),
@@ -202,12 +202,13 @@ function LoginForm() {
 function PasswordRule({ satisfied, label }) {
   return (
     <li
-      className={'password-rule ${satisfied ? "password-rule--satisfied" : ""}'}
-      aria-label={'${label}: ${satisfied ? "met" : "not met"}'}
+      className={`password-rule ${satisfied ? "password-rule--satisfied" : ""}`}
+      aria-label={`${label}: ${satisfied ? "met" : "not met"}`}
     >
       <span className="password-rule__icon" aria-hidden="true">
         {satisfied ? "\u2713" : "\u25CB"}
       </span>
+      {label}
     </li>
   );
 }
