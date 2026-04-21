@@ -36,6 +36,7 @@ function getDashboardRoute(role) {
     [USER_ROLES.ACADEMIC_SUPERVISOR]: "/supervisor/dashboard",
     [USER_ROLES.ADMIN]: "/admin",
   };
+  
   return routeMap[role] ?? "/";
 }
 
