@@ -8,6 +8,8 @@ from .serializers import PlacementSerializer, PlacementCreateSerializer
 from user.permissions import IsAdmin
 
 
+
+
 class PlacementViewset(viewsets.ModelViewSet):
     """
     ViewSet for InternshipPlacement.
@@ -21,11 +23,15 @@ class PlacementViewset(viewsets.ModelViewSet):
 
     permission_classes = [permissions.IsAuthenticated]
 
+
+
     def get_serializer_class(self):
         """Use lighter serializer when creating/updating."""
         if self.action in ['create','update','partial_update']:
             return PLacementsCreateSerializer
         return PlacementSerializer
+
+
 
     def get_queryset(self):
         user = self.request.user
@@ -51,6 +57,8 @@ class PlacementViewset(viewsets.ModelViewSet):
         return InternshipPlacement.objects.none()
 
 
+
+
     def create(self,request,*args, **kwargs):
         """Only admins can create placements."""
         if request.user.role != 'internship_admin':
@@ -60,6 +68,9 @@ class PlacementViewset(viewsets.ModelViewSet):
             )
         return super().create(request,*args,**kwargs)
 
+
+
+
     def update(self,request,*args,**kwargs):
         """Only admins can update placements."""
         if request.user.role != 'internship_admin':
@@ -68,6 +79,8 @@ class PlacementViewset(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN
             )    
         return super().update(request,*args,**kwargs)
+
+
 
     def destroy(self,request,*args,**kwargs):
         """
@@ -84,6 +97,8 @@ class PlacementViewset(viewsets.ModelViewSet):
 
 
 
+
+
         if logbook_count >0:
             return Response(
                 {
@@ -94,3 +109,4 @@ class PlacementViewset(viewsets.ModelViewSet):
 
 
             super().destroy(request,*args,**kwargs)
+            
