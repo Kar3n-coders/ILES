@@ -16,6 +16,7 @@ class EvaluationCriteriaSerializer(serializers.ModelSerializer):
         if value <= 0 or value > 1:
             raise serializers.ValidationError("Weight must be between 0.01 and 1.00")
         return value
+    
 
 
 class EvaluationSerializer(serializers.ModelSerializer):
