@@ -6,6 +6,7 @@ from .models import LogReview
 from .serializers import LogReviewCreateSerializer, LogReviewSerializer
 
 
+# LogReview ViewSet
 class LogReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
