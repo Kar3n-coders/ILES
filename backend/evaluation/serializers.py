@@ -18,6 +18,7 @@ class EvaluationCriteriaSerializer(serializers.ModelSerializer):
         return value
 
 
+# Evaluation Serializer
 class EvaluationSerializer(serializers.ModelSerializer):
     """
     Fill serializer for reading evalution data.
@@ -54,6 +55,7 @@ class EvaluationSerializer(serializers.ModelSerializer):
         read_only_fields = ["weighted_score", "evaluated_at", "evalutor"]
 
 
+# Evaluation Create Serializer for get method
 class EvaluationCreateSerializer(serializers.ModelSerializer):
     """
     Lighter serializer for submitting a new evalution score.
