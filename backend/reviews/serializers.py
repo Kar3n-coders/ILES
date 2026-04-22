@@ -4,6 +4,7 @@ from rest_framework import serializers
 from .models import LogReview
 
 
+# LogReview Serializer
 class LogReviewSerializer(serializers.ModelSerializer):
     reviewer_username = serializers.CharField(
         source="reviewer.username", read_only=True
