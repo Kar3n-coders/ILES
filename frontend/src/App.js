@@ -15,6 +15,9 @@ import RegisterPage from "./pages/RegisterPage";
 import StudentDashboardPage from "./pages/student/StudentDashboardPage";
 import LogbookPage from "./pages/student/LogbookPage";
 import ProgressPage from "./pages/student/ProgressPage";
+import ProfilePage from "./pages/student/ProfilePage";
+import SchedulePage from "./pages/student/SchedulePage";
+import DocumentsPage from "./page/student/DocumentsPage";
 
 // WorkplaceSupervisor imports
 import SupervisorDashboardPage from "./pages/SupervisorDashboardPage";
@@ -44,8 +47,17 @@ function App() {
               />
               <Route path="/student/logbook" element={<LogbookPage />} />
               <Route path="/student/progress" element={<ProgressPage />} />
+              <Route path="/student/schedule" element={<SchedulePage />} />
+              <Route path="/student/documents" element={<DocumentsPage />} />
+              <Route path="/student/profile" element={<ProfilePage />} />
+            </Route>
+          </Route>
 
-              {/* Supervisor Routes*/}
+          {/* Workplace Supervisor Routes*/}
+          <Route
+            element={<ProtectedRoute allowedRoles={["workplace_supervisor"]} />}
+          >
+            <Route element={<Layout />}>
               <Route
                 path="/supervisor/dashboard"
                 element={<SupervisorDashboardPage />}
@@ -54,11 +66,11 @@ function App() {
                 path="/supervisor/evaluation"
                 element={<EvaluationPage />}
               />
-
-              {/* Admin Routes*/}
-              <Route path="/admin" element={<AdminDashboardPage />} />
             </Route>
           </Route>
+
+          {/* Admin Routes*/}
+          <Route path="/admin" element={<AdminDashboardPage />} />
           <Route path="*" element={<NotPageFound />} />
         </Routes>
       </BrowserRouter>
