@@ -3,6 +3,7 @@ from django.db import models
 from placements.models import InternshipPlacement
 
 
+
 class EvaluationCriteria(models.Model):
     """
     Defines a scoring category. Examples:
