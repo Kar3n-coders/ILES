@@ -51,7 +51,24 @@ function Sideber() {
           <p className="sidebar-role">{user?.role}</p>
         </div>
       </div>
-      
+      <nav className="dsidebar-nav">
+        {navItems.map(item => (
+          <NavLink
+          key={item.path}
+          to={item.path}
+          className={({isActive}) =>
+            `sidebar-Link ${isActive ? 'sidebar-link--active' : ''}`
+        }
+        >
+          <span>{item.icon}</span>
+          <span>{item.label}</span>
+        </NavLink>
+        ))}
+      </nav>
+
+      <button className="sidebar-logout" onClick={logout}>
+        🚪 Sign Out
+      </button>
     </aside>
-  )
+  );
 }
