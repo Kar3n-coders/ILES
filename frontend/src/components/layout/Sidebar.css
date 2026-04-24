@@ -35,3 +35,10 @@
     font-weight: 600;
     color: var(--color-text);
 }
+
+.sidebar-role {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    text-transform: capitalize;
+}
+
