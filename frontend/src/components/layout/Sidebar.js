@@ -51,13 +51,13 @@ function Sidebar() {
           <p className="sidebar-role">{user?.role}</p>
         </div>
       </div>
-      <nav className="dsidebar-nav">
+      <nav className="sidebar-nav">
         {navItems.map(item => (
           <NavLink
           key={item.path}
           to={item.path}
           className={({isActive}) =>
-            `sidebar-Link ${isActive ? 'sidebar-link--active' : ''}`
+            `sidebar-link ${isActive ? 'sidebar-link--active' : ''}`
         }
         >
           <span>{item.icon}</span>
