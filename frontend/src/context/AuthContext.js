@@ -9,6 +9,7 @@ export const USER_ROLES = {
     ADMIN:"internship_admin",
 };
 
+
 export function AuthProvider({children}){
     const [user,setUser] = useState(null);
 

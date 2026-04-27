@@ -29,22 +29,12 @@ function Navbar() {
     navigate("/login");
   }
 
-  // Get current active label for the breadcrumb-style title
-  const activeLabel =
-    navlinks.find((l) => window.location.pathname.includes(l.path))?.label ||
-    "ILES";
-
   return (
     <header className="navbar" role="banner">
-      <div className="navbar-left">
-        <h1 className="navbar-Title">{activeLabel}</h1>
-        <p className="navbar-subtitle">
-          {new Date().toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
+      <div className="navbar__brand">
+        <Link to="/" className="navbar__logo">
+          ILES
+        </Link>
       </div>
 
       <a href="#main-content" className="visually-hidden">
@@ -52,39 +42,35 @@ function Navbar() {
       </a>
 
       {user && (
-        <div className="navbar-right">
-          {/* Navigation Links are rendered as ghost buttons to match UI style*/}
-          <nav className="navbar-nav-links" aria-label="Main navigation">
-            {navlinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="btn btn-ghost btn-sm"
-              >
-                {link.label}
-              </Link>
-            ))}
+        <>
+          <nav className="navbar__nav" aria-label="Main navigation">
+            <ul className="navbar__links" role="list">
+              {navlinks.map((link) => (
+                <li key={link.path}>
+                  <Link to={link.path} className="navbar__link">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </nav>
-
-          <div className="navbar-user-group">
-            <span className={`badge badge-role-${user.role.split("_")[0]}`}>
-              {user.role.replace("_", " ")}
+          <div className="navbar__user">
+            <span className="navbar__username">
+              {user.first_name} {user.last_name}
             </span>
 
-            <div className="navbar-avatar">
-              {user.first_name?.[0]}
-              {user.last_name?.[0]}
-            </div>
-
+            <span className="navbar__role-badge">
+              {user.role.replace("_", " ")}
+            </span>
             <button
-              className="btn btn-danger btn-sm"
+              className="navbar__logout-btn"
               onClick={handleLogout}
               type="button"
             >
               Sign Out
             </button>
           </div>
-        </div>
+        </>
       )}
     </header>
   );
