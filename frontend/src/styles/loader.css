@@ -3,4 +3,8 @@
     background: rgba(0,0,0.35);
     display: flex; align-items: center; justify-content: center;
     z-index: 999;
+}.js
+.loader-box {
+    background: var(--color-surface); border-radius: 16px;
+    
 }
