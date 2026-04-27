@@ -43,15 +43,15 @@ function PlacementOnBoardingPage() {
 
                 {error && <div className="onboarding-error">{error}</div>}
 
-                <form onSubmit={handleSubmit} classname="onboarding-form">
+                <form onSubmit={handleSubmit} className="onboarding-form">
                     <label>Company / Organization Name *</label>
                     <input required value={form.company_name}
-                    onCharge={e => update('company_name', e.target.value)}
+                    onChange={e => update('company_name', e.target.value)}
                     placeholder="e.g. TechNova Solutions" />
 
                     <label>Your Position / Role *</label>
                     <input required value={form.position}
-                    onChange={e => update('position', e-target.value)}
+                    onChange={e => update('position', e.target.value)}
                     placeholder="e.g. Junior software developer" />
                     
                     <div className="form-row">
@@ -59,11 +59,11 @@ function PlacementOnBoardingPage() {
 
                         <label>Start date *</label>
                         <input type="date" required value={form.start_date}
-                        onchange={e => update('start_date', e.target.value )} />
+                        onChange={e => update('start_date', e.target.value )} />
                     </div>
                     <div>
                         <label>End Date *</label>
-                        <input type="date" required value={form.start_date}
+                        <input type="date" required value={form.end_date}
                         onChange={e => update('end_date', e.target.value)} />
                     </div>
                     </div>
