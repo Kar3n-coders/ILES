@@ -47,4 +47,28 @@ function WorkplaceSupervisorDashboard() {
 
 
     if (loading) return <Loader text="Loading student logs..." />;
+
+
+    const pending = logs.filter(1 => 1.status === 'pending');
+    const reviewed = logs.filter(1 => 1.status !== 'pending');
+
+    return (
+        <div className="ws-dashboard">
+            <header className="ws-header">
+                <h1>Review & Grade Dashboard</h1>
+                <p>{pending.length} pending . {reviewed.length} reviewed</p>
+
+            </header>
+
+
+            <div className="ws-grid">
+                {pending.map(log => (
+                    <div key={log.id} className= "ws-card">
+                        /* Card header */
+                        
+                ))}
+            </div>
+        </div>
+    )
+
 }
