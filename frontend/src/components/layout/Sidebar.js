@@ -106,6 +106,65 @@ function Sidebar() {
         logout();
         navigate("/login");
     }
+
+    return (
+        <aside
+            className={`iles-sidebar ${collapsed ? "iles-sidebar--collapsed" : ""}`}
+            aria-label="Main navigation"
+            style={{"--sidebar-accent": accentColor, "--sidebar-accent-light": accentLight}}
+        >
+            <div className="iles-sidebar__header">
+                <div className="iles-sidebar__brand" style={{ background: accentColor }}>
+                    <div className="iles-sidebar__brand-logo">
+                        <span className="iles-sidebar__brand-il">IL</span>
+                        <span className="iles-sidebar__brand-es">ES</span>
+                    </div>
+                    {!collapsed && (
+                        <div className="iles-sidebar__brand-meta">
+                            <span className="iles-sidebar__brand-name">ILES</span>
+                            <span className="iles-sidebar__brand-label">{brandLabel}</span>
+                        </div>
+                    )}
+                </div>
+
+                <button 
+                    className="iles-sidebar__collapse-btn"
+                    onclick={() => setCollapsed((v) => !v)}
+                    aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                    type="button"
+                >
+                    <CollapseIcon flipped={collapsed} />
+                </button>
+            </div>
+
+            <div className="iles-sidebar__user-card">
+                <div
+                    className="iles-sidebar__user-avatar"
+                    style={{ background: accentColor }}
+                    aria-hidden="true"
+                >
+                    {initials}
+                </div>
+                {!collapsed && (
+                    <div className="iles-sidebar__user-info">
+                        <p className="iles-sidebar__user-name" title={displayName}>
+                            {displayName}
+                        </p>
+                        <p className="iles-sidebar__user-role">
+                            {user?.role?.replace(/_/g, " ")}
+                        </p>
+                    </div>
+                )}
+                {!collapsed && (
+                    <div
+                        className="iles-sidebar__user-status"
+                        title="Online"
+                        aria-label="Status: online"
+                    />
+                )}
+            </div>
+        </aside>
+    );
 }
 
 function HomeIcon() {
@@ -249,4 +308,6 @@ function CollapseIcon({ flipped }) {
     </svg>
   );
 }
+
+export default Sidebar
 
