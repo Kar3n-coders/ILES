@@ -14,7 +14,6 @@ async function request(endpoint, options = {}) {
     headers: getHeaders(),
     ...options,
   });
-  
 
   //Token expired - clear storage and redirect to login
   if (response.status === 401) {
@@ -65,6 +64,7 @@ export async function logoutUser() {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
 }
+
 
 export async function getProfile() {
   return request("/auth/profile/");
