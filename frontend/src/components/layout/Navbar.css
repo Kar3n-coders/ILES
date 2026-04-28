@@ -22,3 +22,22 @@
     --navbar-text-secondary: #94a3b8;
     --navbar-text-muted: #64748b;
 }
+
+.iles-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    width: 100%;
+    height: var(--navbar-height);
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: var(--navbar-shadow);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    font-family: var(--navbar-font);
+    transition:
+        height var(--navbar-transition),
+        background var(--navbar-transition),
+        box-shadow var(--navbar-transition);
+}
