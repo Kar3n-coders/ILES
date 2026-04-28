@@ -12,3 +12,13 @@
     --navbar-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     --navbar-font: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
+.dark .iles-navbar {
+    --navbar-bg: #0f172a;
+    --navbar-bg-scrolled: rgba(15, 23, 42, 0.97);
+    --navbar-border: rgba(255, 255, 255, 0.06);
+    --navbar-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+    --navbar-shadow-scrolled: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --navbar-text-primary: #f1f5f9;
+    --navbar-text-secondary: #94a3b8;
+    --navbar-text-muted: #64748b;
+}
