@@ -65,8 +65,14 @@ function WorkplaceSupervisorDashboard() {
                 {pending.map(log => (
                     <div key={log.id} className= "ws-card">
                         /* Card header */
-                        
-                ))}
+                        <div className="ws-card-header">
+                            <div className="ws-avatar">{log.student_name?.slice(0,2).toUpperCase()}</div>
+                            <div>
+                                <p className="ws-student-name">{log.student_name}</p>
+                                <p className="ws-student-meta">Week {log.week number} . {log.company_name}</p>
+                            </div>
+                            <span className="badge badge-pending">Pending</span>                       
+                          </div>
             </div>
         </div>
     )
