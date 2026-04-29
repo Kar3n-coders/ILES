@@ -466,3 +466,32 @@
     background: rgba(197, 48, 48, 0.07);
     color: #c53030;
 }
+
+@media (max-width: 768px) {
+    .iles-navbar {
+        padding: 0 16px;
+    }
+    .iles-navbar__meta,
+    .iles-navbar__divider,
+    .iles-navbar__user-info,
+    .iles-navbar__role-badge {
+        display: none;
+    }
+    .iles-navbar__nav {
+        margin: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .iles-navbar__nav::-webkit-scrollbar {
+        display: none;
+    }
+    .iles-navbar__controls {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .iles-navbar__nav {
+        display: none;
+    }
+}
