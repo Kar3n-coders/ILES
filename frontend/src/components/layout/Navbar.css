@@ -449,3 +449,20 @@
         background var(--navbar-transition),
         color var(--navbar-transition);
 }
+
+.iles-navbar__dropdown-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--navbar-text-primary);
+}
+.dark .iles-navbar__dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e2e8f0;
+}
+
+.iles-navbar__dropdown-item--danger {
+    color: #c53030;
+}
+.iles-navbar__dropdown-item--danger:hover {
+    background: rgba(197, 48, 48, 0.07);
+    color: #c53030;
+}
