@@ -196,3 +196,23 @@
         width: 28px;
     }
 }
+
+.dark .iles-navbar__link:hover {
+    background: rgba(148, 163, 184, 0.08);
+    color: #e2e8f0;
+}
+.dark .iles-navbar__link--active {
+    background: rgba(148, 163, 184, 0.1);
+    color: #e2e8f0;
+}
+.dark .iles-navbar__link-pip {
+    background: #60a5fa;
+}
+
+.iles-navbar__controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: auto;
+}
