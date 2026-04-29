@@ -86,6 +86,10 @@ function WorkplaceSupervisorDashboard() {
                               onClick={() => handleActionWithComment(log, 'revision_requested')}>
                               🔄 Request Revision
                             </button>
+                            <button className="btn-danger"
+                              onClick={() => handleActionWithComment(log,'rejected')}>
+                              ✕ Reject
+                            </button>  
                         
 
                               </button>
