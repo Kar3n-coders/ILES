@@ -89,13 +89,13 @@ function WorkplaceSupervisorDashboard() {
                             <button className="btn-danger"
                               onClick={() => handleActionWithComment(log,'rejected')}>
                               ✕ Reject
-                            </button>  
-                        
-
-                              </button>
-
-            </div>
-        </div>
-    )
-
-}
+                            </button>
+                            <button className="btn-success"
+                              onClick={() => handleApprove(log.id)}>
+                              ✓Approve
+                             </button>
+                           </div>
+                         </div>
+                        ))}
+                      </div> 
+        
