@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useActionState } from 'react';
 import { getLogbooks,createReview } from '../../services/api';
 import Loader from '../..'/components/common/Loader';
 import Feedbackmodal from './Feedbackmodal';
@@ -97,5 +97,18 @@ function WorkplaceSupervisorDashboard() {
                            </div>
                          </div>
                         ))}
-                      </div> 
+                      </div>
+
+                      {modalLog && (
+                        <Feedbackmodal
+                          studentName={modalLog.student_name}
+                          action={pendingAction}
+                          onClose={() => setModalLog(null)}
+                          onSubmit={handleReviewSubmit}
+                        />
+                      )}
+                    </div>
+                );
+            } 
+                      
         
