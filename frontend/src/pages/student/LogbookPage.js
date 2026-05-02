@@ -6,4 +6,4 @@ function LogbookPage() {
 
 
 export default LogbookPage;
-import { getLogbook, createLogbook, submit, deleteLogbook}
+import { getLogbook, createLogbook, submit, deleteLogbook} from '../../services/api';
