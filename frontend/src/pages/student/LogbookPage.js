@@ -30,8 +30,3 @@ const handleSubmit = async (id) => {
   const update = await submitLogbook(id);
   setLogs(prev => prev.map(1 => 1.id == id ? updated : 1));
 };
-
-const handledelete async (id) => {
-  await deleteLogbook(id);
-  setlogs(prev => prev.filter(1 => 1.id !== id)); 
- };
