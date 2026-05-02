@@ -23,4 +23,15 @@
 }
 
 
+.ws-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-boarder);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+}
+
+
 
