@@ -26,10 +26,6 @@ const handleCreate = async (formData) => {
  setLogs(prev => [newlog, ...prev]);
 };
 
-const handleSubmit = async (id) => {
-  const updated = await submitLogbook(id);
-  setLogs(prev => prev.map(l => l.id === id ? updated : l));
-};
 
 const handleDelete = async (id) => {
   await deleteLogbook(id);
