@@ -17,3 +17,21 @@ const DEMO_USERS = [
   { role: "internship_admin",      username: "admin",        password: "admin123",      label: "Internship Admin",          color: "#6b46c1" },
 ];
 
+const FEATURES = [
+  "Weekly logbook submission & tracking",
+  "Supervisor review & revision flow",
+  "Weighted evaluation scoring",
+  "Admin analytics & placements",
+];
+
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const { login, isLoading } = useContext(AuthContext);
+  const { isDark, toggleDark } = useContext(ThemeContext);
+  const [prefill, setPrefill] = useState({ username: "", password: "" });
+  const [error, setError] = useState("");
+
+  const fillDemo = (u) => {
+    setPrefill({ username: u.username, password: u.password });
+    setError("");
+  };
