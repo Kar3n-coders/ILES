@@ -49,3 +49,34 @@ export default function LoginPage() {
       setError(result.error || "Invalid credentials. Please try again.");
     }
   };
+
+  return (
+    <div className="login-page" data-theme={isDark ? "dark" : "light"}>
+
+      {/* ── Left brand panel ── */}
+      <aside className="login-page__brand">
+        <div className="login-page__brand-top">
+          <div className="login-page__logo">
+            <div className="login-page__logo-icon">
+              <GraduationCap size={20} color="#fff" />
+            </div>
+            <div>
+              <p className="login-page__logo-name">ILES</p>
+              <p className="login-page__logo-sub">Internship Logging &amp; Evaluation System</p>
+            </div>
+          </div>
+          <h2 className="login-page__brand-heading">Welcome back</h2>
+          <p className="login-page__brand-desc">
+            Sign in to access your dashboard. Students, supervisors, and admins each have a tailored view of the system.
+          </p>
+          <ul className="login-page__feature-list">
+            {FEATURES.map((f) => (
+              <li key={f} className="login-page__feature-item">
+                <ChevronRight size={13} className="login-page__feature-icon" />
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p className="login-page__brand-footer">Makerere University · Computer Science · 2025–2026</p>
+      </aside>
