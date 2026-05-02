@@ -35,3 +35,17 @@ export default function LoginPage() {
     setPrefill({ username: u.username, password: u.password });
     setError("");
   };
+
+  const handleLogin = async (username, password) => {
+    setError("");
+    const result = await login(username, password);
+    if (result.success) {
+      const found = DEMO_USERS.find((u) => u.username === username);
+      if (found?.role === "workplace_supervisor") navigate("/supervisor/dashboard");
+      else if (found?.role === "academic_supervisor") navigate("/academic/dashboard");
+      else if (found?.role === "internship_admin") navigate("/admin");
+      else navigate("/student/dashboard");
+    } else {
+      setError(result.error || "Invalid credentials. Please try again.");
+    }
+  };
