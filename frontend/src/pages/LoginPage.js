@@ -128,4 +128,24 @@ export default function LoginPage() {
                   onClick={() => fillDemo(u)}
                   className="login-page__demo-btn"
                 >
+                  <span
+                    className="login-page__demo-dot"
+                    style={{ backgroundColor: u.color + "22", color: u.color }}
+                  >
+                    ●
+                  </span>
+                  <span className="login-page__demo-label">{u.label}</span>
+                  <span className="login-page__demo-user">{u.username}</span>
+                  <ChevronRight size={12} className="login-page__demo-arrow" />
+                </button>
+              ))}
+            </div>
+            <p className="login-page__demo-hint">Click any row to fill credentials, then click Sign In</p>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  );
+}
 
