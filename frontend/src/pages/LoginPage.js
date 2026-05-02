@@ -80,3 +80,32 @@ export default function LoginPage() {
         </div>
         <p className="login-page__brand-footer">Makerere University · Computer Science · 2025–2026</p>
       </aside>
+
+      <main className="login-page__form-area">
+        <div className="login-page__form-inner">
+
+          {/* Top bar */}
+          <div className="login-page__topbar">
+            <Link to="/" className="login-page__back-link">
+              <ArrowLeft size={14} /> Back to Home
+            </Link>
+            <button onClick={toggleDark} className="login-page__theme-btn" aria-label="Toggle dark mode">
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+          </div>
+
+          {/* Heading */}
+          <h1 className="login-page__title">Sign in to ILES</h1>
+          <p className="login-page__subtitle">
+            Don't have an account?{" "}
+            <Link to="/register" className="login-page__register-link">Register here</Link>
+          </p>
+
+          {/* Error */}
+          {error && (
+            <div className="login-page__error">
+              <span className="login-page__error-icon">⚠</span>
+              {error}
+            </div>
+          )}
+
