@@ -109,14 +109,14 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Form */}
+          
           <LoginForm
             prefill={prefill}
             onLogin={handleLogin}
             isLoading={isLoading}
           />
 
-          {/* Demo quick access */}
+          
           <div className="login-page__demo">
             <div className="login-page__demo-divider">
               <span>Quick demo access</span>
