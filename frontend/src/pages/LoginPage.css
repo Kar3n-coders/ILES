@@ -137,3 +137,31 @@
 .login-page__back-link:hover {
   color: var(--color-text);
 }
+
+.login-page[data-theme="dark"] .login-page__back-link {
+  color: #94a3b8;
+}
+
+.login-page[data-theme="dark"] .login-page__back-link:hover {
+  color: #f1f5f9;
+}
+
+.login-page__theme-btn {
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.login-page__theme-btn:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.login-page[data-theme="dark"] .login-page__theme-btn:hover {
+  background: #334155;
+  color: #f1f5f9;
+}
