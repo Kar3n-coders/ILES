@@ -116,3 +116,24 @@
   width: 100%;
   max-width: 420px;
 }
+
+.login-page__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.login-page__back-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.login-page__back-link:hover {
+  color: var(--color-text);
+}
