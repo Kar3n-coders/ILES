@@ -1,0 +1,28 @@
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+/* ── Dark mode ── */
+.login-page[data-theme="dark"] {
+  background: #0f172a;
+  color: #f1f5f9;
+}
+
+/* ── Left brand panel ── */
+.login-page__brand {
+  display: none;             /* hidden on mobile */
+  flex-direction: column;
+  justify-content: space-between;
+  width: 384px;
+  flex-shrink: 0;
+  padding: 40px;
+  background-color: #1a365d;
+}
+
+@media (min-width: 1024px) {
+  .login-page__brand {
+    display: flex;
+  }
+}
