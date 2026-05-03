@@ -269,3 +269,43 @@
   background: #293548;
   border-color: #475569;
 }
+
+.login-page__demo-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  flex-shrink: 0;
+}
+
+.login-page__demo-label {
+  flex: 1;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.login-page[data-theme="dark"] .login-page__demo-label {
+  color: #f1f5f9;
+}
+
+.login-page__demo-user {
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.login-page__demo-arrow {
+  color: var(--color-border);
+  flex-shrink: 0;
+}
+
+.login-page__demo-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 12px;
+}
