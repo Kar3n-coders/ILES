@@ -120,3 +120,33 @@
 .btn--full-width {
   width: 100%;
 }
+
+.password-requirements {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.password-rule {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.password-rule--satisfied {
+  color: #276749;
+}
+
+.password-rule--satisfied::before {
+  content: '✓';
+  font-weight: 700;
+}
+
+.password-rule:not(.password-rule--satisfied)::before {
+  content: '○';
+}
+
