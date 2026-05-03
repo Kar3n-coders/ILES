@@ -84,7 +84,7 @@ export default function LoginPage() {
       <main className="login-page__form-area">
         <div className="login-page__form-inner">
 
-          {/* Top bar */}
+          
           <div className="login-page__topbar">
             <Link to="/" className="login-page__back-link">
               <ArrowLeft size={14} /> Back to Home
@@ -94,14 +94,14 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Heading */}
+          
           <h1 className="login-page__title">Sign in to ILES</h1>
           <p className="login-page__subtitle">
             Don't have an account?{" "}
             <Link to="/register" className="login-page__register-link">Register here</Link>
           </p>
 
-          {/* Error */}
+          
           {error && (
             <div className="login-page__error">
               <span className="login-page__error-icon">⚠</span>
