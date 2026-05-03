@@ -4,15 +4,15 @@
   background: var(--color-background);
 }
 
-/* ── Dark mode ── */
+
 .login-page[data-theme="dark"] {
   background: #0f172a;
   color: #f1f5f9;
 }
 
-/* ── Left brand panel ── */
+
 .login-page__brand {
-  display: none;             /* hidden on mobile */
+  display: none;             
   flex-direction: column;
   justify-content: space-between;
   width: 384px;
@@ -103,7 +103,7 @@
   color: rgba(255, 255, 255, 0.3);
 }
 
-/* ── Right form area ── */
+
 .login-page__form-area {
   flex: 1;
   display: flex;
