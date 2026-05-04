@@ -1,18 +1,8 @@
 import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import LoginForm from "../components/auth/LoginForm";
-import {
-  GraduationCap,
-  ChevronRight,
-  ClipboardCheck,
-  BookOpen,
-  LayoutDashboard,
-  Moon,
-  Sun,
-  ArrowLeft,
-} from "lucide-react";
+import { GraduationCap, ChevronRight, Moon, Sun, ArrowLeft } from "lucide-react";
 import "./LoginPage.css";
 
 const DEMO_USERS = [
@@ -61,31 +51,11 @@ const FEATURES = [
 ];
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const { login, isLoading } = useContext(AuthContext);
-  const { isDark, toggleDark } = useContext(ThemeContext);
+  const { isDark, toggleTheme: toggleDark } = useContext(ThemeContext);
   const [prefill, setPrefill] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
 
   const fillDemo = (u) => {
     setPrefill({ username: u.username, password: u.password });
-    setError("");
-  };
-
-  const handleLogin = async (username, password) => {
-    setError("");
-    const result = await login(username, password);
-    if (result.success) {
-      const found = DEMO_USERS.find((u) => u.username === username);
-      if (found?.role === "workplace_supervisor")
-        navigate("/supervisor/dashboard");
-      else if (found?.role === "academic_supervisor")
-        navigate("/academic/dashboard");
-      else if (found?.role === "internship_admin") navigate("/admin");
-      else navigate("/student/dashboard");
-    } else {
-      setError(result.error || "Invalid credentials. Please try again.");
-    }
   };
 
   return (
@@ -146,18 +116,7 @@ export default function LoginPage() {
             </Link>
           </p>
 
-          {error && (
-            <div className="login-page__error">
-              <span className="login-page__error-icon">⚠</span>
-              {error}
-            </div>
-          )}
-
-          <LoginForm
-            prefill={prefill}
-            onLogin={handleLogin}
-            isLoading={isLoading}
-          />
+          <LoginForm prefill={prefill} />
 
           <div className="login-page__demo">
             <div className="login-page__demo-divider">

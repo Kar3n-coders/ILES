@@ -1,22 +1,15 @@
-import React, { useEffect, useContext, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
-
-import {
-  getLogbook,
-  createLogbook,
-  submit,
-  deleteLogbook,
-} from "../services/api";
+import React, { useEffect, useState } from "react";
+import { getLogbooks, createLogbook } from "../services/api";
 
 function LogbookPage() {
-  const { login, isLoading } = useContext(AuthContext);
-  const { loading, setLoading } = useState(false);
-  const { logs, setLogs } = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [logs, setLogs] = useState([]);
 
   useEffect(() => {
     setLoading(true);
-    getLogbook()
+    getLogbooks()
       .then((data) => setLogs(data.results || data))
+      .catch(() => setLogs([]))
       .finally(() => setLoading(false));
   }, []);
 
