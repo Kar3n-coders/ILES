@@ -1,7 +1,7 @@
 const BACKEND_URL = process.env.REACT_APP_API_BASE_URL;
 
 function getHeaders() {
-  const token = localStorage.getItem("access_token");
+  const token = localStorage.getItem("iles_auth_token");
   return {
     "Content-Type": "application/json",
     ...(token && { Authorization: `Bearer ${token}` }),
@@ -17,8 +17,8 @@ async function request(endpoint, options = {}) {
 
   //Token expired - clear storage and redirect to login
   if (response.status === 401) {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("iles_auth_token");
+    localStorage.removeItem("iles_refresh_token");
     window.location.href = "/login";
     return null;
   }
@@ -53,9 +53,8 @@ export async function loginUser({ username, password }) {
     body: JSON.stringify({ username, password }),
   });
 
-  //Stores tokens returned by Django
-  localStorage.setItem("access_token", data.access);
-  localStorage.setItem("refresh_token", data.refresh);
+  localStorage.setItem("iles_auth_token", data.access);
+  localStorage.setItem("iles_refresh_token", data.refresh);
 
   return { user: data.user, token: data.access };
 }

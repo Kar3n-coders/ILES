@@ -1,20 +1,46 @@
 import { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
-import { LoginForm } from "../components/auth/LoginForm";
-import {
-  GraduationCap, ChevronRight, ClipboardCheck, BookOpen,
-  LayoutDashboard, Moon, Sun, ArrowLeft,
-} from "lucide-react";
+import LoginForm from "../components/auth/LoginForm";
+import { GraduationCap, ChevronRight, Moon, Sun, ArrowLeft } from "lucide-react";
 import "./LoginPage.css";
 
 const DEMO_USERS = [
-  { role: "student",               username: "maria.reyes",  password: "student123",    label: "Student (with placement)",  color: "#1a365d" },
-  { role: "student_new",           username: "john.doe",     password: "student123",    label: "Student (no placement)",    color: "#2b6cb0" },
-  { role: "workplace_supervisor",  username: "dr.santos",    password: "supervisor123", label: "Workplace Supervisor",      color: "#276749" },
-  { role: "academic_supervisor",   username: "prof.torres",  password: "supervisor123", label: "Academic Supervisor",       color: "#c05621" },
-  { role: "internship_admin",      username: "admin",        password: "admin123",      label: "Internship Admin",          color: "#6b46c1" },
+  {
+    role: "student",
+    username: "maria.reyes",
+    password: "student123",
+    label: "Student (with placement)",
+    color: "#1a365d",
+  },
+  {
+    role: "student_new",
+    username: "john.doe",
+    password: "student123",
+    label: "Student (no placement)",
+    color: "#2b6cb0",
+  },
+  {
+    role: "workplace_supervisor",
+    username: "dr.santos",
+    password: "supervisor123",
+    label: "Workplace Supervisor",
+    color: "#276749",
+  },
+  {
+    role: "academic_supervisor",
+    username: "prof.torres",
+    password: "supervisor123",
+    label: "Academic Supervisor",
+    color: "#c05621",
+  },
+  {
+    role: "internship_admin",
+    username: "admin",
+    password: "admin123",
+    label: "Internship Admin",
+    color: "#6b46c1",
+  },
 ];
 
 const FEATURES = [
@@ -25,34 +51,15 @@ const FEATURES = [
 ];
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const { login, isLoading } = useContext(AuthContext);
-  const { isDark, toggleDark } = useContext(ThemeContext);
+  const { isDark, toggleTheme: toggleDark } = useContext(ThemeContext);
   const [prefill, setPrefill] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
 
   const fillDemo = (u) => {
     setPrefill({ username: u.username, password: u.password });
-    setError("");
-  };
-
-  const handleLogin = async (username, password) => {
-    setError("");
-    const result = await login(username, password);
-    if (result.success) {
-      const found = DEMO_USERS.find((u) => u.username === username);
-      if (found?.role === "workplace_supervisor") navigate("/supervisor/dashboard");
-      else if (found?.role === "academic_supervisor") navigate("/academic/dashboard");
-      else if (found?.role === "internship_admin") navigate("/admin");
-      else navigate("/student/dashboard");
-    } else {
-      setError(result.error || "Invalid credentials. Please try again.");
-    }
   };
 
   return (
     <div className="login-page" data-theme={isDark ? "dark" : "light"}>
-
       {/* ── Left brand panel ── */}
       <aside className="login-page__brand">
         <div className="login-page__brand-top">
@@ -62,12 +69,15 @@ export default function LoginPage() {
             </div>
             <div>
               <p className="login-page__logo-name">ILES</p>
-              <p className="login-page__logo-sub">Internship Logging &amp; Evaluation System</p>
+              <p className="login-page__logo-sub">
+                Internship Logging &amp; Evaluation System
+              </p>
             </div>
           </div>
           <h2 className="login-page__brand-heading">Welcome back</h2>
           <p className="login-page__brand-desc">
-            Sign in to access your dashboard. Students, supervisors, and admins each have a tailored view of the system.
+            Sign in to access your dashboard. Students, supervisors, and admins
+            each have a tailored view of the system.
           </p>
           <ul className="login-page__feature-list">
             {FEATURES.map((f) => (
@@ -78,45 +88,36 @@ export default function LoginPage() {
             ))}
           </ul>
         </div>
-        <p className="login-page__brand-footer">Makerere University · Computer Science · 2025–2026</p>
+        <p className="login-page__brand-footer">
+          Makerere University · Computer Science · 2025–2026
+        </p>
       </aside>
 
       <main className="login-page__form-area">
         <div className="login-page__form-inner">
-
-          
           <div className="login-page__topbar">
             <Link to="/" className="login-page__back-link">
               <ArrowLeft size={14} /> Back to Home
             </Link>
-            <button onClick={toggleDark} className="login-page__theme-btn" aria-label="Toggle dark mode">
+            <button
+              onClick={toggleDark}
+              className="login-page__theme-btn"
+              aria-label="Toggle dark mode"
+            >
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
           </div>
 
-          
           <h1 className="login-page__title">Sign in to ILES</h1>
           <p className="login-page__subtitle">
             Don't have an account?{" "}
-            <Link to="/register" className="login-page__register-link">Register here</Link>
+            <Link to="/register" className="login-page__register-link">
+              Register here
+            </Link>
           </p>
 
-          
-          {error && (
-            <div className="login-page__error">
-              <span className="login-page__error-icon">⚠</span>
-              {error}
-            </div>
-          )}
+          <LoginForm prefill={prefill} />
 
-          
-          <LoginForm
-            prefill={prefill}
-            onLogin={handleLogin}
-            isLoading={isLoading}
-          />
-
-          
           <div className="login-page__demo">
             <div className="login-page__demo-divider">
               <span>Quick demo access</span>
@@ -140,12 +141,12 @@ export default function LoginPage() {
                 </button>
               ))}
             </div>
-            <p className="login-page__demo-hint">Click any row to fill credentials, then click Sign In</p>
+            <p className="login-page__demo-hint">
+              Click any row to fill credentials, then click Sign In
+            </p>
           </div>
-
         </div>
       </main>
     </div>
   );
 }
-

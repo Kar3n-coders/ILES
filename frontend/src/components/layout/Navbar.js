@@ -339,7 +339,7 @@ function Navbar() {
               </div>
             )}
           </div>
-        </>
+        </div>
       )}
     </header>
   );

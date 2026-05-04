@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPlacements } from "../../services/api";
+import { getPlacements } from "../services/api";
 // import Loader from "../../components/common/Loader";
 // import PlacementOnBoardingPage from "./PlacementsOnBoardingPage";
 

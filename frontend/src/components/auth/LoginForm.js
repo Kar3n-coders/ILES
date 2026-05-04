@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { loginUser } from "../../services/api";
@@ -25,9 +25,6 @@ function validatePassword(password) {
   };
 }
 
-function isPasswordValid(validationResult) {
-  return Object.values(validationResult).every(Boolean);
-}
 
 function getDashboardRoute(role) {
   const routeMap = {
@@ -40,21 +37,25 @@ function getDashboardRoute(role) {
   return routeMap[role] ?? "/";
 }
 
-function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+function LoginForm({ prefill = { username: "", password: "" } }) {
+  const [username, setUsername] = useState(prefill.username || "");
+  const [password, setPassword] = useState(prefill.password || "");
 
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState("");
   const [showPasswordHints, setShowPasswordHints] = useState(false);
 
+  useEffect(() => {
+    if (prefill.username) setUsername(prefill.username);
+    if (prefill.password) setPassword(prefill.password);
+  }, [prefill]);
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const passwordValidation = validatePassword(password);
-  const passwordIsValid = isPasswordValid(passwordValidation);
-  const formIsValid = username.trim().length > 0 && passwordIsValid;
+  const formIsValid = username.trim().length > 0 && password.length > 0;
 
   function handleUsernameChange(event) {
     setUsername(event.target.value);
