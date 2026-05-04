@@ -24,3 +24,7 @@ const HOW_IT_WORKS = [
   { step: "01", title: "Register & Get Placed", color: "#1a365d",
     desc: "Students register, select their role, and an admin links them to an internship placement at a partner company." },
   { step: "02", title: "Submit Weekly Logs", color: "#276749",
+    desc: "Each week, students log their activities, learnings, and challenges. Logs move from Draft to Pending to Reviewed to Approved." },
+  { step: "03", title: "Supervisor Review", color: "#c05621",
+    desc: "Workplace supervisors review and approve logs. Academic supervisors evaluate interns on weighted performance criteria." },
+  { step: "04", title: "Final Evaluation", color: "#6b46c1",
