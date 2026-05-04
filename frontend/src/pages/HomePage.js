@@ -5,3 +5,8 @@ function HomePage() {
 }
 
 export default HomePage;
+
+
+import { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
