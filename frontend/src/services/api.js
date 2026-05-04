@@ -65,6 +65,7 @@ export async function logoutUser() {
   localStorage.removeItem("refresh_token");
 }
 
+
 export async function getProfile() {
   return request("/auth/profile/");
 }

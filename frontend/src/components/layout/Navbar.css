@@ -1,62 +1,493 @@
-.navbar {
-    display: flex;
-    align-items: center;
-    gap: var(--space-6);
-    padding: var(--space-3) var(--space-6);
-    background-color: var(--color-primary);
-    color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+:root {
+    --navbar-height: 64px;
+    --navbar-height-scrolled: 56px;
+    --navbar-bg: #ffffff;
+    --navbar-bg-scrolled: rgba(255, 255, 255, 0.97);
+    --navbar-border: rgba(0, 0, 0, 0.07);
+    --navbar-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    --navbar-shadow-scrolled: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --navbar-text-primary: #1a1a2e;
+    --navbar-text-secondary: #6b7280;
+    --navbar-text-muted: #9ca3af;
+    --navbar-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --navbar-font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+.dark .iles-navbar {
+    --navbar-bg: #0f172a;
+    --navbar-bg-scrolled: rgba(15, 23, 42, 0.97);
+    --navbar-border: rgba(255, 255, 255, 0.06);
+    --navbar-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+    --navbar-shadow-scrolled: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --navbar-text-primary: #f1f5f9;
+    --navbar-text-secondary: #94a3b8;
+    --navbar-text-muted: #64748b;
+}
+
+.iles-navbar {
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 200;
+    height: var(--navbar-height);
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--navbar-border);
+    box-shadow: var(--navbar-shadow);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    font-family: var(--navbar-font);
+    transition:
+        height var(--navbar-transition),
+        background var(--navbar-transition),
+        box-shadow var(--navbar-transition);
 }
 
-.navbar__logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
+.iles-navbar--scrolled {
+    height: var(--navbar-height-scrolled);
+    background: var(--navbar-bg-scrolled);
+    box-shadow: var(--navbar-shadow-scrolled);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.iles-navbar__skip {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 9999;
+    background: #1a365d;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 0 0 8px 0;
+    font-size: 0.85rem;
     text-decoration: none;
-    letter-spacing: 0.05em;
+}
+.iles-navbar__skip:focus {
+    left: 0;
 }
 
-.navbar__nav {
+.iles-navbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+.iles-navbar__logo {
+    display: flex;
+    align-items: baseline;
+    gap: 1px;
+    text-decoration: none;
+    letter-spacing: -0.03em;
+}
+
+.iles-navbar__logo-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a365d;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 5px;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition: transform 0.2s ease;
+}
+.iles-navbar__logo:hover .iles-navbar__logo-mark {
+    transform: scale(1.06);
+}
+
+.iles-navbar__logo-text {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--navbar-text-primary);
+    letter-spacing: 0.01em;
+}
+
+.iles-navbar__divider {
+    width: 1px;
+    height: 28px;
+    background: var(--navbar-border);
+    flex-shrink: 0;
+}
+
+.iles-navbar__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 1;
+}
+
+.iles-navbar__date {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--navbar-text-primary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.iles-navbar__time {
+    font-size: 0.68rem;
+    color: var(--navbar-text-muted);
+}
+
+.iles-navbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 auto;
+}
+
+.iles-navbar__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: var(--navbar-text-secondary);
+    text-decoration: none;
+    transition:
+        background var(--navbar-transition),
+        color var(--navbar-transition);
+    white-space: nowrap;
+}
+
+.iles-navbar__link:hover {
+    background: rgba(26, 54, 93, 0.06);
+    color: #1a365d;
+}
+
+.iles-navbar__link--active {
+    background: rgba(26, 54, 93, 0.08);
+    color: #1a365d;
+    font-weight: 600;
+}
+
+.iles-navbar__link-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.iles-navbar__link-pip {
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 2px;
+    background: #1a365d;
+    border-radius: 2px 2px 0 0;
+    animation: pipIn 0.2s ease forwards;
+}
+
+@keyframes pipIn {
+    from {
+        opacity: 0;
+        width: 0;
+    }
+    to {
+        opacity: 1;
+        width: 28px;
+    }
+}
+
+.dark .iles-navbar__link:hover {
+    background: rgba(148, 163, 184, 0.08);
+    color: #e2e8f0;
+}
+.dark .iles-navbar__link--active {
+    background: rgba(148, 163, 184, 0.1);
+    color: #e2e8f0;
+}
+.dark .iles-navbar__link-pip {
+    background: #60a5fa;
+}
+
+.iles-navbar__controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
     margin-left: auto;
 }
 
-.navbar__links {
-    display: flex;
-    gap: var(--space-4);
-    list-style: none;
+.iles-navbar__role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: color-mix(in srgb, var(--role-color, #1a365d) 12%, transparent);
+    color: var(--role-color, #1a365d);
+    border: 1px solid
+        color-mix(in srgb, var(--role-color, #1a365d) 25%, transparent);
 }
 
-.navbar__link {
-    color: rgba(255, 255, 0.85);
-    text-decoration: none;
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-sm);
-    transition: background_color 0.2s ease, color o.2s ease;
+/* Fallback for browsers that don't support color-mix() */
+@supports not (background: color-mix(in srgb, red 10%, transparent)) {
+    .iles-navbar__role-badge {
+        background: rgba(26, 54, 93, 0.1);
+        color: #1a365d;
+        border-color: rgba(26, 54, 93, 0.2);
+    }
 }
 
-.navbar__link:hover,
-.navbar__link:focus {
-    background-color: rgba(255, 255, 255, 0.15);
-    color:#ffffff;
-    outline: 2px solid rgba(255, 255, 255, o.5);
+.iles-navbar__notif-dot {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e53e3e;
+    border: 1.5px solid var(--navbar-bg);
+    animation: pulse 2.5s infinite;
 }
 
-.navbar__user {
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(0.85);
+    }
+}
+
+.iles-navbar__user-menu {
+    position: relative;
+}
+
+.iles-navbar__avatar-btn {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    margin-left: var(--space-4);
+    gap: 8px;
+    padding: 5px 10px 5px 6px;
+    border-radius: 10px;
+    border: 1px solid var(--navbar-border);
+    background: transparent;
+    cursor: pointer;
+    transition:
+        background var(--navbar-transition),
+        border-color var(--navbar-transition),
+        box-shadow var(--navbar-transition);
 }
 
-.navbar__role-badge {
-    background-color: rgba(255, 255, 255, o.2);
-    padding: 2px var(--space-2);
-    border-radius: var(--radius-sm);
-    font-size: o.75rem;
-    text-transform: capitalize;
+.iles-navbar__avatar-btn:hover,
+.iles-navbar__avatar-btn--open {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.14);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.dark .iles-navbar__avatar-btn:hover,
+.dark .iles-navbar__avatar-btn--open {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.iles-navbar__avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--role-color, #1a365d);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.iles-navbar__user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+}
+.iles-navbar__user-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--navbar-text-primary);
+    line-height: 1;
+    white-space: nowrap;
+}
+.iles-navbar__user-role {
+    font-size: 0.67rem;
+    color: var(--navbar-text-muted);
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.iles-navbar__chevron {
+    color: var(--navbar-text-muted);
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+.iles-navbar__chevron--up {
+    transform: rotate(180deg);
+}
+
+.iles-navbar__dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    background: var(--navbar-bg);
+    border: 1px solid var(--navbar-border);
+    border-radius: 14px;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.07),
+        0 12px 36px -4px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    z-index: 300;
+    animation: dropIn 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform-origin: top right;
+}
+
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.dark .iles-navbar__dropdown {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.iles-navbar__dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--navbar-border);
+    background: rgba(0, 0, 0, 0.015);
+}
+
+.iles-navbar__dropdown-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--role-color, #1a365d);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.iles-navbar__dropdown-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--navbar-text-primary);
+    line-height: 1.2;
+    margin: 0;
+}
+.iles-navbar__dropdown-email {
+    font-size: 0.75rem;
+    color: var(--navbar-text-muted);
+    line-height: 1.2;
+    margin: 2px 0 0;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.iles-navbar__dropdown-section {
+    padding: 6px;
+}
+.iles-navbar__dropdown-section + .iles-navbar__dropdown-section {
+    border-top: 1px solid var(--navbar-border);
+}
+
+.iles-navbar__dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--navbar-text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+    transition:
+        background var(--navbar-transition),
+        color var(--navbar-transition);
+}
+
+.iles-navbar__dropdown-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--navbar-text-primary);
+}
+.dark .iles-navbar__dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e2e8f0;
+}
+
+.iles-navbar__dropdown-item--danger {
+    color: #c53030;
+}
+.iles-navbar__dropdown-item--danger:hover {
+    background: rgba(197, 48, 48, 0.07);
+    color: #c53030;
+}
+
+@media (max-width: 768px) {
+    .iles-navbar {
+        padding: 0 16px;
+    }
+    .iles-navbar__meta,
+    .iles-navbar__divider,
+    .iles-navbar__user-info,
+    .iles-navbar__role-badge {
+        display: none;
+    }
+    .iles-navbar__nav {
+        margin: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .iles-navbar__nav::-webkit-scrollbar {
+        display: none;
+    }
+    .iles-navbar__controls {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .iles-navbar__nav {
+        display: none;
+    }
 }
 
 .navbar__logout-btn {
