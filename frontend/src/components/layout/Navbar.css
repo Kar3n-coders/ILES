@@ -489,3 +489,18 @@
         display: none;
     }
 }
+
+.navbar__logout-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, o.5);
+    color: #ffffff;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0,2s ease;
+}
+
+.navbar__logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}

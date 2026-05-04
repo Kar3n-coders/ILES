@@ -15,6 +15,7 @@ backend/evaluation/__pycache__
 backend/evaluation/migrations
 backend/logbook/migrations
 backend/reviews/__pycache__
+<<<<<<< HEAD
 /backend/evaluation/migrations/__pycache__
 /backend/logbook/migrations/__pycache__
 /backend/placements/__pycache__
@@ -29,3 +30,8 @@ backend/reviews/__pycache__
 .claude/worktrees
 tickets
 CLAUDE.md
+<<<<<<< ours
+=======
+>>>>>>> main
+=======
+>>>>>>> theirs
