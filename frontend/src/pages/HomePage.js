@@ -60,6 +60,13 @@ return (
             <GraduationCap size={18} color="#fff" />
           </div>
           <span className="home-nav__logo-name">ILES</span>
+          <span className="home-nav__logo-sub">Internship Logging &amp; Evaluation System</span>
+          </div>
+          <span className="home-nav__logo-name">ILES</span>
+          <span classname="home-nav__logo-sub">Intership Logging &amp; Evaluation System</span>
+         </div>
+          
+
         
 
 }
