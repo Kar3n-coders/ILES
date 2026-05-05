@@ -61,19 +61,25 @@ return (
           </div>
           <span className="home-nav__logo-name">ILES</span>
           <span className="home-nav__logo-sub">Internship Logging &amp; Evaluation System</span>
-          </div>
-          <span className="home-nav__logo-name">ILES</span>
-          <span classname="home-nav__logo-sub">Intership Logging &amp; Evaluation System</span>
-         </div>
-          
+        </div>
+        <div className="home-nav__actions">
+          <button onClick={toggleDark} className="home-nav__theme-btn" aria-label="Toggle dark mode">
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          {user ? (
+            <Link to={getDashboardPath(user.role)} className="home-nav__btn home-nav__btn--primary">
+              Go to Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/login"    className="home-nav__btn home-nav__btn--outline">Sign In</Link>
+              <Link to="/register" className="home-nav__btn home-nav__btn--primary">Register</Link>
+            </>
+          )}
+        </div>
+      </nav>
+
 
         
-
-}
-
-
-
-
-
 
 
