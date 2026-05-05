@@ -40,6 +40,7 @@ const FEATURES = [
   { icon: Users,          title: "Admin Analytics",       color: "#6b46c1", desc: "System-wide insights: placement rates, completion trends, log statistics." },
 ];
 
+
 const STATS = [
   { VALUE: "100+",   label: "students Enrolled",  icon: GraduatioCap },
   { value: "87%",    label: "Placement Rate",     icon: Building2 },
