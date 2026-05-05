@@ -70,3 +70,22 @@ export default function WorkplaceSupervisorDashboardPage() {
   const org = user?.organization || 'Your Organisation';
 
   const awaitingCount = interns.filter(i => i.status === 'Awaiting review').length;
+
+  return (
+    <div className="page">
+      <PageHead
+        crumb="Workspace · My interns"
+        title={`Welcome, ${displayName}`}
+        sub={`You're supervising ${interns.length} intern${interns.length !== 1 ? 's' : ''} at ${org} this cohort.`}
+        actions={<Btn sm kind="ghost">{org} ▾</Btn>}
+      />
+
+      <div className="grid grid--4">
+        <Stat label="Active interns"      value={stats ? String(stats.activeInterns)    : '—'} />
+        <Stat label="Awaiting review"     value={stats ? String(stats.awaitingReview)   : String(awaitingCount)} unit=" entries" delta={awaitingCount > 0 ? 'action needed' : undefined} deltaDown={awaitingCount > 0} />
+        <Stat label="Approved this week"  value={stats ? String(stats.approvedThisWeek) : '—'} delta={stats ? '+2 vs last' : undefined} />
+        <Stat label="Avg score given"     value={stats ? String(stats.avgScore)         : '—'} unit=" / 5" />
+      </div>
+
+      <div className="grid grid--main-narrow">
+      
