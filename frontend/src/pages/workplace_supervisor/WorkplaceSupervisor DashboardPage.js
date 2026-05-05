@@ -178,7 +178,28 @@ export default function WorkplaceSupervisorDashboardPage() {
           </Card>
 
         </div>
-      </div>
+      </div>    
+
+      {pending.length > 0 && (
+        <Card label={`Review · ${pending[0].who} · ${pending[0].what}`} style={{ marginTop: 20 }}>
+          <div className="row row--between row--center">
+            <div>
+              <b style={{ fontSize: 14 }}>{pending[0].who} — {pending[0].what}</b>
+              <div className="muted" style={{ fontSize: 12 }}>
+                Submitted {pending[0].when} · awaiting your signature
+              </div>
+            </div>
+            <div className="row" style={{ gap: 8 }}>
+              <Btn sm kind="ghost">View entry</Btn>
+              <Btn sm kind="ghost">Return with comment</Btn>
+              <Btn sm kind="primary">{I.check} Approve & sign</Btn>
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
 
 
 
