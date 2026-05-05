@@ -162,6 +162,24 @@ export default function WorkplaceSupervisorDashboardPage() {
             )}
           </Card>
 
+          <Card label="Upcoming evaluations">
+            {evals.length === 0 ? (
+              <div className="empty-state">No upcoming evaluations.</div>
+            ) : (
+              <ul className="timeline">
+                {evals.map((ev, i) => (
+                  <li key={i} className={ev.warn ? 'is-warn' : ''}>
+                    <b>{ev.name} — {ev.type}</b>
+                    <div className="meta">{ev.due}</div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+        </div>
+      </div>
+
 
 
       
