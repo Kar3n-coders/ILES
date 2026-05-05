@@ -45,3 +45,28 @@ export default function WorkplaceSupervisorDashboardPage() {
       ? { activeInterns: 4, awaitingReview: 3, approvedThisWeek: 6, avgScore: 4.2 }
       : null
   );
+
+  useEffect(() => {
+    if (isDemo) return;
+    Promise.all([
+      fetch('/api/supervisor/interns/', { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : []),
+      fetch('/api/supervisor/pending/', { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : []),
+      fetch('/api/supervisor/evaluations/', { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : []),
+      fetch('/api/supervisor/stats/', { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : null),
+    ])
+      .then(([internData, pendingData, evalData, statsData]) => {
+        setInterns(internData  || []);
+        setPending(pendingData || []);
+        setEvals(evalData      || []);
+        setStats(statsData);
+      })
+      .catch(() => {});
+  }, [isDemo]);
+
+  const displayName = user?.first_name
+    ? `${user.first_name} ${user.last_name || ''}`.trim()
+    : (user?.username || 'Supervisor');
+
+  const org = user?.organization || 'Your Organisation';
+
+  const awaitingCount = interns.filter(i => i.status === 'Awaiting review').length;
