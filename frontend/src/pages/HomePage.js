@@ -50,7 +50,7 @@ export default function HomePage() {
   const { user } = useContext(AuthContext);
   const { isDark, toggleDark } = useContext(ThemeContext);
 
-return (
+ return (
     <div className="home-page" data-theme={isDark ? "dark" : "light"}>
 
       {/* Sticky Navbar */}
@@ -78,10 +78,6 @@ return (
           )}
         </div>
       </nav>
-        
-      
-        </div>
-      </nav>
 
       {/* Hero */}
       <section className="home-hero">
@@ -94,8 +90,8 @@ return (
               left:   `${-10 + i * 22}%`,
             }} />
           ))}
-          </div>
-          <div className="home-hero__content">
+        </div>
+        <div className="home-hero__content">
           <span className="home-hero__badge">
             <span className="home-hero__badge-dot" />
             Makerere University · Computer Science · Academic Year 2025-2026
@@ -104,11 +100,101 @@ return (
             Track Every Step of<br />
             <span className="home-hero__title-accent">Your Internship Journey</span>
           </h1>
-          <p className="home-hero__desc"></p>
-          
-        
+          <p className="home-hero__desc">
+            ILES helps CS students at Makerere University log weekly activities, get feedback from supervisors,
+            and build a verifiable record of their internship experience.
+          </p>
+          <div className="home-hero__cta">
+            <Link to="/register" className="home-hero__btn home-hero__btn--white">
+              Get Started <ArrowRight size={15} />
+            </Link>
+            <Link to="/login" className="home-hero__btn home-hero__btn--ghost">
+              Sign In <ChevronRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
 
+      
 
-        
+      {/* Stats bar */}
+      <div className="home-stats">
+        {STATS.map((s) => (
+          <div key={s.label} className="home-stats__item">
+            <div className="home-stats__value-row">
+              <s.icon size={16} color="#1a365d" />
+              <span className="home-stats__value">{s.value}</span>
+            </div>
+            <p className="home-stats__label">{s.label}</p>
+          </div>
+        ))}
+      </div>
 
+      {/* How It Works */}
+      <section className="home-how">
+        <h2 className="home-section__title">How ILES Works</h2>
+        <p className="home-section__sub">Four simple steps from placement to final evaluation</p>
+        <div className="home-how__grid">
+          {HOW_IT_WORKS.map((step) => (
+            <div key={step.step} className="home-how__card">
+              <span className="home-how__step-badge" style={{ backgroundColor: step.color }}>{step.step}</span>
+              <h3 className="home-how__card-title">{step.title}</h3>
+              <p className="home-how__card-desc">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
+      {/* Features */}
+      <section className="home-features">
+        <h2 className="home-section__title">Built for the Full Internship Lifecycle</h2>
+        <p className="home-section__sub">Everything the team needs - from day one to the final grade</p>
+        <div className="home-features__grid">
+          {FEATURES.map((f) => (
+            <div key={f.title} className="home-features__card">
+              <div className="home-features__icon-wrap" style={{ backgroundColor: f.color + "18" }}>
+                <f.icon size={20} color={f.color} />
+              </div>
+              <h4 className="home-features__card-title">{f.title}</h4>
+              <p className="home-features__card-desc">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA banner */}
+      <section className="home-cta">
+        <h2 className="home-cta__title">Ready to start your internship journey?</h2>
+        <p className="home-cta__desc">
+          Register today to submit your first logbook entry and connect with your supervisors.
+        </p>
+        <div className="home-cta__buttons">
+          <Link to="/register" className="home-cta__btn home-cta__btn--white">
+            Create Account <ArrowRight size={15} />
+          </Link>
+          <Link to="/login" className="home-cta__btn home-cta__btn--ghost">
+            Already have an account? Sign in
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="home-footer">
+        <div className="home-footer__brand">
+          <div className="home-footer__logo-icon">
+            <GraduationCap size={13} color="#fff" />
+          </div>
+          <span className="home-footer__text">ILES · Makerere University · Computer Science · 2025-2026</span>
+        </div>
+        <div className="home-footer__links">
+          <Link to="/login"    className="home-footer__link">Sign In</Link>
+          <Link to="/register" className="home-footer__link">Register</Link>
+          <span className="home-footer__built">
+            <CheckCircle2 size={10} color="#276749" /> Built with React + Django
+          </span>
+        </div>
+      </footer>
+
+    </div>
+  );
+}
