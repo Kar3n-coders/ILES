@@ -19,6 +19,14 @@ import NotPageFound from "./pages/NotPageFound";
 
 import "./styles/base.css";
 
+import WorkplaceSupervisorDashboardPage from './pages/WorkplaceSupervisorDashboardPage';
+// ...
+<Route path="/supervisor/dashboard" element={
+  <ProtectedRoute roles={['workplace_supervisor']}>
+    <WorkplaceSupervisorDashboardPage />
+  </ProtectedRoute>
+} />
+
 function App() {
   return (
     <ThemeProvider>
