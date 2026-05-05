@@ -24,3 +24,43 @@ export function Card({
     </div>
   );
 }
+
+export function Stat({ label, value, unit, delta, deltaDown, kind }) {
+  return (
+    <Card kind={kind} label={label}>
+      <div className="stat__num">
+        {value}
+        {unit ? <em>{unit}</em> : null}
+      </div>
+      {delta ? (
+        <div className={`stat__delta ${deltaDown ? "stat__delta--down" : ""}`}>
+          {deltaDown ? "▾" : "▴"} {delta}
+        </div>
+      ) : null}
+    </Card>
+  );
+}
+
+export function Btn({
+  children,
+  kind,
+  sm,
+  icon,
+  onClick,
+  type = "button",
+  ...rest
+}) {
+  const cls = [
+    "btn",
+    kind && `btn--${kind}`,
+    sm && "btn--sm",
+    icon && "btn--icon",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  return (
+    <button type={type} className={cls} onClick={onClick} {...rest}>
+      {children}
+    </button>
+  );
+}
