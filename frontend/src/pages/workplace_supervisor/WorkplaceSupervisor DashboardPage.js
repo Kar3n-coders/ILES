@@ -19,3 +19,29 @@ const DEMO_PENDING = [
   { who: 'Brian O.', what: 'Week 7 logbook', when: 'today'  },
   { who: 'Aisha N.', what: 'Week 5 logbook', when: '3d ago' },
 ];
+
+const DEMO_EVALS = [
+  { name: 'Karen K.',  type: 'midterm', due: 'due in 5 days', warn: true  },
+  { name: 'Joseph M.', type: 'midterm', due: 'due in 7 days', warn: false },
+  { name: 'Aisha N.',  type: 'final',   due: '19 Aug',        warn: false },
+];
+
+const STATUS_KIND = {
+  'Awaiting review': 'warn',
+  'Up to date':      'ok',
+  'Overdue':         'danger',
+};
+
+export default function WorkplaceSupervisorDashboardPage() {
+  const { user } = useAuth();
+  const navigate  = useNavigate();
+  const isDemo    = DEMO_USERNAMES.includes(user?.username);
+
+  const [interns,  setInterns]  = useState(isDemo ? DEMO_INTERNS  : []);
+  const [pending,  setPending]  = useState(isDemo ? DEMO_PENDING  : []);
+  const [evals,    setEvals]    = useState(isDemo ? DEMO_EVALS    : []);
+  const [stats,    setStats]    = useState(
+    isDemo
+      ? { activeInterns: 4, awaitingReview: 3, approvedThisWeek: 6, avgScore: 4.2 }
+      : null
+  );
