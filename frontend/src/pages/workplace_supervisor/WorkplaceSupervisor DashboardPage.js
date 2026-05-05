@@ -88,4 +88,51 @@ export default function WorkplaceSupervisorDashboardPage() {
       </div>
 
       <div className="grid grid--main-narrow">
+        <Card label="My interns" padless>
+          {interns.length === 0 ? (
+            <div className="empty-state">No interns assigned yet.</div>
+          ) : (
+            <table className="tbl">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Progress</th>
+                  <th>Last entry</th>
+                  <th>Hrs</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {interns.map(intern => (
+                  <tr key={intern.id}>
+                    <td>
+                      <div className="row row--center" style={{ gap: 10 }}>
+                        <Av name={intern.name} kind={intern.avKind} />
+                        <b style={{ fontSize: 13 }}>{intern.name}</b>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ width: 140 }}><Bar pct={intern.prog} /></div>
+                      <span className="tiny" style={{ display: 'block', marginTop: 4 }}>{intern.prog}%</span>
+                    </td>
+                    <td className="muted">{intern.last}</td>
+                    <td>{intern.hrs}</td>
+                    <td>
+                      <Chip kind={STATUS_KIND[intern.status] || ''} dot>
+                        {intern.status}
+                      </Chip>
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      <Btn sm kind="ghost" onClick={() => navigate(`/supervisor/intern/${intern.id}`)}>
+                        Open {I.arrow}
+                      </Btn>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Card>
+
       
