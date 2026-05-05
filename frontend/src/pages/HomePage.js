@@ -1,12 +1,3 @@
-import React from "react";
-
-function HomePage() {
-  return <h1> HOME PAGE</h1>;
-}
-
-export default HomePage;
-
-
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -28,7 +19,7 @@ const HOW_IT_WORKS = [
   { step: "03", title: "Supervisor Review", color: "#c05621",
     desc: "Workplace supervisors review and approve logs. Academic supervisors evaluate interns on weighted performance criteria." },
   { step: "04", title: "Final Evaluation", color: "#6b46c1",
-desc: "At the end of the internship, students receive a final weighted score covering technical skills, communication, and initiative." 
+    desc: "At the end of the internship, students receive a final weighted score covering technical skills, communication, and initiative." },
 ];
 
 const FEATURES = [
@@ -60,11 +51,20 @@ export default function HomePage() {
   const { isDark, toggleDark } = useContext(ThemeContext);
 
 return (
-  <div className="home-page" data-theme={isDark ? "dark" : "lig"}>
+    <div className="home-page" data-theme={isDark ? "dark" : "light"}>
 
-    {}
-  </div>
-)
+      {/* Sticky Navbar */}
+      <nav className="home-nav">
+        <div className="home-nav__brand">
+          <div className="home-nav__logo-icon">
+            <GraduationCap size={18} color="#fff" />
+          </div>
+          <span className="home-nav__logo-name">ILES</span>
+        
+
+}
+
+
 
 
 
