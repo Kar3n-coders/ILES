@@ -28,9 +28,14 @@ const HOW_IT_WORKS = [
   { step: "03", title: "Supervisor Review", color: "#c05621",
     desc: "Workplace supervisors review and approve logs. Academic supervisors evaluate interns on weighted performance criteria." },
   { step: "04", title: "Final Evaluation", color: "#6b46c1",
-desc: "At the end of the internship, students receive a final weighted score covering technical skills, communication, and initiative." },
+desc: "At the end of the internship, students receive a final weighted score covering technical skills, communication, and initiative." 
 ];
 
-const FEATUERES = [
-  { icon: BookOpen,       title: "Weekly Logbook",   }
-]
+const FEATURES = [
+  { icon: BookOpen,       title: "Weekly Logbook",       color: "#1a365d", desc: "Structured weekly activity logs with Draft to Pending to Approved workflow." },
+  { icon: ClipboardCheck, title: "Supervisor Review",     color: "#276749", desc: "Approve, request revision, or reject logs with comments and feedback." },
+  { icon: Star,           title: "Weighted Evaluation",   color: "#b7791f", desc: "Score interns on Punctuality, Technical Skills, Initiative - computed automatically." },
+  { icon: Building2,      title: "Placement Tracking",    color: "#c05621", desc: "Link students to companies and supervisors with clear start/end dates." },
+  { icon: Shield,         title: "Role-Based Access",     color: "#2b6cb0", desc: "Student, Workplace Supervisor, Academic Supervisor, Admin - each sees only their data." },
+  { icon: Users,          title: "Admin Analytics",       color: "#6b46c1", desc: "System-wide insights: placement rates, completion trends, log statistics." },
+];
