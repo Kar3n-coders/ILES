@@ -245,3 +245,23 @@
     font-size: 11px;
     color: var(--color-text-muted);
 }
+
+/* ── Bar ── */
+.bar {
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-border);
+    overflow: hidden;
+}
+.bar > i {
+    display: block;
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: inherit;
+}
+.bar--ok > i {
+    background: var(--color-green);
+}
+.bar--warn > i {
+    background: var(--color-orange);
+}
