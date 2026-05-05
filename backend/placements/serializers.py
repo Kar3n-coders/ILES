@@ -68,6 +68,13 @@ class PlacementCreateSerializer(serializers.ModelSerializer):
             "supervisor",
         ]
 
+        extra_kwargs = {
+            "supervisor": {"required": False, "allow_null": True},
+            "student": {
+                "required": False
+            },  # set automatically in view for student role
+        }
+
     def validate_student(self, value):
         """Ensure the assigned user is actually a student."""
         if value.role != "student":
