@@ -48,3 +48,19 @@
     display: block;
     margin-bottom: 8px;
 }
+
+/* ── Stat ── */
+.stat__num {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+}
+.stat__num em {
+    font-style: normal;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    margin-left: 4px;
+}
