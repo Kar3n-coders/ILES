@@ -37,3 +37,8 @@
   margin-top: 2px;
 }
 
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 16px 40px;
+  }
+}
