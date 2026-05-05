@@ -95,6 +95,17 @@ return (
             }} />
           ))}
           </div>
+          <div className="home-hero__content">
+          <span className="home-hero__badge">
+            <span className="home-hero__badge-dot" />
+            Makerere University · Computer Science · Academic Year 2025-2026
+          </span>
+          <h1 className="home-hero__title">
+            Track Every Step of<br />
+            <span className="home-hero__title-accent">Your Internship Journey</span>
+          </h1>
+          <p className="home-hero__desc"></p>
+          
         
 
 
