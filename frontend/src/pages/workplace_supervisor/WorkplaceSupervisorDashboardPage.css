@@ -4,3 +4,10 @@
   --primary-soft:        #e6f5ec;
 }
 
+.page {
+  padding: 28px 32px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
