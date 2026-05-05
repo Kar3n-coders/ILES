@@ -23,3 +23,11 @@
     border-color: rgba(39, 103, 73, 0.3);
     background: var(--green-soft);
 }
+.card--warn {
+    border-color: rgba(192, 86, 33, 0.3);
+    background: var(--orange-soft);
+}
+.card--danger {
+    border-color: rgba(197, 48, 48, 0.3);
+    background: var(--red-soft);
+}
