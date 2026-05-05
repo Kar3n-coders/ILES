@@ -30,7 +30,7 @@ class PlacementViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        if user.role = 'internship_admin':
+        if user.role == 'internship_admin':
             return InternshipPlacement.objects.all().select_related(
                 'student','supervisor'
             ).prefetch_related('Weekly_logs')
