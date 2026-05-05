@@ -30,3 +30,7 @@ const HOW_IT_WORKS = [
   { step: "04", title: "Final Evaluation", color: "#6b46c1",
 desc: "At the end of the internship, students receive a final weighted score covering technical skills, communication, and initiative." },
 ];
+
+const FEATUERES = [
+  { icon: BookOpen,       title: "Weekly Logbook",   }
+]
