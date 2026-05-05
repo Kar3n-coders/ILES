@@ -91,3 +91,19 @@ export function Field({ label, placeholder, hint, kind, children }) {
     </div>
   );
 }
+
+export function Bar({ pct = 50, kind }) {
+  return (
+    <div className={`bar ${kind ? `bar--${kind}` : ""}`}>
+      <i style={{ width: `${pct}%` }}></i>
+    </div>
+  );
+}
+
+export function Placeholder({ label, h = 120, w = "auto" }) {
+  return (
+    <div className="ph" style={{ height: h, width: w }}>
+      {label}
+    </div>
+  );
+}
