@@ -31,3 +31,11 @@
     border-color: rgba(197, 48, 48, 0.3);
     background: var(--red-soft);
 }
+.card--ghost {
+    border-style: dashed;
+    background: transparent;
+    box-shadow: none;
+}
+.card--padless {
+    padding: 0;
+}
