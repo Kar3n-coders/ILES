@@ -60,7 +60,7 @@ export default function HomePage() {
             <GraduationCap size={18} color="#fff" />
           </div>
           <span className="home-nav__logo-name">ILES</span>
-          <span className="home-nav__logo-sub">Internship Logging &amp; Evaluation System</span>
+          <span className="home-nav__logo-sub">&amp; </span>
         </div>
         <div className="home-nav__actions">
           <button onClick={toggleDark} className="home-nav__theme-btn" aria-label="Toggle dark mode">
@@ -68,12 +68,12 @@ export default function HomePage() {
           </button>
           {user ? (
             <Link to={getDashboardPath(user.role)} className="home-nav__btn home-nav__btn--primary">
-              Go to Dashboard
+              
             </Link>
           ) : (
             <>
-              <Link to="/login"    className="home-nav__btn home-nav__btn--outline">Sign In</Link>
-              <Link to="/register" className="home-nav__btn home-nav__btn--primary">Register</Link>
+              <Link to="/login"    className="home-nav__btn home-nav__btn--outline"></Link>
+              <Link to="/register" className="home-nav__btn home-nav__btn--primary"></Link>
             </>
           )}
         </div>
@@ -183,13 +183,13 @@ export default function HomePage() {
           <div className="home-footer__logo-icon">
             <GraduationCap size={13} color="#fff" />
           </div>
-          <span className="home-footer__text">ILES · Makerere University · Computer Science · 2025-2026</span>
+          <span className="home-footer__text"></span>
         </div>
         <div className="home-footer__links">
-          <Link to="/login"    className="home-footer__link">Sign In</Link>
-          <Link to="/register" className="home-footer__link">Register</Link>
+          <Link to="/login"    className="home-footer__link"></Link>
+          <Link to="/register" className="home-footer__link"></Link>
           <span className="home-footer__built">
-            <CheckCircle2 size={10} color="#276749" /> Built with React + Django
+            <CheckCircle2 size={10} color="#276749" /> 
           </span>
         </div>
       </footer>
