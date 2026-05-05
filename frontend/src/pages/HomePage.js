@@ -39,3 +39,11 @@ const FEATURES = [
   { icon: Shield,         title: "Role-Based Access",     color: "#2b6cb0", desc: "Student, Workplace Supervisor, Academic Supervisor, Admin - each sees only their data." },
   { icon: Users,          title: "Admin Analytics",       color: "#6b46c1", desc: "System-wide insights: placement rates, completion trends, log statistics." },
 ];
+
+const STATS = [
+  { VALUE: "100+",   label: "students Enrolled",  icon: GraduatioCap },
+  { value: "87%",    label: "Placement Rate",     icon: Building2 },
+  { value: "12 wks", label: "Average Duration",   icon: Clock  },
+  {value: "4 Roles",label: "User Types",          icon: Users },
+];
+
