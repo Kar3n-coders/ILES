@@ -78,6 +78,22 @@ return (
           )}
         </div>
       </nav>
+        
+      
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <section className="home-hero">
+        <div className="home-hero__bg-circles" aria-hidden="true">
+          {[0,1,2,3,4].map((i) => (
+            <div key={i} className="home-hero__circle" style={{
+              width:  `${100 + i * 80}px`,
+              height: `${100 + i * 80}px`,
+              top:    `${5  + i * 15}%`,
+              left:   `${-10 + i * 22}%`,
+            }} />
+          ))}
 
 
         
