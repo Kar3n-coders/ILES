@@ -1,29 +1,23 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
-from user.permissions import IsAdmin
+from users.permissions import IsAdmin
 
 from .models import InternshipPlacement
 from .serializers import PlacementCreateSerializer, PlacementSerializer
 
 
-class PlacementViewset(viewsets.ModelViewSet):
+class PlacementViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for InternshipPlacement.
-
-
+    CRUD for InternshipPlacement.
     Access rules:
-    -Admin:full CRUD (create,read,update,delete)
-    -Supervisor: read only(their supervised placements)
-    -Student: read only (their own plaxement)
+      - Admin: full CRUD
+      - Supervisor: read-only (their supervised placements)
+      - Student: read-only + can POST own placement request (status=pending)
     """
 
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
-        """Use lighter serializer when creating/updating."""
         if self.action in ["create", "update", "partial_update"]:
             return PlacementCreateSerializer
         return PlacementSerializer
@@ -55,16 +49,27 @@ class PlacementViewset(viewsets.ModelViewSet):
         return InternshipPlacement.objects.none()
 
     def create(self, request, *args, **kwargs):
-        """Only admins can create placements."""
-        if request.user.role != "internship_admin":
+        """
+        students submit their own placement request (status=pending).
+        """
+        if request.user.role not in ["student", "internship_admin"]:
             return Response(
-                {"error": "Only administrators can create placements."},
+                {"error": "Only students or administrators can create placements."},
                 status=status.HTTP_403_FORBIDDEN,
             )
-        return super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # Auto-assign student to the requesting user if they are a student
+        if request.user.role == "student":
+            serializer.save(student=request.user, status="pending")
+        else:
+            serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     def update(self, request, *args, **kwargs):
-        """Only admins can update placements."""
         if request.user.role != "internship_admin":
             return Response(
                 {"error": "Only administrators can update placements."},
@@ -73,10 +78,6 @@ class PlacementViewset(viewsets.ModelViewSet):
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        """
-        Only admins can delete placements.
-        Warn: deleting a placement cascades to logbooks and evaluations!
-        """
         if request.user.role != "internship_admin":
             return Response(
                 {"error": "Only administrators can delete placements."},
@@ -84,13 +85,11 @@ class PlacementViewset(viewsets.ModelViewSet):
             )
         placement = self.get_object()
         logbook_count = placement.Weekly_logs.count()
-
         if logbook_count > 0:
             return Response(
                 {
-                    "error": f"Cannot delete placement with {logbook_count} logbook entries.Archive it instead."
+                    "error": f"Cannot delete placement with {logbook_count} logbook entries. Archive it instead."
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-        super().destroy(request, *args, **kwargs)
+        return super().destroy(request, *args, **kwargs)
