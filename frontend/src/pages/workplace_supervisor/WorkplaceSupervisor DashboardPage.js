@@ -135,4 +135,33 @@ export default function WorkplaceSupervisorDashboardPage() {
           )}
         </Card>
 
+        <div className="col">
+
+          <Card kind="warn" label="Pending approvals">
+            {pending.length === 0 ? (
+              <div className="empty-state">No pending approvals.</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {pending.map((entry, i) => (
+                  <div
+                    key={i}
+                    className="row row--between row--center"
+                    style={{ padding: '10px 0', borderBottom: i < pending.length - 1 ? '1px solid rgba(192,86,33,0.2)' : 'none' }}
+                  >
+                    <div style={{ fontSize: 13 }}>
+                      <b>{entry.who}</b> · <span className="muted">{entry.what}</span>
+                      <div className="muted" style={{ fontSize: 11 }}>{entry.when}</div>
+                    </div>
+                    <div className="row" style={{ gap: 6 }}>
+                      <Btn sm>Approve</Btn>
+                      <Btn sm kind="ghost">Return</Btn>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+
+
       
