@@ -97,18 +97,18 @@ export default function HomePage() {
           
           </span>
           <h1 className="home-hero__title">
-            Track Every Step of<br />
-            <span className="home-hero__title-accent">Your Internship Journey</span>
+            <br />
+            <span className="home-hero__title-accent"></span>
           </h1>
           <p className="home-hero__desc">
 
           </p>
           <div className="home-hero__cta">
             <Link to="/register" className="home-hero__btn home-hero__btn--white">
-              Get Started <ArrowRight size={15} />
+              <ArrowRight size={15} />
             </Link>
             <Link to="/login" className="home-hero__btn home-hero__btn--ghost">
-              Sign In <ChevronRight size={14} />
+              <ChevronRight size={14} />
             </Link>
           </div>
         </div>
@@ -146,8 +146,8 @@ export default function HomePage() {
 
       {/* Features */}
       <section className="home-features">
-        <h2 className="home-section__title">Built for the Full Internship Lifecycle</h2>
-        <p className="home-section__sub">Everything the team needs - from day one to the final grade</p>
+        <h2 className="home-section__title"></h2>
+        <p className="home-section__sub"></p>
         <div className="home-features__grid">
           {FEATURES.map((f) => (
             <div key={f.title} className="home-features__card">
@@ -163,16 +163,16 @@ export default function HomePage() {
 
       {/* CTA banner */}
       <section className="home-cta">
-        <h2 className="home-cta__title">Ready to start your internship journey?</h2>
+        <h2 className="home-cta__title"></h2>
         <p className="home-cta__desc">
-          Register today to submit your first logbook entry and connect with your supervisors.
+          
         </p>
         <div className="home-cta__buttons">
           <Link to="/register" className="home-cta__btn home-cta__btn--white">
-            Create Account <ArrowRight size={15} />
+            <ArrowRight size={15} />
           </Link>
           <Link to="/login" className="home-cta__btn home-cta__btn--ghost">
-            Already have an account? Sign in
+            
           </Link>
         </div>
       </section>
