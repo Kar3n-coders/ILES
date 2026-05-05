@@ -265,3 +265,37 @@
 .bar--warn > i {
     background: var(--color-orange);
 }
+
+/* ── Avatar ── */
+.av {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-primary-light)
+    );
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.av--lg {
+    width: 80px;
+    height: 80px;
+    font-size: 28px;
+    border-radius: 18px;
+}
+.av--green {
+    background: linear-gradient(135deg, var(--color-green), #2f855a);
+}
+.av--orange {
+    background: linear-gradient(135deg, var(--color-orange), #dd6b20);
+}
+.av--purple {
+    background: linear-gradient(135deg, var(--color-purple), #805ad5);
+}
