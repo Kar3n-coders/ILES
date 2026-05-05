@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework import viewsets, permissions,status
-from rest_framework.response import Response 
+from rest_framework.response import Response
 from .models import InternshipPlacement
 from .serializers import PlacementSerializer, PlacementCreateSerializer
 from user.permissions import IsAdmin
@@ -24,7 +24,7 @@ class PlacementViewset(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """Use lighter serializer when creating/updating."""
         if self.action in ['create','update','partial_update']:
-            return PLacementsCreateSerializer
+            return PlacementCreateSerializer
         return PlacementSerializer
 
     def get_queryset(self):
@@ -66,7 +66,7 @@ class PlacementViewset(viewsets.ModelViewSet):
             return Response(
                 {"error": "Only administrators can update placements."},
                 status=status.HTTP_403_FORBIDDEN
-            )    
+            )
         return super().update(request,*args,**kwargs)
 
     def destroy(self,request,*args,**kwargs):
