@@ -64,3 +64,30 @@ export function Btn({
     </button>
   );
 }
+
+export function Chip({ children, kind, dot }) {
+  return (
+    <span className={`chip ${kind ? `chip--${kind}` : ""}`}>
+      {dot ? <i className="chip__dot"></i> : null}
+      {children}
+    </span>
+  );
+}
+
+export function Field({ label, placeholder, hint, kind, children }) {
+  const cls = [
+    "ctl",
+    !children && placeholder && "ctl--placeholder",
+    kind === "ta" && "ctl--ta",
+    kind === "file" && "ctl--file",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  return (
+    <div className="field">
+      {label ? <label>{label}</label> : null}
+      <div className={cls}>{children || <span>{placeholder}</span>}</div>
+      {hint ? <span className="field__hint">{hint}</span> : null}
+    </div>
+  );
+}
