@@ -44,6 +44,11 @@ class PlacementSerializer(serializers.ModelSerializer):
             return f"{obj.student.first_name} {obj.student.last_name}".strip()
         return None
 
+    def get_supervisor_full_name(self, obj):
+        if obj.supervisor:
+            return f"{obj.supervisor.first_name} {obj.supervisor.last_name}".strip()
+        return None
+
     def get_logbook_count(self, obj):
         """
         Count how many logbook entries exist for this placement.
