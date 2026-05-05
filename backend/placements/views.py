@@ -93,4 +93,4 @@ class PlacementViewset(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-            super().destroy(request, *args, **kwargs)
+        super().destroy(request, *args, **kwargs)
