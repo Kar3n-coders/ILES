@@ -41,7 +41,7 @@ class PlacementViewset(viewsets.ModelViewSet):
         elif user.role in ["workplace_supervisor", "academic_supervisor"]:
             return (
                 InternshipPlacement.objects.filter(supervisor=user)
-                .selected_related("student", "supervisor")
+                .select_related("student", "supervisor")
                 .prefetch_related("Weekly_logs")
             )
 
