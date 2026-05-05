@@ -7,3 +7,12 @@ const ACTION_LABELS =   {
     rejected:           { title: 'Reject Log Entry', color: '#c53030', cta: 'Submit Rejection' },  
 };
 
+function FeedbackModal({ studentName, action, onClose, onSubmit }) {
+    const [comment, setComment] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const cfg = ACTION_LABELS[action];
+    const isValid = comment.trim().length >= 10;
+
+    
+}
+
