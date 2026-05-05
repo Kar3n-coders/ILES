@@ -94,15 +94,14 @@ export default function HomePage() {
         <div className="home-hero__content">
           <span className="home-hero__badge">
             <span className="home-hero__badge-dot" />
-            Makerere University · Computer Science · Academic Year 2025-2026
+          
           </span>
           <h1 className="home-hero__title">
             Track Every Step of<br />
             <span className="home-hero__title-accent">Your Internship Journey</span>
           </h1>
           <p className="home-hero__desc">
-            ILES helps CS students at Makerere University log weekly activities, get feedback from supervisors,
-            and build a verifiable record of their internship experience.
+
           </p>
           <div className="home-hero__cta">
             <Link to="/register" className="home-hero__btn home-hero__btn--white">
@@ -115,7 +114,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      
+
 
       {/* Stats bar */}
       <div className="home-stats">
@@ -132,8 +131,8 @@ export default function HomePage() {
 
       {/* How It Works */}
       <section className="home-how">
-        <h2 className="home-section__title">How ILES Works</h2>
-        <p className="home-section__sub">Four simple steps from placement to final evaluation</p>
+        <h2 className="home-section__title"></h2>
+        <p className="home-section__sub"></p>
         <div className="home-how__grid">
           {HOW_IT_WORKS.map((step) => (
             <div key={step.step} className="home-how__card">
