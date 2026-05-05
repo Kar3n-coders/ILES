@@ -459,3 +459,51 @@
     width: 14px;
     height: 14px;
 }
+
+/* ── Timeline ── */
+.timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    border-left: 2px solid var(--color-border);
+}
+.timeline > li {
+    position: relative;
+    padding: 8px 0 8px 28px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.timeline > li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 14px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border-strong);
+}
+.timeline > li.is-done::before {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+.timeline > li.is-warn::before {
+    background: var(--color-orange);
+    border-color: var(--color-orange);
+}
+.timeline > li b {
+    color: var(--color-text);
+}
+.timeline > li .meta {
+    color: var(--color-text-muted);
+    font-size: 12px;
+}
