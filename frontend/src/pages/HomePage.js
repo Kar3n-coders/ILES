@@ -60,7 +60,10 @@ export default function HomePage() {
   const { isDark, toggleDark } = useContext(ThemeContext);
 
 return (
-  <
+  <div className="home-page" data-theme={isDark ? "dark" : "lig"}>
+
+    {}
+  </div>
 )
 
 
