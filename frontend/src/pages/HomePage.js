@@ -55,3 +55,15 @@ function getDashboardPath(role) {
   return "/student/dashboard";
 }
 
+export default function HomePage() {
+  const { user } = useContext(AuthContext);
+  const { isDark, toggleDark } = useContext(ThemeContext);
+
+return (
+  <
+)
+
+
+
+
+
