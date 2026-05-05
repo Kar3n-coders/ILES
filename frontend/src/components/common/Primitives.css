@@ -142,3 +142,52 @@
     color: #c53030;
     border-color: rgba(197, 48, 48, 0.3);
 }
+
+/* ── Chip ── */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    background: #fafbfd;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+}
+.chip svg {
+    width: 11px;
+    height: 11px;
+}
+.chip--ok {
+    background: #e6f5ec;
+    border-color: rgba(39, 103, 73, 0.25);
+    color: var(--color-green);
+}
+.chip--warn {
+    background: #fbe8d8;
+    border-color: rgba(192, 86, 33, 0.25);
+    color: var(--color-orange);
+}
+.chip--danger {
+    background: #fde8e8;
+    border-color: rgba(197, 48, 48, 0.25);
+    color: #c53030;
+}
+.chip--accent {
+    background: #ebf2fb;
+    border-color: rgba(26, 54, 93, 0.25);
+    color: var(--color-primary);
+}
+.chip--purple {
+    background: #ede7f9;
+    border-color: rgba(107, 70, 193, 0.25);
+    color: var(--color-purple);
+}
+.chip__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
