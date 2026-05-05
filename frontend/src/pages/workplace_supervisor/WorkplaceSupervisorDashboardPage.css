@@ -26,3 +26,8 @@
   justify-content: space-between;
   gap: 12px;
 }
+
+.pending-entry + .pending-entry {
+  border-top: 1px solid rgba(192, 86, 33, 0.2);
+}
+
