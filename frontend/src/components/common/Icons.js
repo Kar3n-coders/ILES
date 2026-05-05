@@ -174,4 +174,11 @@ export const I = {
       <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
   ),
+  dots: (
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="6" cy="12" r="1.6" />
+      <circle cx="12" cy="12" r="1.6" />
+      <circle cx="18" cy="12" r="1.6" />
+    </svg>
+  ),
 };
