@@ -13,6 +13,12 @@ function FeedbackModal({ studentName, action, onClose, onSubmit }) {
     const cfg = ACTION_LABELS[action];
     const isValid = comment.trim().length >= 10;
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!isValid) return;
+        setSubmitting(true);
+        await onSubmit(comment.trim());
+    };
     
 }
 
