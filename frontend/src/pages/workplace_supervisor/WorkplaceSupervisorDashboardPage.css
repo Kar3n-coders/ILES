@@ -1,7 +1,6 @@
-import React from "react";
-
-function SupervisorDashboardPage() {
-  return <h1> SUPERVISOR DASHBOARD PAGE</h1>;
+.page {
+  --color-primary:       #276749;
+  --color-primary-light: #2f855a;
+  --primary-soft:        #e6f5ec;
 }
 
-export default SupervisorDashboardPage;
