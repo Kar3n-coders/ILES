@@ -133,3 +133,26 @@ export default function AcademicDashboardPage() {
                           <b style={{ fontSize: 13 }}>{s.name}</b>
                         </div>
                       </td>
+                      <td className="muted">{s.org}</td>
+                      <td>
+                        <div style={{ width: 130 }}>
+                          <Bar pct={s.prog} kind={s.flagKind === 'danger' ? 'warn' : undefined} />
+                        </div>
+                        <span className="tiny" style={{ display: 'block', marginTop: 4 }}>{s.prog}%</span>
+                      </td>
+                      <td className="muted">{s.last}</td>
+                      <td>
+                        {s.flag
+                          ? <Chip kind={s.flagKind} dot>{s.flag}</Chip>
+                          : <span className="muted">—</span>}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <Btn sm kind="ghost">Open</Btn>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </Card>
+        </div>
