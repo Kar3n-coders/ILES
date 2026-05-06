@@ -107,3 +107,34 @@ export function Placeholder({ label, h = 120, w = "auto" }) {
     </div>
   );
 }
+
+export function Av({ name, kind, lg }) {
+  const ini = name
+    .split(" ")
+    .map((s) => s[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+  return (
+    <div
+      className={["av", lg && "av--lg", kind && `av--${kind}`]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {ini}
+    </div>
+  );
+}
+
+export function PageHead({ crumb, title, sub, actions }) {
+  return (
+    <div className="page-head">
+      <div>
+        {crumb ? <div className="page-head__crumb">{crumb}</div> : null}
+        <h1>{title}</h1>
+        {sub ? <div className="page-head__sub">{sub}</div> : null}
+      </div>
+      {actions ? <div className="page-head__actions">{actions}</div> : null}
+    </div>
+  );
+}
