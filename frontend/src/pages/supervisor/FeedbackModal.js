@@ -19,6 +19,17 @@ function FeedbackModal({ studentName, action, onClose, onSubmit }) {
         setSubmitting(true);
         await onSubmit(comment.trim());
     };
+
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-box" onClick={e => e.stopPropagation()}>
+                <div className="modal-header" style={{ borderTop:  `3px solid ${cfg.color}` }}>
+                    <h3>{cfg.title}</h3>
+                    <p>Feedback for: <strong>{studentName}</strong></p> 
+                </div>
+            </div>
+        </div>
+    )
     
 }
 
