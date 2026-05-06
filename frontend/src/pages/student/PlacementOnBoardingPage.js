@@ -20,7 +20,7 @@ function PlacementOnBoardingPage() {
     setLoading(true);
     setError("");
     try {
-      await createPlacement(form);
+      // await createPlacement(form);
       setSubmitted(true);
     } catch (err) {
       setError("Could not submit. Please try again.");

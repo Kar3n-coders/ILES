@@ -7,13 +7,6 @@ import { ThemeProvider } from "./context/ThemeContext";
 import "./styles/base.css";
 import AppRoutes from "./routes/AppRoutes";
 
-import WorkplaceSupervisorDashboardPage from './pages/WorkplaceSupervisorDashboardPage';
-// ...
-<Route path="/supervisor/dashboard" element={
-  <ProtectedRoute roles={['workplace_supervisor']}>
-    <WorkplaceSupervisorDashboardPage />
-  </ProtectedRoute>
-} />
 
 function App() {
   return (
