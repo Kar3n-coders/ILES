@@ -37,3 +37,4 @@ CLAUDE.md
 >>>>>>> theirs
 backend/placements/migrations
 backend/placements/__pycache__
+backend/staticfiles
