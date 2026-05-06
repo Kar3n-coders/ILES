@@ -109,4 +109,27 @@ export default function AcademicDashboardPage() {
                     kind={filter === chip.key ? chip.kind : ''}
                     style={{ cursor: 'pointer' }}
                     onClick={() => setFilter(chip.key)}
-                  ></Chip>
+                  >
+                    {chip.label}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+            {filteredStudents.length === 0 ? (
+              <div className="empty-state">No students match this filter.</div>
+            ) : (
+              <table className="tbl">
+                <thead>
+                  <tr>
+                    <th>Student</th><th>Placement</th><th>Progress</th><th>Last log</th><th>Flag</th><th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStudents.map(s => (
+                    <tr key={s.id}>
+                      <td>
+                        <div className="row row--center" style={{ gap: 8 }}>
+                          <Av name={s.name} />
+                          <b style={{ fontSize: 13 }}>{s.name}</b>
+                        </div>
+                      </td>
