@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import include, path
 from evaluation.views import EvaluationCriteriaViewSet, EvaluationViewSet
 from logbook.views import LogbookViewSet
@@ -25,6 +26,11 @@ from reviews.views import LogReviewViewSet
 
 # Import Viewsets
 from users.views import UserViewSet
+
+
+def health_check(request):
+    return JsonResponse({"status": "ok"}, status=200)
+
 
 # ROUTER--------------------------------------
 router = DefaultRouter()
@@ -41,4 +47,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
     path("api/auth/", include("users.auth_urls")),
+    path("api/health/", health_check, name="health-check"),
 ]
