@@ -57,3 +57,12 @@
   text-decoration: line-through;
   opacity: 0.5;
 }
+
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 16px 40px;
+  }
+  .filter-row {
+    padding: 10px 12px;
+  }
+}
