@@ -92,3 +92,21 @@ export default function AcademicDashboardPage() {
         <Stat label="Visits this month"   value={stats ? String(stats.visits)     : String(visits.length)} unit={stats ? ` of ${stats.visitsTotal}` : undefined} />
         <Stat label="Awaiting grading"    value={stats ? String(stats.grading)    : '—'} delta={stats?.grading > 0 ? 'action needed' : undefined} deltaDown={stats?.grading > 0} />
       </div>
+       <div className="grid grid--main-narrow">
+
+        <div className="col">
+          <Card label="Students at a glance" padless>
+            <div style={{ padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)' }}>
+              <div className="row row--wrap" style={{ gap: 6 }}>
+                {[
+                  { label: `All · ${students.length}`,                               key: 'All',          kind: 'accent'  },
+                  { label: `On track · ${students.length - atRiskCount - noPlacementCount}`, key: 'On track',     kind: 'ok'     },
+                  { label: `At risk · ${atRiskCount}`,                                key: 'At risk',      kind: 'warn'    },
+                  { label: `No placement · ${noPlacementCount}`,                      key: 'No placement', kind: 'danger'  },
+                ].map(chip => (
+                  <Chip
+                    key={chip.key}
+                    kind={filter === chip.key ? chip.kind : ''}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setFilter(chip.key)}
+                  ></Chip>
