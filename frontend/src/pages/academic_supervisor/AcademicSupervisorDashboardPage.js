@@ -27,3 +27,16 @@ const DEMO_VISITS = [
   { name: 'Joseph M.', org: 'MTN Uganda',    time: 'Wed · 11am', warn: false },
   { name: 'Aisha N.',  org: 'Stanbic Bank',  time: 'Fri · 3pm',  warn: false },
 ];
+
+export default function AcademicDashboardPage() {
+  const { user } = useAuth();
+  const isDemo   = DEMO_USERNAMES.includes(user?.username);
+
+  const [students,     setStudents]     = useState(isDemo ? DEMO_STUDENTS : []);
+  const [todos,        setTodos]        = useState(isDemo ? DEMO_TODOS    : []);
+  const [visits,       setVisits]       = useState(isDemo ? DEMO_VISITS   : []);
+  const [stats,        setStats]        = useState(
+    isDemo ? { assigned: 18, placements: 16, visits: 5, visitsTotal: 9, grading: 7 } : null
+  );
+  const [filter,       setFilter]       = useState('All');
+  const [checkedTodos, setCheckedTodos] = useState({});
