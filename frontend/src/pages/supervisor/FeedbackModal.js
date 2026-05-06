@@ -25,8 +25,15 @@ function FeedbackModal({ studentName, action, onClose, onSubmit }) {
             <div className="modal-box" onClick={e => e.stopPropagation()}>
                 <div className="modal-header" style={{ borderTop:  `3px solid ${cfg.color}` }}>
                     <h3>{cfg.title}</h3>
-                    <p>Feedback for: <strong>{studentName}</strong></p> 
+                    <p>Feedback for: <strong>{studentName}</strong></p>
+                    <button className="modal-close" onClick={onClose}>✕</button> 
                 </div>
+                <form onSubmit={handleSubmit} className="modal-body">
+                    <label>Your Comment (required)</label>
+                    <textarea
+                    
+
+                </form>
             </div>
         </div>
     )
