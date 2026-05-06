@@ -14,3 +14,16 @@ const DEMO_STUDENTS = [
   { id: 5, name: 'Diana Akello',    org: 'NSSF',          prog: 30, last: '5 days ago', flag: 'At risk',      flagKind: 'warn'   },
   { id: 6, name: 'Eric Walusimbi',  org: '—',             prog:  0, last: '—',          flag: 'No placement', flagKind: 'danger' },
 ];
+
+const DEMO_TODOS = [
+  'Approve 2 placement submissions',
+  'Grade 7 midterm reports',
+  'Conduct 4 workplace visits',
+  'Review 3 returned logbook entries',
+];
+
+const DEMO_VISITS = [
+  { name: 'Karen K.',  org: 'Acme Telecoms', time: 'Tue · 2pm',  warn: true  },
+  { name: 'Joseph M.', org: 'MTN Uganda',    time: 'Wed · 11am', warn: false },
+  { name: 'Aisha N.',  org: 'Stanbic Bank',  time: 'Fri · 3pm',  warn: false },
+];
