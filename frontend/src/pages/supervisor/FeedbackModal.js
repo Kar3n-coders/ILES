@@ -36,7 +36,9 @@ function FeedbackModal({ studentName, action, onClose, onSubmit }) {
                       placeholder="Be specific about what needs to change or why you're rejecting this entry..."
                     />
                     <p className="modal-hint">{comment.trim().length}/10 minimum characters</p>
-                    
+                    <div className="modal-actions">
+                        <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
+                                            </div>
 
                 </form>
             </div>
