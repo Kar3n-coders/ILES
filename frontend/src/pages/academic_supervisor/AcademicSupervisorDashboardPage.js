@@ -57,3 +57,20 @@ export default function AcademicDashboardPage() {
       })
       .catch(() => {});
   }, [isDemo]);
+
+  const displayName = user?.first_name
+    ? `${user.first_name} ${user.last_name || ''}`.trim()
+    : (user?.username || 'Supervisor');
+
+  const cohortLabel = user?.cohort || 'Cohort 2026-S2';
+
+  const atRiskCount      = students.filter(s => s.flagKind === 'warn').length;
+  const noPlacementCount = students.filter(s => s.flagKind === 'danger').length;
+
+  const filteredStudents = students.filter(s => {
+    if (filter === 'All')          return true;
+    if (filter === 'On track')     return !s.flag;
+    if (filter === 'At risk')      return s.flagKind === 'warn';
+    if (filter === 'No placement') return s.flagKind === 'danger';
+    return true;
+  });
