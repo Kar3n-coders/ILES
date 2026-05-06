@@ -207,3 +207,17 @@ export default function AcademicDashboardPage() {
               </>
             )}
           </Card>
+          <Card label="Active rubric">
+            <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>Set for this cohort</div>
+            <b style={{ fontSize: 14 }}>Default 5-criteria · 1–5 scale</b>
+            <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
+              <Btn sm>Edit rubric</Btn>
+              <Btn sm kind="ghost">Duplicate</Btn>
+            </div>
+          </Card>
+
+        </div>
+      </div>
+    </div>
+  );
+}
