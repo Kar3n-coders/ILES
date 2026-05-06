@@ -156,3 +156,23 @@ export default function AcademicDashboardPage() {
             )}
           </Card>
         </div>
+        <div className="col">
+
+          <Card kind="warn" label="To-do · this week">
+            {todos.length === 0 ? (
+              <div className="empty-state">No tasks for this week.</div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {todos.map((task, i) => (
+                  <label
+                    key={i}
+                    className="row row--center"
+                    style={{
+                      padding: '8px 0',
+                      borderBottom: i < todos.length - 1 ? '1px solid rgba(192,86,33,0.2)' : 'none',
+                      gap: 10,
+                      fontSize: 13,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    
