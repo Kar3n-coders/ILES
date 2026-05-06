@@ -11,3 +11,10 @@
   gap: 20px;
   min-width: 0;
 }
+
+.empty-state {
+  padding: 32px 16px;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
