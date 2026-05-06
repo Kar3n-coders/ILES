@@ -5,7 +5,9 @@ function Toggle ({ on }) {
             background: on ? " var(--color-primary)" : "var(--color-border-strong)",
             position: "relative", flexShrink: 0,
         }}>
-            
+            <div style={{
+                width: 16, height: 16, borderRadius: 999, background: #fff,
+            }}
         </div>
     )
 }
