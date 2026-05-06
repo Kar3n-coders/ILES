@@ -74,3 +74,21 @@ export default function AcademicDashboardPage() {
     if (filter === 'No placement') return s.flagKind === 'danger';
     return true;
   });
+
+  const toggleTodo = i => setCheckedTodos(prev => ({ ...prev, [i]: !prev[i] }));
+
+  return (
+    <div className="page">
+      <PageHead
+        crumb="Cohort · Dashboard"
+        title="Cohort overview"
+        sub={`${cohortLabel} · ${students.length} student${students.length !== 1 ? 's' : ''} assigned`}
+        actions={<Btn sm kind="ghost">{cohortLabel} ▾</Btn>}
+      />
+
+      <div className="grid grid--4">
+        <Stat label="Students assigned"   value={stats ? String(stats.assigned)   : String(students.length)} />
+        <Stat label="Placements approved" value={stats ? String(stats.placements) : '—'} delta={stats ? `${stats.assigned - stats.placements} pending` : undefined} />
+        <Stat label="Visits this month"   value={stats ? String(stats.visits)     : String(visits.length)} unit={stats ? ` of ${stats.visitsTotal}` : undefined} />
+        <Stat label="Awaiting grading"    value={stats ? String(stats.grading)    : '—'} delta={stats?.grading > 0 ? 'action needed' : undefined} deltaDown={stats?.grading > 0} />
+      </div>
