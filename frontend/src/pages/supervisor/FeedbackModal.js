@@ -38,6 +38,8 @@ function FeedbackModal({ studentName, action, onClose, onSubmit }) {
                     <p className="modal-hint">{comment.trim().length}/10 minimum characters</p>
                     <div className="modal-actions">
                         <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
+                        <button type="submit" disabled={!isValid || submitting}
+                          
                                             </div>
 
                 </form>
