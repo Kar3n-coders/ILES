@@ -27,3 +27,11 @@
   border-bottom: 1px solid var(--color-border);
   flex-wrap: wrap;
 }
+.filter-row .chip {
+  cursor: pointer;
+}
+.filter-row .chip.active {
+  background: var(--primary-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
