@@ -7,6 +7,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import "./styles/base.css";
 import AppRoutes from "./routes/AppRoutes";
 
+
 function App() {
   return (
     <ThemeProvider>
