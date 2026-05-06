@@ -188,3 +188,22 @@ export default function AcademicDashboardPage() {
               </div>
             )}
           </Card>
+          <Card label="Visit schedule">
+            {visits.length === 0 ? (
+              <div className="empty-state">No visits scheduled.</div>
+            ) : (
+              <>
+                <ul className="timeline">
+                  {visits.map((v, i) => (
+                    <li key={i} className={v.warn ? 'is-warn' : ''}>
+                      <b>{v.name}</b> · {v.org}
+                      <div className="meta">{v.time}</div>
+                    </li>
+                  ))}
+                </ul>
+                <Btn sm kind="ghost" style={{ marginTop: 6 }}>
+                  Open visit calendar {I.arrow}
+                </Btn>
+              </>
+            )}
+          </Card>
