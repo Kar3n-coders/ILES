@@ -25,15 +25,14 @@ function validatePassword(password) {
   };
 }
 
-
 function getDashboardRoute(role) {
   const routeMap = {
     [USER_ROLES.STUDENT]: "/student/dashboard",
     [USER_ROLES.WORKPLACE_SUPERVISOR]: "/supervisor/dashboard",
-    [USER_ROLES.ACADEMIC_SUPERVISOR]: "/supervisor/dashboard",
+    [USER_ROLES.ACADEMIC_SUPERVISOR]: "/academic/dashboard",
     [USER_ROLES.ADMIN]: "/admin",
   };
-  
+
   return routeMap[role] ?? "/";
 }
 
