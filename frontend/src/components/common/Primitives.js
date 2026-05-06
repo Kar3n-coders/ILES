@@ -138,3 +138,23 @@ export function PageHead({ crumb, title, sub, actions }) {
     </div>
   );
 }
+
+export function Lines({ count = 3 }) {
+  const widths = ["100%", "94%", "88%", "76%", "60%", "48%"];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <span
+          key={i}
+          style={{
+            display: "block",
+            height: 8,
+            width: widths[i % widths.length],
+            borderRadius: 4,
+            background: "#e2e8f0",
+          }}
+        ></span>
+      ))}
+    </div>
+  );
+}
