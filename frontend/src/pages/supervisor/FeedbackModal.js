@@ -39,13 +39,13 @@ function FeedbackModal({ studentName, action, onClose, onSubmit }) {
                     <div className="modal-actions">
                         <button type="button" className="btn-ghost" onClick={onClose}>Cancel</button>
                         <button type="submit" disabled={!isValid || submitting}
-                          
-                                            </div>
-
+                          className="btn-primary" style={{ background: cfg.color}}>
+                            {submitting ? 'Submitting...' : cfg.cta}
+                          </button>
+                    </div>
                 </form>
             </div>
         </div>
-    )
-    
+    );
 }
 
