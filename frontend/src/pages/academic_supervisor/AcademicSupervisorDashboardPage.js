@@ -40,3 +40,20 @@ export default function AcademicDashboardPage() {
   );
   const [filter,       setFilter]       = useState('All');
   const [checkedTodos, setCheckedTodos] = useState({});
+
+  useEffect(() => {
+    if (isDemo) return;
+    Promise.all([
+      fetch('/api/academic/students/', { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : []),
+      fetch('/api/academic/todos/',    { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : []),
+      fetch('/api/academic/visits/',   { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : []),
+      fetch('/api/academic/stats/',    { headers: { Authorization: `Bearer ${localStorage.getItem('iles_auth_token')}` } }).then(r => r.ok ? r.json() : null),
+    ])
+      .then(([studentData, todoData, visitData, statsData]) => {
+        setStudents(studentData || []);
+        setTodos(Array.isArray(todoData) ? todoData.map(t => t.text || t) : []);
+        setVisits(visitData    || []);
+        setStats(statsData);
+      })
+      .catch(() => {});
+  }, [isDemo]);
