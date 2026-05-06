@@ -175,4 +175,16 @@ export default function AcademicDashboardPage() {
                       cursor: 'pointer',
                     }}
                   >
-                    
+                    <input
+                      type="checkbox"
+                      checked={!!checkedTodos[i]}
+                      onChange={() => toggleTodo(i)}
+                    />
+                    <span style={{ textDecoration: checkedTodos[i] ? 'line-through' : 'none', opacity: checkedTodos[i] ? 0.5 : 1 }}>
+                      {task}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </Card>
