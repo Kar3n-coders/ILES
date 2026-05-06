@@ -31,6 +31,11 @@ function FeedbackModal({ studentName, action, onClose, onSubmit }) {
                 <form onSubmit={handleSubmit} className="modal-body">
                     <label>Your Comment (required)</label>
                     <textarea
+                      rows={5} value={comment}
+                      onChange={e => setComment(e.target.value)}
+                      placeholder="Be specific about what needs to change or why you're rejecting this entry..."
+                    />
+                    <p className="modal-hint">{comment.trim().length}/10 minimum characters</p>
                     
 
                 </form>
