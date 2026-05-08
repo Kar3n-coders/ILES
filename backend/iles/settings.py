@@ -17,7 +17,7 @@ from pathlib import Path
 import dj_database_url
 from django.db.models import constraints_all
 from dotenv import load_dotenv
-from django.db.models import constraints_all
+
 load_dotenv()  # load local variables from .env file
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,12 +28,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-zwno&869aggiz!fu@$gsywj*s)b7!dp4=!4k8=k@ufmi%ptslq"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".onrender.com",
+    "api.iles.projecthive.cfd",
+]
 
 
 # Application definition
@@ -61,6 +66,7 @@ AUTH_USER_MODEL = "users.CustomUser"
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -96,14 +102,15 @@ DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
-        conn_health_checks=True
+        conn_health_checks=True,
+        ssl_require=True,
     )
 }
 
 if not os.environ.get("DATABASE_URL"):
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3"
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 
 
@@ -145,7 +152,11 @@ STATIC_URL = "static/"
 
 # CORS SETTINGS
 # Allow requests from the React development server
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://iles.projecthive.cfd",
+]
 # CORS_ALLOW_ALL_ORIGINS = True
 
 # Allow cookies and auth headers cross-origin
@@ -168,3 +179,8 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
 }
+
+# _________Whitenoise_________
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

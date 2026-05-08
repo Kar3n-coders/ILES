@@ -10,11 +10,15 @@ function Layout() {
       <Navbar />
 
       <div className="layout__body">
-        <Sidebar />
+        <div className="sidebar-section">
+          <Sidebar />
+        </div>
 
-        <main className="layout__main" id="main-content" role="main">
-          <Outlet />
-        </main>
+        <div className="main-layout">
+          <main className="layout__main" id="main-content" role="main">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );

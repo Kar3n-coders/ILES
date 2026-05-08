@@ -1,0 +1,105 @@
+.ws-dashboard {
+  flex: 1;
+  background: var(--color-background);
+  overflow-y: auto;
+}
+
+
+.ws-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.25rem 2rem;
+}
+
+.ws-header  h1 {  font-size: 1.1rem; font-weight: 700; color: var(--color-text); }
+.ws-header p { font-size: 0.8rem; color: var(--color-text-muted);}
+
+
+.ws-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem 2 rem;
+}
+
+
+.ws-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-boarder);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+}
+.ws-card:hover { box-shadow: var(--shadow-md); }
+
+
+.ws-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.125rem;
+  background: var(--color-backgroound);
+  border-bottom: 1px solid var(--color-border);
+}
+
+
+.ws-avatar {
+  width: 2.5rem; height: 2.5rem;
+  border-radius: 50%;
+  background: #1a365d; color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700; flex-shrink: 0
+}
+
+
+.ws-student-name { font-size: 0.88rem; font-weight: 600; color: var(--color-text); }
+.ws-student-meta { font-size: 0.72rem; color: var(--color-text-muted); }
+
+
+.ws-card-body { padding: 1rem 1.125rem; flex: 1; }
+.ws-log-preview {
+  font-size: 0.8rem; color: var(--color-text-muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+ws-card-actions {
+  display: flex; gap: 0.5rem; padding: 0.75rem 1.125rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.btn-success {
+  flex: 1;padding: 0.5rem; border: none; border-radius: var(--radius-md);
+  background: #276749; color: white; font-size: 0.8rem; cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.btn-success:hover { opacity: 0.88; }
+
+
+.btn-danger {
+  flex: 1; padding: 0.5rem; border: none; border-radius: var(--radius-md);
+  background: #fff5f5; color: #c53030; font-size: 0.8rem; cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-danger:hover{ background: #fed7d7; }
+
+
+.btn-ghost {
+  flex: 1; padding: 0.5rem;
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background: none; color: var(--color-text-muted); font-size: 0.8rem; cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-ghost:hover {background: var(--color-background);}
+
+
+
+
+
+
+

@@ -64,7 +64,6 @@ export async function logoutUser() {
   localStorage.removeItem("refresh_token");
 }
 
-
 export async function getProfile() {
   return request("/auth/profile/");
 }
@@ -105,6 +104,13 @@ export function getPlacements() {
 
 export function getPlacement(id) {
   return request(`/placements/${id}/`);
+}
+
+export function createPlacement(data) {
+  return request("/placements/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 }
 
 //-------EVALUTATION ENDPOINTS ----------
