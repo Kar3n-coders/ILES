@@ -19,3 +19,14 @@ export default function OnboardingPage() {
       return;
     }
     setLoading(true); setError(null);
+
+    try {
+      await createPlacement({ company_name: form.company_name, start_date: form.start_date, end_date: form.end_date });
+      navigate("/student/dashboard");
+    } catch (err) {
+      setError(err.message || "Submission failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+}
