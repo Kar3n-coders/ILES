@@ -86,6 +86,18 @@ export default function RegisterPage() {
   }
   }
 
+  async function handleSubmitDirect() {
+  setLoading(true);
+  try {
+    await registerUser({ ...form, role });
+    setDone(true);
+  } catch (err) {
+    setError(err.message || "Registration failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+}
+
 
 
   if (done) {
