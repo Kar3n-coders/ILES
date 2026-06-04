@@ -73,6 +73,20 @@ export default function RegisterPage() {
   }
   }
 
+  function handleStep2Submit(e) {
+  e.preventDefault();
+  const err = validatePassword(form.password);
+  if (err) { setError(err); return; }
+  if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
+  setError("");
+  if (role === "student") {
+    setStep(3);
+  } else {
+    handleSubmitDirect();
+  }
+  }
+
+
 
   if (done) {
     return (
