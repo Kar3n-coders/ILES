@@ -61,11 +61,17 @@ export default function RegisterPage() {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    setError(""); setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false); setDone(true);
+  e.preventDefault();
+  setError(""); setLoading(true);
+  try {
+    await registerUser({ ...form, role });
+    setDone(true);
+  } catch (err) {
+    setError(err.message || "Registration failed. Please try again.");
+  } finally {
+    setLoading(false);
   }
+}
 
   if (done) {
     return (
