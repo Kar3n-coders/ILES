@@ -71,7 +71,8 @@ export default function RegisterPage() {
   } finally {
     setLoading(false);
   }
-}
+  }
+
 
   if (done) {
     return (
