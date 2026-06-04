@@ -145,3 +145,11 @@ export function createReview(data) {
     body: JSON.stringify(data),
   });
 }
+
+export async function registerUser({ username, email, password, confirmPassword, firstName, lastName, phone, role, university, course, department }) {
+  return request("/auth/register/", {
+    method: "POST",
+    body: JSON.stringify({
+      username,
+      email,
+      password,
