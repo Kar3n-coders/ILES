@@ -11,3 +11,11 @@ export default function OnboardingPage() {
   const [error, setError] = useState(null);
 
   const update = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+   async function handleSubmit(e) {
+    e.preventDefault();
+    if (!form.company_name || !form.start_date || !form.end_date) {
+      setError("Company name, start date, and end date are required.");
+      return;
+    }
+    setLoading(true); setError(null);
