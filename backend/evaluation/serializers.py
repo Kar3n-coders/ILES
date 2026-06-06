@@ -1,6 +1,9 @@
 from rest_framework import serializers
+import logging
 
 from .models import Evaluation, EvaluationCriteria
+
+logger = logging.getLogger(__name__)
 
 
 class EvaluationCriteriaSerializer(serializers.ModelSerializer):
@@ -21,9 +24,7 @@ class EvaluationSerializer(serializers.ModelSerializer):
     evalutor_username = serializers.CharField(
         source="evalutor.username", read_only=True
     )
-    student_username = serializers.CharField(
-        source="placement.student.username", read_only=True
-    )
+    student_username = serializers.SerializerMethodField()
     evalutor_type_display = serializers.CharField(
         source="get_evalutor_type_display", read_only=True
     )
@@ -48,6 +49,18 @@ class EvaluationSerializer(serializers.ModelSerializer):
             "student_username",
         ]
         read_only_fields = ["weighted_score", "evaluated_at", "evalutor", "company_name", "student_username", "evalutor_type_display", "evalutor_username", "criteria_name", "criteria_weight"]
+
+    def get_student_username(self, obj):
+        try:
+            if obj.placement and obj.placement.student:
+                return obj.placement.student.username
+            return None
+        except Exception:
+            logger.warning(
+                "Evaluation pk=%s: failed to resolve placement.student.username",
+                obj.pk,
+            )
+            return None
 
 
 class EvaluationCreateSerializer(serializers.ModelSerializer):
