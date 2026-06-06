@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { getUsers, getPlacements } from "../../services/api";
 import {
   PageHead,
   Card,
@@ -12,138 +13,92 @@ import { I } from "../../components/common/Icons";
 import "../../components/common/Primitives.css";
 import "./AdminDashboardPage.css";
 
-const DEMO_USERNAMES = [
-  "maria.reyes",
-  "john.doe",
-  "dr.santos",
-  "prof.torres",
-  "admin",
-];
-
-const DEMO_USERS = [
-  {
-    id: 1,
-    name: "Karen Kawooya",
-    role: "Student",
-    org: "Cohort 2026-S2",
-    status: "Active",
-    seen: "now",
-  },
-  {
-    id: 2,
-    name: "John Okello",
-    role: "Workplace sup.",
-    org: "Acme Telecoms",
-    status: "Active",
-    seen: "2h ago",
-  },
-  {
-    id: 3,
-    name: "Sarah Nakato",
-    role: "Academic sup.",
-    org: "Cohort 2026-S2",
-    status: "Active",
-    seen: "1d ago",
-  },
-  {
-    id: 4,
-    name: "Eric Walusimbi",
-    role: "Student",
-    org: "Cohort 2026-S2",
-    status: "Pending placement",
-    seen: "3d ago",
-  },
-  {
-    id: 5,
-    name: "System Admin",
-    role: "System admin",
-    org: "—",
-    status: "Active",
-    seen: "5m ago",
-  },
-];
-
-const DEMO_COHORTS = [
-  { name: "Cohort 2026-S2 · BSc SE", count: "126 students", status: "Active" },
-  { name: "Cohort 2026-S2 · BSc IT", count: "88 students", status: "Active" },
-  {
-    name: "Cohort 2026-S1 · archived",
-    count: "104 students",
-    status: "Archived",
-  },
-];
-
-const DEMO_AUDIT = [
-  { who: "System Admin", what: "reset password for Eric W.", when: "5m ago" },
-  { who: "Dr. Nakato", what: "updated rubric.", when: "2h ago" },
-  { who: "Mr. Okello", what: "approved 3 entries.", when: "3h ago" },
-  { who: "System", what: "sent 18 reminder emails.", when: "today 06:00" },
-];
-
-const DEMO_STATS = {
-  totalUsers: 2415,
-  activeInterns: 318,
-  supervisors: 64,
-  openIssues: 12,
-};
-
 const ROLE_FILTERS = ["All", "Students", "Workplace", "Academic", "Admins"];
 
+const ROLE_DISPLAY = {
+  student: "Student",
+  workplace_supervisor: "Workplace sup.",
+  academic_supervisor: "Academic sup.",
+  internship_admin: "System admin",
+};
+
 const ROLE_MAP = {
-  Students: ["Student"],
-  Workplace: ["Workplace sup."],
-  Academic: ["Academic sup."],
-  Admins: ["System admin"],
+  Students: ["student"],
+  Workplace: ["workplace_supervisor"],
+  Academic: ["academic_supervisor"],
+  Admins: ["internship_admin"],
 };
 
 function AdminDashboardPage() {
   const { user } = useAuth();
-  const isDemo = DEMO_USERNAMES.includes(user?.username);
 
-  const [users, setUsers] = useState(isDemo ? DEMO_USERS : []);
-  const [cohorts, setCohorts] = useState(isDemo ? DEMO_COHORTS : []);
-  const [audit, setAudit] = useState(isDemo ? DEMO_AUDIT : []);
-  const [stats, setStats] = useState(isDemo ? DEMO_STATS : null);
+  const [users, setUsers] = useState([]);
+  const [cohorts, setCohorts] = useState([]);
+  const [audit, setAudit] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if (isDemo) return;
-    Promise.all([
-      fetch("/api/admin/users/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/admin/cohorts/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/admin/audit/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/admin/stats/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([userData, cohortData, auditData, statsData]) => {
-        setUsers(userData || []);
-        setCohorts(cohortData || []);
-        setAudit(auditData || []);
-        setStats(statsData);
+    Promise.all([getUsers(), getPlacements()])
+      .then(([usersData, placementsData]) => {
+        const userList = (usersData?.results || usersData || []).map((u) => ({
+          id: u.id,
+          name: u.first_name
+            ? `${u.first_name} ${u.last_name || ""}`.trim()
+            : u.username,
+          role: ROLE_DISPLAY[u.role] || u.role,
+          rawRole: u.role,
+          org: u.cohort || "—",
+          status: "Active",
+          seen: "—",
+        }));
+        const placements = placementsData?.results || placementsData || [];
+
+        setUsers(userList);
+        setCohorts([]);
+        setAudit([]);
+        setStats({
+          totalUsers: userList.length,
+          activeInterns: userList.filter((u) => u.rawRole === "student").length,
+          supervisors: userList.filter(
+            (u) =>
+              u.rawRole === "workplace_supervisor" ||
+              u.rawRole === "academic_supervisor",
+          ).length,
+          openIssues: placements.filter((p) => p.status === "pending").length,
+        });
       })
-      .catch(() => {});
-  }, [isDemo]);
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="page">
+        <div className="card" style={{ textAlign: "center", padding: 48 }}>
+          <p className="muted">Loading dashboard…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page">
+        <div className="card" style={{ textAlign: "center", padding: 48 }}>
+          <p className="muted">Could not load dashboard: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const filteredUsers = users
     .filter((u) => {
       if (filter === "All") return true;
-      return (ROLE_MAP[filter] || []).some((r) => u.role.includes(r));
+      return (ROLE_MAP[filter] || []).some((r) => u.rawRole === r);
     })
     .filter(
       (u) =>
@@ -176,7 +131,6 @@ function AdminDashboardPage() {
           value={
             stats ? stats.totalUsers.toLocaleString() : String(users.length)
           }
-          delta={stats ? "+38 this month" : undefined}
         />
         <Stat
           label="Active interns"
@@ -296,7 +250,7 @@ function AdminDashboardPage() {
               }}
             >
               <span className="muted" style={{ fontSize: 13 }}>
-                Pairing UI — 2-column matcher coming soon
+                Pairing UI — coming soon
               </span>
             </div>
             <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
@@ -322,18 +276,8 @@ function AdminDashboardPage() {
               }}
             >
               <span className="muted" style={{ fontSize: 13 }}>
-                Line chart · daily active users · 30 days
+                Analytics chart — coming soon
               </span>
-            </div>
-            <div className="row" style={{ marginTop: 14, gap: 24 }}>
-              <div>
-                <div className="tiny">Logbook submissions / wk</div>
-                <div style={{ fontSize: 24, fontWeight: 700 }}>286</div>
-              </div>
-              <div>
-                <div className="tiny">Avg approval time</div>
-                <div style={{ fontSize: 24, fontWeight: 700 }}>18h</div>
-              </div>
             </div>
           </Card>
 

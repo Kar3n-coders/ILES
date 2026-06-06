@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { getPlacements, getLogbooks, getEvaluations } from "../../services/api";
 import {
   PageHead,
   Card,
@@ -14,65 +15,6 @@ import "./WorkplaceSupervisorDashboardPage.css";
 import { I } from "../../components/common/Icons";
 import "../../components/common/Primitives.css";
 
-const DEMO_USERNAMES = [
-  "maria.reyes",
-  "john.doe",
-  "dr.santos",
-  "prof.torres",
-  "admin",
-];
-
-const DEMO_INTERNS = [
-  {
-    id: 1,
-    name: "Karen Kawooya",
-    prog: 58,
-    last: "Today",
-    hrs: "248",
-    status: "Awaiting review",
-    avKind: undefined,
-  },
-  {
-    id: 2,
-    name: "Joseph Mukasa",
-    prog: 75,
-    last: "Yesterday",
-    hrs: "312",
-    status: "Up to date",
-    avKind: "green",
-  },
-  {
-    id: 3,
-    name: "Aisha Nansubuga",
-    prog: 42,
-    last: "3 days ago",
-    hrs: "180",
-    status: "Overdue",
-    avKind: "orange",
-  },
-  {
-    id: 4,
-    name: "Brian Otim",
-    prog: 66,
-    last: "Today",
-    hrs: "276",
-    status: "Awaiting review",
-    avKind: "purple",
-  },
-];
-
-const DEMO_PENDING = [
-  { who: "Karen K.", what: "Week 7 logbook", when: "today" },
-  { who: "Brian O.", what: "Week 7 logbook", when: "today" },
-  { who: "Aisha N.", what: "Week 5 logbook", when: "3d ago" },
-];
-
-const DEMO_EVALS = [
-  { name: "Karen K.", type: "midterm", due: "due in 5 days", warn: true },
-  { name: "Joseph M.", type: "midterm", due: "due in 7 days", warn: false },
-  { name: "Aisha N.", type: "final", due: "19 Aug", warn: false },
-];
-
 const STATUS_KIND = {
   "Awaiting review": "warn",
   "Up to date": "ok",
@@ -82,54 +24,73 @@ const STATUS_KIND = {
 export default function WorkplaceSupervisorDashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const isDemo = DEMO_USERNAMES.includes(user?.username);
 
-  const [interns, setInterns] = useState(isDemo ? DEMO_INTERNS : []);
-  const [pending, setPending] = useState(isDemo ? DEMO_PENDING : []);
-  const [evals, setEvals] = useState(isDemo ? DEMO_EVALS : []);
-  const [stats, setStats] = useState(
-    isDemo
-      ? {
-          activeInterns: 4,
-          awaitingReview: 3,
-          approvedThisWeek: 6,
-          avgScore: 4.2,
-        }
-      : null,
-  );
+  const [interns, setInterns] = useState([]);
+  const [pending, setPending] = useState([]);
+  const [evals, setEvals] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (isDemo) return;
-    Promise.all([
-      fetch("/api/supervisor/interns/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/supervisor/pending/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/supervisor/evaluations/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/supervisor/stats/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([internData, pendingData, evalData, statsData]) => {
-        setInterns(internData || []);
-        setPending(pendingData || []);
-        setEvals(evalData || []);
-        setStats(statsData);
+    Promise.all([getPlacements(), getLogbooks(), getEvaluations()])
+      .then(([placementsData, logbooksData, evalsData]) => {
+        const placements = placementsData || [];
+        const logbooks = logbooksData || [];
+        const evaluations = evalsData || [];
+
+        const internList = placements.map((p) => ({
+          id: p.id,
+          name: p.student_name || p.student_username || `Student #${p.id}`,
+          prog: 0,
+          last: "—",
+          hrs: "—",
+          status: "Up to date",
+          avKind: undefined,
+        }));
+
+        const pendingList = logbooks
+          .filter((l) => l.status === "pending")
+          .map((l) => ({
+            who: l.student_username || `Student #${l.student}`,
+            what: `Week ${l.week_number} logbook`,
+            when: l.submitted_at ? l.submitted_at.split("T")[0] : "—",
+            id: l.id,
+          }));
+
+        setInterns(internList);
+        setPending(pendingList);
+        setEvals(evaluations);
+        setStats({
+          activeInterns: placements.length,
+          awaitingReview: pendingList.length,
+          approvedThisWeek: logbooks.filter((l) => l.status === "approved").length,
+          avgScore: 0,
+        });
       })
-      .catch(() => {});
-  }, [isDemo]);
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="page">
+        <div className="card" style={{ textAlign: "center", padding: 48 }}>
+          <p className="muted">Loading your dashboard…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page">
+        <div className="card" style={{ textAlign: "center", padding: 48 }}>
+          <p className="muted">Could not load dashboard: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const displayName = user?.first_name
     ? `${user.first_name} ${user.last_name || ""}`.trim()
@@ -137,9 +98,7 @@ export default function WorkplaceSupervisorDashboardPage() {
 
   const org = user?.organization || "Your Organisation";
 
-  const awaitingCount = interns.filter(
-    (i) => i.status === "Awaiting review",
-  ).length;
+  const awaitingCount = stats?.awaitingReview ?? pending.length;
 
   return (
     <div className="page">
@@ -169,7 +128,6 @@ export default function WorkplaceSupervisorDashboardPage() {
         <Stat
           label="Approved this week"
           value={stats ? String(stats.approvedThisWeek) : "—"}
-          delta={stats ? "+2 vs last" : undefined}
         />
         <Stat
           label="Avg score given"
@@ -282,11 +240,11 @@ export default function WorkplaceSupervisorDashboardPage() {
             ) : (
               <ul className="timeline">
                 {evals.map((ev, i) => (
-                  <li key={i} className={ev.warn ? "is-warn" : ""}>
+                  <li key={i}>
                     <b>
-                      {ev.name} — {ev.type}
+                      {ev.student_username} — {ev.criteria_name}
                     </b>
-                    <div className="meta">{ev.due}</div>
+                    <div className="meta">Score: {ev.score} / 5</div>
                   </li>
                 ))}
               </ul>
@@ -306,9 +264,7 @@ export default function WorkplaceSupervisorDashboardPage() {
                 {pending[0].who} — {pending[0].what}
               </b>
               <div className="muted" style={{ fontSize: 12 }}>
-                {isDemo
-                  ? "Submitted today at 10:42 · 5 sections · 3 attachments"
-                  : `Submitted ${pending[0].when} · awaiting your signature`}
+                Submitted {pending[0].when} · awaiting your signature
               </div>
             </div>
             <div className="row" style={{ gap: 8 }}>
