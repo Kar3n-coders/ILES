@@ -12,11 +12,9 @@ class LogReviewSerializer(serializers.ModelSerializer):
 
     reviewer_fullname = serializers.SerializerMethodField()
 
-    logbook_week = serializers.IntegerField(source="Logbook.week_number", read_only=True)
+    logbook_week = serializers.IntegerField(source="Logbook.week_number", read_only=True, allow_null=True)
 
-    student_username = serializers.CharField(
-        source="Logbook.student.username", read_only=True
-    )
+    student_username = serializers.SerializerMethodField()
 
     action_display = serializers.CharField(source="get_action_display", read_only=True)
 
@@ -41,6 +39,14 @@ class LogReviewSerializer(serializers.ModelSerializer):
 
     def get_reviewer_fullname(self, obj):
         return f"{obj.reviewer.first_name} {obj.reviewer.last_name}".strip()
+
+    def get_student_username(self, obj):
+        try:
+            if obj.Logbook and obj.Logbook.student:
+                return obj.Logbook.student.username
+            return None
+        except Exception:
+            return None
 
 
 # LogReviewCreate Serializer
