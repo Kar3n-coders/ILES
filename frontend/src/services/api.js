@@ -46,7 +46,18 @@ async function request(endpoint, options = {}) {
   return data;
 }
 
+export function getUsers() {
+  return request("/users/");
+}
+
 // ---- AUTH ENDPOINTS-----
+export async function registerUser(data) {
+  return request("/auth/register/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 export async function loginUser({ username, password }) {
   const data = await request("/auth/login/", {
     method: "POST",
@@ -60,12 +71,19 @@ export async function loginUser({ username, password }) {
 }
 
 export async function logoutUser() {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("iles_auth_token");
+  localStorage.removeItem("iles_refresh_token");
 }
 
 export async function getProfile() {
   return request("/auth/profile/");
+}
+
+export async function updateProfile(data) {
+  return request("/auth/profile/", {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
 }
 
 export async function getLogbooks() {
@@ -140,7 +158,7 @@ export function getReviews() {
 }
 
 export function createReview(data) {
-  return request("/review/", {
+  return request("/reviews/", {
     method: "POST",
     body: JSON.stringify(data),
   });

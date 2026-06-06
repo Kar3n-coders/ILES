@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { getPlacements, getLogbooks } from "../../services/api";
 import {
   PageHead,
   Card,
@@ -12,133 +13,68 @@ import {
 import { I } from "../../components/common/Icons";
 import "../../components/common/Primitives.css";
 
-const DEMO_USERNAMES = [
-  "maria.reyes",
-  "john.doe",
-  "dr.santos",
-  "prof.torres",
-  "admin",
-];
-
-const DEMO_STUDENTS = [
-  {
-    id: 1,
-    name: "Karen Kawooya",
-    org: "Acme Telecoms",
-    prog: 58,
-    last: "today",
-    flag: null,
-    flagKind: null,
-  },
-  {
-    id: 2,
-    name: "Joseph Mukasa",
-    org: "MTN Uganda",
-    prog: 75,
-    last: "yesterday",
-    flag: null,
-    flagKind: null,
-  },
-  {
-    id: 3,
-    name: "Aisha Nansubuga",
-    org: "Stanbic Bank",
-    prog: 42,
-    last: "3 days ago",
-    flag: "At risk",
-    flagKind: "warn",
-  },
-  {
-    id: 4,
-    name: "Brian Otim",
-    org: "Acme Telecoms",
-    prog: 66,
-    last: "today",
-    flag: null,
-    flagKind: null,
-  },
-  {
-    id: 5,
-    name: "Diana Akello",
-    org: "NSSF",
-    prog: 30,
-    last: "5 days ago",
-    flag: "At risk",
-    flagKind: "warn",
-  },
-  {
-    id: 6,
-    name: "Eric Walusimbi",
-    org: "—",
-    prog: 0,
-    last: "—",
-    flag: "No placement",
-    flagKind: "danger",
-  },
-];
-
-const DEMO_TODOS = [
-  "Approve 2 placement submissions",
-  "Grade 7 midterm reports",
-  "Conduct 4 workplace visits",
-  "Review 3 returned logbook entries",
-];
-
-const DEMO_VISITS = [
-  { name: "Karen K.", org: "Acme Telecoms", time: "Tue · 2pm", warn: true },
-  { name: "Joseph M.", org: "MTN Uganda", time: "Wed · 11am", warn: false },
-  { name: "Aisha N.", org: "Stanbic Bank", time: "Fri · 3pm", warn: false },
-];
-
 export default function AcademicDashboardPage() {
   const { user } = useAuth();
-  const isDemo = DEMO_USERNAMES.includes(user?.username);
 
-  const [students, setStudents] = useState(isDemo ? DEMO_STUDENTS : []);
-  const [todos, setTodos] = useState(isDemo ? DEMO_TODOS : []);
-  const [visits, setVisits] = useState(isDemo ? DEMO_VISITS : []);
-  const [stats, setStats] = useState(
-    isDemo
-      ? { assigned: 18, placements: 16, visits: 5, visitsTotal: 9, grading: 7 }
-      : null,
-  );
+  const [students, setStudents] = useState([]);
+  const [todos, setTodos] = useState([]);
+  const [visits, setVisits] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filter, setFilter] = useState("All");
   const [checkedTodos, setCheckedTodos] = useState({});
 
   useEffect(() => {
-    if (isDemo) return;
-    Promise.all([
-      fetch("/api/academic/students/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/academic/todos/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/academic/visits/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : [])),
-      fetch("/api/academic/stats/", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-        },
-      }).then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([studentData, todoData, visitData, statsData]) => {
-        setStudents(studentData || []);
-        setTodos(
-          Array.isArray(todoData) ? todoData.map((t) => t.text || t) : [],
-        );
-        setVisits(visitData || []);
-        setStats(statsData);
+    Promise.all([getPlacements(), getLogbooks()])
+      .then(([placementsData, logbooksData]) => {
+        const placements = placementsData || [];
+        const logbooks = logbooksData || [];
+
+        const studentList = placements.map((p) => ({
+          id: p.id,
+          name: p.student_name || p.student_username || `Student #${p.student}`,
+          org: p.company_name || "—",
+          prog: 0,
+          last: "—",
+          flag: p.status === "pending" ? "Pending" : null,
+          flagKind: p.status === "pending" ? "warn" : null,
+        }));
+
+        setStudents(studentList);
+        setTodos([]);
+        setVisits([]);
+        setStats({
+          assigned: placements.length,
+          placements: placements.filter((p) => p.status === "approved").length,
+          visits: 0,
+          visitsTotal: 0,
+          grading: logbooks.filter((l) => l.status === "pending").length,
+        });
       })
-      .catch(() => {});
-  }, [isDemo]);
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="page">
+        <div className="card" style={{ textAlign: "center", padding: 48 }}>
+          <p className="muted">Loading your dashboard…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page">
+        <div className="card" style={{ textAlign: "center", padding: 48 }}>
+          <p className="muted">Could not load dashboard: {error}</p>
+        </div>
+      </div>
+    );
+  }
 
   const displayName = user?.first_name
     ? `${user.first_name} ${user.last_name || ""}`.trim()

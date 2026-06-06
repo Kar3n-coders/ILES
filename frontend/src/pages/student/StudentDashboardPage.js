@@ -13,98 +13,27 @@ import {
 } from "../../components/common/Primitives";
 import { I } from "../../components/common/Icons";
 
-const DEMO_USERNAMES = [
-  "maria.reyes",
-  "john.doe",
-  "dr.santos",
-  "prof.torres",
-  "admin",
-];
-
-const DEMO_DATA = {
-  "maria.reyes": {
-    firstName: "Karen",
-    company: "Acme Telecoms Ltd.",
-    position: "Software Engineering Intern",
-    location: "Kampala",
-    startDate: "12 May 2026",
-    endDate: "12 Aug 2026",
-    workplaceSup: "Mr. Okello",
-    academicSup: "Dr. Nakato",
-    weeksCompleted: 6,
-    totalWeeks: 12,
-    logbookPct: 83,
-    hoursLogged: 248,
-    hoursThisWeek: 40,
-    evalScore: 4.3,
-    currentWeek: 7,
-    currentWeekDue: "Friday · 2 days left",
-    entryProgress: 40,
-    activity: [
-      {
-        done: true,
-        warn: false,
-        text: "Week 6 entry approved",
-        meta: "2 days ago — Mr. Okello",
-      },
-      {
-        done: true,
-        warn: false,
-        text: "Midterm report uploaded",
-        meta: "3 days ago",
-      },
-      {
-        done: false,
-        warn: true,
-        text: "Visit scheduled with Dr. Nakato",
-        meta: "next Tuesday · 2pm",
-      },
-      {
-        done: false,
-        warn: false,
-        text: "New skill tagged · REST APIs",
-        meta: "last week",
-      },
-    ],
-    upcoming: [
-      { warn: true, text: "Midterm review", meta: "in 5 days" },
-      {
-        warn: false,
-        text: "Workplace visit · Dr. Nakato",
-        meta: "12 May · 2pm",
-      },
-      { warn: false, text: "Final report due", meta: "12 Aug" },
-    ],
-  },
-};
-
 export default function StudentDashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const [placement, setPlacement] = useState(null);
+  const [logbooks, setLogbooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [noPlacement, setNoPlacement] = useState(false);
 
-  const isDemo = DEMO_USERNAMES.includes(user?.username);
-  const demo = isDemo ? DEMO_DATA[user.username] : null;
-
   useEffect(() => {
-    if (isDemo) {
-      // john.doe has no placement in demo data
-      if (user.username === "john.doe") setNoPlacement(true);
-      setLoading(false);
-      return;
-    }
-    getPlacements()
-      .then((data) => {
-        const p = data?.results?.[0] || data?.[0] || null;
+    Promise.all([getPlacements(), getLogbooks()])
+      .then(([placementsData, logbooksData]) => {
+        const p = placementsData?.results?.[0] || placementsData?.[0] || null;
         if (!p) setNoPlacement(true);
         else setPlacement(p);
+        setLogbooks(logbooksData || []);
       })
-      .catch(() => setNoPlacement(true))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [isDemo, user]);
+  }, []);
 
   if (loading) {
     return (
@@ -116,27 +45,43 @@ export default function StudentDashboardPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="panel">
+        <div className="card" style={{ textAlign: "center", padding: 48 }}>
+          <p className="muted">Could not load dashboard: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
   if (noPlacement) return <PlacementOnBoardingPage />;
 
   // ── Derive display values ────────────────────────────────────────
-  const firstName =
-    demo?.firstName ?? user?.first_name ?? user?.username ?? "there";
-  const company = demo?.company ?? placement?.company_name ?? "your company";
-  const position = demo?.position ?? placement?.position ?? "";
-  const weeksCompleted = demo?.weeksCompleted ?? 0;
-  const totalWeeks = demo?.totalWeeks ?? 15;
-  const logbookPct = demo?.logbookPct ?? 0;
-  const hoursLogged = demo?.hoursLogged ?? 0;
-  const evalScore = demo?.evalScore ?? "—";
-  const currentWeek = demo?.currentWeek ?? 1;
-  const currentWeekDue = demo?.currentWeekDue ?? "—";
-  const entryProgress = demo?.entryProgress ?? 0;
-  const activity = demo?.activity ?? [];
-  const upcoming = demo?.upcoming ?? [];
-  const workplaceSup = demo?.workplaceSup ?? "—";
-  const academicSup = demo?.academicSup ?? "—";
-  const startDate = demo?.startDate ?? placement?.start_date ?? "—";
-  const endDate = demo?.endDate ?? placement?.end_date ?? "—";
+  const firstName = user?.first_name
+    ? `${user.first_name} ${user.last_name || ""}`.trim()
+    : user?.username ?? "there";
+  const company = placement?.company_name ?? "your company";
+  const position = placement?.position ?? "";
+  const approvedLogbooks = logbooks.filter((l) => l.status === "approved");
+  const pendingLogbooks = logbooks.filter((l) => l.status === "pending");
+  const weeksCompleted = approvedLogbooks.length;
+  const totalWeeks = 12;
+  const logbookPct =
+    totalWeeks > 0 ? Math.round((weeksCompleted / totalWeeks) * 100) : 0;
+  const startDate = placement?.start_date ?? "—";
+  const endDate = placement?.end_date ?? "—";
+  const workplaceSup = placement?.supervisor_name ?? "—";
+  const academicSup = "—";
+  const currentWeek = Math.min(weeksCompleted + 1, totalWeeks);
+  const lastEntry = logbooks.sort((a, b) => b.week_number - a.week_number)[0];
+  const activity = pendingLogbooks.map((l) => ({
+    done: false,
+    warn: true,
+    text: `Week ${l.week_number} logbook awaiting review`,
+    meta: l.submitted_at ? l.submitted_at.split("T")[0] : "submitted",
+  }));
+  const upcoming = [];
 
   return (
     <div className="panel">
@@ -164,18 +109,18 @@ export default function StudentDashboardPage() {
           unit={` / ${totalWeeks}`}
           delta="on track"
         />
-        <Stat label="Logbook" value={`${logbookPct}%`} delta="+12% this week" />
+        <Stat label="Logbook" value={`${logbookPct}%`} delta={`${logbooks.length} entries`} />
         <Stat
-          label="Hours logged"
-          value={hoursLogged}
-          unit=" hrs"
-          delta={`${demo?.hoursThisWeek ?? 0} this week`}
+          label="Pending review"
+          value={pendingLogbooks.length}
+          unit=" entries"
+          delta={pendingLogbooks.length > 0 ? "awaiting approval" : undefined}
         />
         <Stat
           label="Eval score"
-          value={evalScore}
+          value="—"
           unit=" / 5"
-          delta="midterm · workplace"
+          delta="not yet evaluated"
         />
       </div>
 
@@ -193,17 +138,17 @@ export default function StudentDashboardPage() {
                 <h3 className="section-title" style={{ marginTop: 4 }}>
                   Weekly logbook entry
                 </h3>
-                <div className="section-sub">Due {currentWeekDue}</div>
+                <div className="section-sub">Log your activities for this week</div>
               </div>
               <Btn kind="primary" onClick={() => navigate("/student/logbook")}>
                 Open weekly entry {I.arrow}
               </Btn>
             </div>
             <div style={{ marginTop: 14 }}>
-              <Bar pct={entryProgress} />
+              <Bar pct={logbookPct} />
               <div className="row row--between" style={{ marginTop: 8 }}>
-                <span className="tiny">3 of 5 sections drafted</span>
-                <span className="tiny">last edit · today 09:14</span>
+                <span className="tiny">{weeksCompleted} of {totalWeeks} weeks approved</span>
+                <span className="tiny">{logbooks.length} total entries</span>
               </div>
             </div>
           </Card>
@@ -249,9 +194,7 @@ export default function StudentDashboardPage() {
           {/* Placement card */}
           <Card label="Placement">
             <h3 className="section-title">{company}</h3>
-            <div className="section-sub">
-              {position} · {demo?.location ?? ""}
-            </div>
+            <div className="section-sub">{position}</div>
             <div
               style={{
                 display: "flex",
@@ -281,7 +224,7 @@ export default function StudentDashboardPage() {
               <Chip kind="ok" dot>
                 Active
               </Chip>
-              <Chip kind="accent">Approved</Chip>
+              <Chip kind="accent">{placement?.status ?? "Pending"}</Chip>
             </div>
           </Card>
 
