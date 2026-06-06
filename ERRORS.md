@@ -185,3 +185,70 @@ The following errors were not caught locally but surfaced in Vercel preview depl
 | 7 | #58 ILES-51 | PlacementOnBoardingPage.js | Non-existent `PageShell` import | Critical — runtime crash | ✅ `a27f126` |
 | 8 | #60 ILES-39 | EvaluationPage.js | No `export default` — Vercel build crash | Critical — CI failure | ✅ `2421f2f` |
 | 9 | #58 ILES-51 | PlacementOnBoardingPage.js | Wrong import path depth (`../` vs `../../`) | Critical — CI failure | ✅ _(branch pushed)_ |
+
+---
+
+## Runtime Errors Discovered in Production (2026-06-06)
+
+### Error 10 — GET /api/evaluation/ returns 500 for workplace supervisor
+
+| Field | Detail |
+|---|---|
+| Endpoint | `GET https://iles-backend.projecthive.cfd/api/evaluation/` |
+| User | Workplace supervisor (`dr.santos`, role=workplace_supervisor) |
+| Symptom | Workplace supervisor dashboard fails to load entirely — the page renders but the data panels stay blank/loading because the evaluation API call throws 500 |
+| Reproduced | HAR log captured 2026-06-06 from live deployment (`develop` branch, commit `a715a29`) |
+
+**Root cause: Three independent bugs caused or could cause 500 errors:**
+
+#### Bug 10a — `AttributeError` on null `placement.student` in EvaluationSerializer
+
+| Field | Detail |
+|---|---|
+| File | `backend/evaluation/serializers.py` |
+| Line | `student_username = serializers.CharField(source="placement.student.username", read_only=True)` |
+| Fix commit | `9dae806` |
+| Cause | `InternshipPlacement.student` allows `null=True`. When a placement exists without an assigned student, `placement.student` is `None`, and accessing `.username` on `None` raises `AttributeError` → DRF returns 500 |
+| Fix | Replaced `CharField(source=...)` with `SerializerMethodField` that checks `obj.placement` and `obj.placement.student` for None before accessing `.username`. Returns `None` for null students and logs a warning for unexpected failures |
+
+#### Bug 10b — `TypeError` in Evaluation.save() with null score
+
+| Field | Detail |
+|---|---|
+| File | `backend/evaluation/models.py` |
+| Line | `self.weighted_score = self.score * self.criteria.weight` |
+| Fix commit | `ce564f7` |
+| Cause | `score` field has `null=True` in the model. The `save()` method unconditionally multiplies `self.score * self.criteria.weight`, but if score is `None`, Python raises `TypeError: unsupported operand type(s) for *: 'NoneType' and 'float'` — this crashes any operation that triggers save (create, update, or even admin actions) |
+| Fix | Added None guards: if score or criteria is None, sets `weighted_score = None` instead of attempting multiplication |
+
+#### Bug 10c — `AttributeError` on null `Logbook.student` in LogReviewSerializer (defensive)
+
+| Field | Detail |
+|---|---|
+| File | `backend/reviews/serializers.py` |
+| Lines | `student_username = serializers.CharField(source="Logbook.student.username", read_only=True)` |
+| Fix commit | `995383e` |
+| Cause | Same pattern as Bug 10a — if a LogReview's Logbook somehow has a null student (shouldn't happen with CASCADE, but defensive), accessing `.username` on None raises `AttributeError` |
+| Fix | Replaced `CharField(source=...)` with `SerializerMethodField` returning `None` when `Logbook` or `student` is missing. Also added `allow_null=True` to `logbook_week` IntegerField |
+
+#### Bug 10d — Duplicate `registerUser` in api.js (Vercel build failure)
+
+| Field | Detail |
+|---|---|
+| File | `frontend/src/services/api.js` |
+| Fix commit | `a5595d4` |
+| Cause | Two PRs (#72 ILES-67 and #73 ILES-66) both added `registerUser()` to api.js. The merge into develop kept both, producing `SyntaxError: Identifier 'registerUser' has already been declared` at build time |
+| Fix | Removed the generic pass-through version at line 53 (from ILES-67), kept the explicit field-mapping version at line 167 (from ILES-66) |
+
+**Trigger chain in production:**
+1. Workplace supervisor logs in → navigates to `/supervisor/dashboard`
+2. Frontend fires `GET /api/evaluation/` to populate evaluation stats
+3. Evaluation queryset includes records where `placement.student is NULL`
+4. Serializer hits `placement.student.username` → `None.username` → `AttributeError`
+5. DRF catches exception → returns 500 HTML response
+6. Frontend receives 500 (not JSON) → dashboard data panels fail to render
+
+**Prevention:**
+- All `source` chains that traverse nullable FK fields should use `SerializerMethodField` with explicit null checks
+- Add database constraints or migration to ensure `placement.student` is NOT NULL if business logic requires it
+- Consider `select_related` coverage audit — all FK traversal paths in serializers should be prefetched
