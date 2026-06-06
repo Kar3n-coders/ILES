@@ -12,7 +12,7 @@ const SCHEDULE = [
 
 const TYPE_KIND = { visit: "info", deadline: "warn", review: "ok" };
 
-export default function SchedulePage() {
+export default function SchedulePage() { 
   return (
     <div className="page">
       <PageHead title="Schedule" sub="Upcoming supervisor visits, reviews, and log deadlines." />
