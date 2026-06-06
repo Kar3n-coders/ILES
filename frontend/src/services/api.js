@@ -51,13 +51,6 @@ export function getUsers() {
 }
 
 // ---- AUTH ENDPOINTS-----
-export async function registerUser(data) {
-  return request("/auth/register/", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-}
-
 export async function loginUser({ username, password }) {
   const data = await request("/auth/login/", {
     method: "POST",
