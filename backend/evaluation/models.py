@@ -76,12 +76,13 @@ class Evaluation(models.Model):
         unique_together = ("placement", "evalutor", "criteria")
 
     def save(self, *args, **kwargs):
+        """Auto-calculate weighted_score = score × criteria.weight.
+        If score is None (allowed by the model), weighted_score stays None.
         """
-        Auto-calculate the weighted score before saving.
-        Now this works correctly because criteria IS a ForeignKey object.
-        """
-
-        self.weighted_score = self.score * self.criteria.weight
+        if self.score is not None and self.criteria is not None:
+            self.weighted_score = self.score * self.criteria.weight
+        else:
+            self.weighted_score = None
         super().save(*args, **kwargs)
 
     def __str__(self):
