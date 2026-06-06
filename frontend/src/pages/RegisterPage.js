@@ -3,23 +3,26 @@ import { Link } from "react-router-dom";
 import {
   GraduationCap, Eye, EyeOff, Lock, User, Mail, Phone,
   Building2, BookOpen, AlertCircle, CheckCircle2, ArrowLeft,
-  ChevronRight, ClipboardCheck, LayoutDashboard, Moon, Sun,
+  ChevronRight, ClipboardCheck, Moon, Sun,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
+import { registerUser } from "../services/api";
 import "./RegisterPage.css";
 
 const ROLES = [
   { value: "student",              label: "Student Intern",           icon: GraduationCap,   desc: "Submit weekly logs, track your internship",       color: "#1a365d" },
   { value: "workplace_supervisor", label: "Workplace Supervisor",     icon: ClipboardCheck,  desc: "Review logs from your assigned interns",          color: "#276749" },
   { value: "academic_supervisor",  label: "Academic Supervisor",      icon: BookOpen,        desc: "Evaluate and grade students academically",        color: "#c05621" },
-  { value: "internship_admin",     label: "Internship Administrator", icon: LayoutDashboard, desc: "Manage placements, users & system data",          color: "#6b46c1" },
 ];
 
-const STEPS = [
-  { n: 1, label: "Choose your role" },
-  { n: 2, label: "Basic information" },
-  { n: 3, label: "Academic details" },
-];
+function getSteps(role) {
+  const base = [
+    { n: 1, label: "Choose your role" },
+    { n: 2, label: "Basic information" },
+  ];
+  if (role === "student") base.push({ n: 3, label: "Academic details" });
+  return base;
+}
 
 function validatePassword(pwd) {
   if (pwd.length < 8 || pwd.length > 16) return "Password must be 8–16 characters.";
@@ -52,20 +55,45 @@ export default function RegisterPage() {
     setError(""); setStep((s) => s + 1);
   }
 
-  function handleStep2Submit(e) {
-    e.preventDefault();
-    const err = validatePassword(form.password);
-    if (err) { setError(err); return; }
-    if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
-    setError(""); setStep(3);
+  async function handleSubmit(e) {
+  e.preventDefault();
+  setError(""); setLoading(true);
+  try {
+    await registerUser({ ...form, role });
+    setDone(true);
+  } catch (err) {
+    setError(err.message || "Registration failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError(""); setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false); setDone(true);
+  function handleStep2Submit(e) {
+  e.preventDefault();
+  const err = validatePassword(form.password);
+  if (err) { setError(err); return; }
+  if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
+  setError("");
+  if (role === "student") {
+    setStep(3);
+  } else {
+    handleSubmitDirect();
   }
+  }
+
+  async function handleSubmitDirect() {
+  setLoading(true);
+  try {
+    await registerUser({ ...form, role });
+    setDone(true);
+  } catch (err) {
+    setError(err.message || "Registration failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+}
+
+
 
   if (done) {
     return (
@@ -102,7 +130,7 @@ export default function RegisterPage() {
             role-based dashboard tailored for you.
           </p>
            <div className="reg-panel__steps">
-            {STEPS.map((s) => (
+            {getSteps(role).map((s) => (
               <div key={s.n} className="reg-panel__step">
                 <div
                   className="reg-panel__step-dot"

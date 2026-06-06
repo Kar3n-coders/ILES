@@ -163,3 +163,22 @@ export function createReview(data) {
     body: JSON.stringify(data),
   });
 }
+
+export async function registerUser({ username, email, password, confirmPassword, firstName, lastName, phone, role, university, course, department }) {
+  return request("/auth/register/", {
+    method: "POST",
+    body: JSON.stringify({
+      username,
+      email,
+      password,
+      password_confirm: confirmPassword,
+      first_name: firstName,
+      last_name: lastName,
+      phone_number: phone,
+      role,
+      university,
+      course,
+      department,
+    }),
+  });
+}
