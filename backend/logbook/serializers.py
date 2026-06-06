@@ -17,7 +17,7 @@ class LogbookSerializer(serializers.ModelSerializer):
 
     # Placement company name
     company_name = serializers.CharField(
-        source="placement.company.name", read_only=True
+        source="placement.company_name", read_only=True
     )
 
     class Meta:
@@ -47,8 +47,8 @@ class LogbookSerializer(serializers.ModelSerializer):
             "student",  # set automatically by the viewset
         ]
 
-        def get_student_fullname(self, obj):
-            return f"{obj.student.first_name} {obj.student.last_name}".strip()
+    def get_student_fullname(self, obj):
+        return f"{obj.student.first_name} {obj.student.last_name}".strip()
 
 
 class LogbookCreateSerializer(serializers.ModelSerializer):

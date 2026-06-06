@@ -46,7 +46,6 @@ class EvaluationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        ss
 
         if user.role == "internship_admin":
             return Evaluation.objects.all().select_related(
@@ -133,6 +132,3 @@ class EvaluationViewSet(viewsets.ModelViewSet):
                 "evaluation_count": evaluations.count(),
             }
         )
-
-
-# Create your views here.

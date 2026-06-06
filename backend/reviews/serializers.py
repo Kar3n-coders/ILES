@@ -10,9 +10,9 @@ class LogReviewSerializer(serializers.ModelSerializer):
         source="reviewer.username", read_only=True
     )
 
-    review_fullname = serializers.SerializerMethodField()
+    reviewer_fullname = serializers.SerializerMethodField()
 
-    logbook_week = serializers.IntegerField(source="Logbook.week", read_only=True)
+    logbook_week = serializers.IntegerField(source="Logbook.week_number", read_only=True)
 
     student_username = serializers.CharField(
         source="Logbook.student.username", read_only=True
@@ -30,7 +30,7 @@ class LogReviewSerializer(serializers.ModelSerializer):
             "student_username",
             "reviewer",
             "reviewer_username",
-            "review_fullname",
+            "reviewer_fullname",
             "action_display",
             "comment",
             "action",
@@ -52,8 +52,8 @@ class LogReviewCreateSerializer(serializers.ModelSerializer):
     def validate_Logbook(self, value):
         if value.status not in ["pending", "reviewed"]:
             raise serializers.ValidationError(
-                f"Cannot review a logbook with the status '{value.status}'"
-                "Only submitted(pending) or previously reviewed logbooks can be reviewed."
+                f"Cannot review a logbook with status '{value.status}'. "
+                "Only submitted (pending) or previously reviewed logbooks can be reviewed."
             )
         return value
 
