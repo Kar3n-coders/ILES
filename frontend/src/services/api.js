@@ -124,10 +124,24 @@ export function createPlacement(data) {
   });
 }
 
+export function updatePlacement(id, data) {
+  return request(`/placements/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
 //-------EVALUTATION ENDPOINTS ----------
 
 export function getEvaluationCriteria() {
   return request("/evaluation/criteria/");
+}
+
+export function createEvaluationCriteria(data) {
+  return request("/evaluation/criteria/", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 }
 
 export function getEvaluations() {
