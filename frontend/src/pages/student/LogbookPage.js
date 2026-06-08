@@ -134,10 +134,16 @@ function LogbookPage() {
               sm
               kind="primary"
               disabled={!placement}
+              title={!placement ? "Complete your placement onboarding first" : ""}
               onClick={() => setShowCreateForm((v) => !v)}
             >
               {I.plus} New week
             </Btn>
+            {!placement && (
+              <span className="muted" style={{ fontSize: 12 }}>
+                Complete placement onboarding to create entries
+              </span>
+            )}
           </>
         }
       />
