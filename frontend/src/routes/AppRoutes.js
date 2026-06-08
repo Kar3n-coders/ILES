@@ -30,6 +30,8 @@ import AcademicStudentsPage from "../pages/academic_supervisor/StudentsPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import AdminPlacementsPage from "../pages/admin/AdminPlacementsPage";
 import AdminProfilePage from "../pages/admin/ProfilePage";
+import AdminUsersPage from "../pages/admin/UsersPage";
+import AdminCriteriaPage from "../pages/admin/CriteriaPage";
 
 //Not Page Found
 import NotPageFound from "../pages/NotPageFound";
@@ -99,7 +101,9 @@ function AppRoutes() {
         <Route element={<ProtectedRoute allowedRoles={["internship_admin"]} />}>
           <Route element={<Layout />}>
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/placements" element={<AdminPlacementsPage />} />
+            <Route path="/admin/criteria" element={<AdminCriteriaPage />} />
             <Route path="/admin/profile" element={<AdminProfilePage />} />
           </Route>
         </Route>
