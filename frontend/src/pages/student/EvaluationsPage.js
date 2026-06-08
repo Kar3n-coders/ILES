@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { PageHead, Card, Chip, Bar } from "../../components/common/Primitives";
 import "./EvaluationsPage.css";
 
@@ -53,10 +54,47 @@ function EvalCard({ title, total, max, criteria }) {
 }
 
 export default function EvaluationsPage() {
-  const wpTotal = WORKPLACE_CRITERIA.reduce((s, c) => s + c.score, 0);
-  const wpMax   = WORKPLACE_CRITERIA.reduce((s, c) => s + c.weight, 0);
-  const acTotal = ACADEMIC_CRITERIA.reduce((s, c) => s + c.score, 0);
-  const acMax   = ACADEMIC_CRITERIA.reduce((s, c) => s + c.weight, 0);
+  const [workplaceCriteria, setWorkplaceCriteria] = useState([]);
+  const [academicCriteria, setAcademicCriteria] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // TODO ILES-71: replace mock data with getEvaluations() API call
+    try {
+      setWorkplaceCriteria(WORKPLACE_CRITERIA);
+      setAcademicCriteria(ACADEMIC_CRITERIA);
+      setHistory(HISTORY);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const wpTotal = workplaceCriteria.reduce((s, c) => s + c.score, 0);
+  const wpMax   = workplaceCriteria.reduce((s, c) => s + c.weight, 0);
+  const acTotal = academicCriteria.reduce((s, c) => s + c.score, 0);
+  const acMax   = academicCriteria.reduce((s, c) => s + c.weight, 0);
+
+  if (loading) {
+    return (
+      <div className="page">
+        <PageHead title="My Evaluations" sub="Scores from your workplace and academic supervisors." />
+        <p className="muted" style={{ padding: 24, textAlign: 'center' }}>Loading evaluations…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page">
+        <PageHead title="My Evaluations" sub="Scores from your workplace and academic supervisors." />
+        <Card label="Error"><p style={{ color: 'var(--color-error)' }}>{error}</p></Card>
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -70,13 +108,13 @@ export default function EvaluationsPage() {
           title="Workplace Evaluation"
           total={wpTotal}
           max={wpMax}
-          criteria={WORKPLACE_CRITERIA}
+          criteria={workplaceCriteria}
         />
         <EvalCard
           title="Academic Evaluation"
           total={acTotal}
           max={acMax}
-          criteria={ACADEMIC_CRITERIA}
+          criteria={academicCriteria}
         />
       </div>
 
@@ -91,7 +129,7 @@ export default function EvaluationsPage() {
             </tr>
           </thead>
           <tbody>
-            {HISTORY.map((h, i) => (
+            {history.map((h, i) => (
               <tr key={i}>
                 <td>{h.date}</td>
                 <td>{h.evaluator}</td>
