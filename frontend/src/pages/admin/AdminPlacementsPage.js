@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { PageHead, Card, Stat } from "../../components/common/Primitives";
+import { PageHead, Card, Stat, Chip } from "../../components/common/Primitives";
 import "./AdminPlacementsPage.css";
 
 const FILTERS = ["All", "pending", "approved", "rejected"];
+const KIND = { approved: "ok", pending: "warn", rejected: "err" };
 
 const PLACEMENTS = [
   { id: 1, student: "Alice Namukasa", company: "Airtel Uganda",     supervisor: "Mr. Okello",  status: "approved" },
@@ -61,15 +62,21 @@ export default function AdminPlacementsPage() {
             </tr>
           </thead>
           <tbody>
-            {visible.map((p) => (
-              <tr key={p.id}>
-                <td>{p.student}</td>
-                <td>{p.company}</td>
-                <td>{p.supervisor}</td>
-                <td>{p.status}</td>
-                <td></td>
+            {visible.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="ap-empty">No placements match this filter.</td>
               </tr>
-            ))}
+            ) : (
+              visible.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.student}</td>
+                  <td>{p.company}</td>
+                  <td>{p.supervisor}</td>
+                  <td><Chip kind={KIND[p.status]}>{p.status}</Chip></td>
+                  <td></td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </Card>
