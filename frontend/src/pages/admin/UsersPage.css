@@ -1,0 +1,27 @@
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.users-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.users-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+
+.users-table__username {
+  font-weight: 600;
+}

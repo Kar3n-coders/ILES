@@ -21,6 +21,8 @@ class PlacementSerializer(serializers.ModelSerializer):
     )
     supervisor_full_name = serializers.SerializerMethodField()
 
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+
     logbook_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -33,6 +35,8 @@ class PlacementSerializer(serializers.ModelSerializer):
             "company_name",
             "start_date",
             "end_date",
+            "status",
+            "status_display",
             "supervisor",
             "supervisor_username",
             "supervisor_full_name",

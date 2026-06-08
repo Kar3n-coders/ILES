@@ -1,0 +1,38 @@
+.students-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.students-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.students-card__name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.students-card__email {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.students-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.students-empty {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  padding: 24px 0;
+  text-align: center;
+}
