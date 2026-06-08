@@ -26,6 +26,11 @@ export default function WorkplaceEvaluationPage() {
     setScores((s) => ({ ...s, [key]: val }));
   }
 
+  const total = CRITERIA.reduce((sum, c) => {
+    const v = parseInt(scores[c.key], 10);
+    return sum + (isNaN(v) ? 0 : Math.min(v, c.max));
+  }, 0);
+
   return (
     <div className="page">
       <PageHead
@@ -55,7 +60,7 @@ export default function WorkplaceEvaluationPage() {
 
         <Card label="Total score">
           <div className="weval-total">
-            <span className="weval-total__value">0</span>
+            <span className="weval-total__value">{total}</span>
             <span className="weval-total__max">/100</span>
           </div>
           <p className="weval-total__hint">
