@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { PageHead, Card, Btn } from "../../components/common/Primitives";
 import "./WorkplaceEvaluationPage.css";
 
@@ -16,6 +17,15 @@ const CRITERIA = [
 ];
 
 export default function WorkplaceEvaluationPage() {
+  const [studentId, setStudentId] = useState("");
+  const [scores, setScores] = useState(
+    Object.fromEntries(CRITERIA.map((c) => [c.key, ""]))
+  );
+
+  function setScore(key, val) {
+    setScores((s) => ({ ...s, [key]: val }));
+  }
+
   return (
     <div className="page">
       <PageHead
@@ -32,7 +42,7 @@ export default function WorkplaceEvaluationPage() {
         <Card label="Student">
           <div className="weval-group">
             <label className="weval-label">Select student</label>
-            <select className="weval-select">
+            <select className="weval-select" value={studentId} onChange={(e) => setStudentId(e.target.value)}>
               <option value="">Choose…</option>
               {STUDENTS.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -67,6 +77,8 @@ export default function WorkplaceEvaluationPage() {
                 className="weval-input"
                 min={0}
                 max={c.max}
+                value={scores[c.key]}
+                onChange={(e) => setScore(c.key, e.target.value)}
                 placeholder="—"
               />
             </div>
