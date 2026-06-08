@@ -25,13 +25,23 @@ export default function AcademicEvaluationPage() {
     setScores((s) => ({ ...s, [key]: val }));
   }
 
+  const total = CRITERIA.reduce((sum, c) => {
+    const v = parseInt(scores[c.key], 10);
+    return sum + (isNaN(v) ? 0 : Math.min(v, c.max));
+  }, 0);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    // TODO: wire to API
+  }
+
   return (
     <div className="page">
       <PageHead
         title="Submit Evaluation"
         sub="Evaluate a student's logbook and internship progress."
         actions={
-          <Btn kind="primary" sm>
+          <Btn kind="primary" sm onClick={handleSubmit}>
             Submit evaluation
           </Btn>
         }
@@ -58,7 +68,7 @@ export default function AcademicEvaluationPage() {
 
         <Card label="Total score">
           <div className="aeval-total">
-            <span className="aeval-total__value">0</span>
+            <span className="aeval-total__value">{total}</span>
             <span className="aeval-total__max">/100</span>
           </div>
           <p className="aeval-total__hint">Fills as you score below.</p>
