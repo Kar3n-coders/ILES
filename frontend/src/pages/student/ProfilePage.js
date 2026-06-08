@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageHead, Card, Btn, Chip, Field, Av } from '../../components/common/Primitives';
 import { I } from '../../components/common/Icons';
+import { getProfile, updateProfile } from '../../services/api';
 
 function Toggle ({ on }) {
     return (
@@ -19,6 +20,53 @@ function Toggle ({ on }) {
 }
 
 function ProfilePage() {
+  const [form, setForm] = useState({
+    first_name: '', last_name: '', email: '', phone_number: '',
+    university: '', course: '', department: '', username: '',
+    role: '',
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getProfile()
+      .then((data) => {
+        setForm({
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          email: data.email || '',
+          phone_number: data.phone_number || '',
+          university: data.university || '',
+          course: data.course || '',
+          department: data.department || '',
+          username: data.username || '',
+          role: data.role || '',
+        });
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const displayName = `${form.first_name} ${form.last_name}`.trim() || '—';
+
+  if (loading) {
+    return (
+      <div className="page">
+        <PageHead crumb="Account · Profile" title="Your profile" />
+        <p className="muted" style={{ padding: 24, textAlign: 'center' }}>Loading profile…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page">
+        <PageHead crumb="Account · Profile" title="Your profile" />
+        <Card label="Error"><p style={{ color: 'var(--color-error)' }}>{error}</p></Card>
+      </div>
+    );
+  }
+
   return (
     <div className='page'>
       <PageHead
@@ -31,14 +79,14 @@ function ProfilePage() {
         <div className="col">
           <Card>
             <div style={{ display: "grid", placeItems: "center", gap: 12, textAlign: "center" }}>
-              <Av name="Karen Kawooya" lg />
+              <Av name={displayName} lg />
               <Btn sm kind="ghost">{I.upload} Change photo</Btn>
               <div>
-                <h3 className="section-title">Karen Kawooya</h3>
-                <div className="section-sub">karen.k@university.ac.ug</div>
+                <h3 className="section-title">{displayName}</h3>
+                <div className="section-sub">{form.email || '—'}</div>
               </div>
               <div className="row" style={{ gap: 6 }}>
-                <Chip kind="accent">Student</Chip>
+                <Chip kind="accent">{form.role || 'User'}</Chip>
                 <Chip kind="ok" dot>Active</Chip>
               </div>
             </div>
