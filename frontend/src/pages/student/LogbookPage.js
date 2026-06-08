@@ -29,6 +29,15 @@ function LogbookPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [placement, setPlacement] = useState(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [newEntry, setNewEntry] = useState({
+    week_number: "",
+    start_date: "",
+    end_date: "",
+    activities: "",
+  });
 
   useEffect(() => {
     Promise.all([getLogbooks(), getPlacements()])
@@ -41,6 +50,42 @@ function LogbookPage() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  async function handleCreate(e) {
+    e.preventDefault();
+    if (!placement) return;
+    setCreating(true);
+    try {
+      const entry = await createLogbook({
+        ...newEntry,
+        placement: placement.id,
+      });
+      setLogbooks((prev) => [entry, ...prev]);
+      setSelected(entry);
+      setNewEntry({ week_number: "", start_date: "", end_date: "", activities: "" });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  async function handleSubmit(logId) {
+    setSubmitting(true);
+    try {
+      const updated = await submitLogbook(logId);
+      setLogbooks((prev) =>
+        prev.map((l) => (l.id === logId ? { ...l, status: updated.status } : l))
+      );
+      if (selected?.id === logId) {
+        setSelected((prev) => ({ ...prev, status: updated.status }));
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -84,10 +129,13 @@ function LogbookPage() {
         sub="Each week, summarize what you did, learned, and need help with. Your supervisor signs off on every entry."
         actions={
           <>
-            <Btn sm kind="ghost">
-              Export PDF
-            </Btn>
-            <Btn sm kind="primary">
+            <Btn sm kind="ghost">Export PDF</Btn>
+            <Btn
+              sm
+              kind="primary"
+              disabled={!placement}
+              onClick={() => setShowCreateForm((v) => !v)}
+            >
               {I.plus} New week
             </Btn>
           </>
@@ -148,6 +196,49 @@ function LogbookPage() {
           </ul>
         </Card>
         <div className="col">
+          {showCreateForm && (
+            <Card label="New logbook entry">
+              <div className="grid grid--2" style={{ marginBottom: 12 }}>
+                <Field label="Week number">
+                  <input
+                    name="week_number"
+                    type="number"
+                    value={newEntry.week_number}
+                    onChange={(e) => setNewEntry((p) => ({ ...p, week_number: e.target.value }))}
+                    placeholder="e.g. 8"
+                  />
+                </Field>
+                <Field label="Start date">
+                  <input
+                    name="start_date"
+                    type="date"
+                    value={newEntry.start_date}
+                    onChange={(e) => setNewEntry((p) => ({ ...p, start_date: e.target.value }))}
+                  />
+                </Field>
+                <Field label="End date">
+                  <input
+                    name="end_date"
+                    type="date"
+                    value={newEntry.end_date}
+                    onChange={(e) => setNewEntry((p) => ({ ...p, end_date: e.target.value }))}
+                  />
+                </Field>
+                <Field label="Activities">
+                  <input
+                    name="activities"
+                    value={newEntry.activities}
+                    onChange={(e) => setNewEntry((p) => ({ ...p, activities: e.target.value }))}
+                    placeholder="Summary of work done…"
+                  />
+                </Field>
+              </div>
+              <Btn kind="primary" sm disabled={creating} onClick={handleCreate}>
+                {creating ? "Creating…" : "Create entry"}
+              </Btn>
+            </Card>
+          )}
+
           <Card kind="accent">
             <div className="row row--between row--center">
               <div>
@@ -155,23 +246,31 @@ function LogbookPage() {
                   Currently editing
                 </div>
                 <h3 className="section-title" style={{ marginTop: 4 }}>
-                  Week 7 · May 4 — May 8
+                  Week {selected.week_number}
+                  {selected.start_date && selected.end_date
+                    ? ` · ${selected.start_date} — ${selected.end_date}`
+                    : ""}
                 </h3>
               </div>
               <div className="row row--center" style={{ gap: 8 }}>
-                <Chip kind="warn" dot>
-                  Draft
+                <Chip kind={STATUS_KIND[selected.status] || "accent"} dot>
+                  {selected.status_display || selected.status}
                 </Chip>
-                <Btn sm kind="ghost">
-                  Save draft
-                </Btn>
-                <Btn sm kind="primary">
-                  Submit for approval {I.arrow}
-                </Btn>
+                <Btn sm kind="ghost">Save draft</Btn>
+                {selected.status === "draft" && (
+                  <Btn
+                    sm
+                    kind="primary"
+                    disabled={submitting}
+                    onClick={() => handleSubmit(selected.id)}
+                  >
+                    {submitting ? "Submitting…" : `Submit for approval ${I.arrow}`}
+                  </Btn>
+                )}
               </div>
             </div>
             <div style={{ marginTop: 12 }}>
-              <Bar pct={40} />
+              <Bar pct={selected.status === "approved" ? 100 : selected.status === "pending" ? 50 : 40} />
             </div>
           </Card>
 
