@@ -31,13 +31,18 @@ export default function WorkplaceEvaluationPage() {
     return sum + (isNaN(v) ? 0 : Math.min(v, c.max));
   }, 0);
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    // TODO: wire to API
+  }
+
   return (
     <div className="page">
       <PageHead
         title="Submit Evaluation"
         sub="Score a student's internship performance."
         actions={
-          <Btn kind="primary" sm>
+          <Btn kind="primary" sm onClick={handleSubmit}>
             Submit evaluation
           </Btn>
         }
