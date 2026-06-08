@@ -1,28 +1,9 @@
 import { useState, useEffect } from "react";
 import { PageHead, Card, Chip, Bar } from "../../components/common/Primitives";
+import { getEvaluations } from "../../services/api";
 import "./EvaluationsPage.css";
 
-const WORKPLACE_CRITERIA = [
-  { label: "Technical Skills",   weight: 30, score: 26 },
-  { label: "Punctuality",        weight: 20, score: 18 },
-  { label: "Communication",      weight: 20, score: 17 },
-  { label: "Initiative",         weight: 15, score: 13 },
-  { label: "Professionalism",    weight: 15, score: 14 },
-];
-
-const ACADEMIC_CRITERIA = [
-  { label: "Logbook Quality",    weight: 40, score: 34 },
-  { label: "Weekly Submissions", weight: 30, score: 27 },
-  { label: "Progress Report",    weight: 30, score: 25 },
-];
-
 const STATUS_KIND = { approved: "ok", pending: "warn", rejected: "err", scheduled: "accent" };
-
-const HISTORY = [
-  { date: "2026-04-28", evaluator: "Mr. Okello (WS)", score: 82, status: "approved" },
-  { date: "2026-03-31", evaluator: "Dr. Nakato (AS)", score: 78, status: "approved" },
-  { date: "2026-03-01", evaluator: "Mr. Okello (WS)", score: 70, status: "approved" },
-];
 
 function Crit({ label, weight, score }) {
   const pct = Math.round((score / weight) * 100);
@@ -63,16 +44,39 @@ export default function EvaluationsPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // TODO ILES-71: replace mock data with getEvaluations() API call
-    try {
-      setWorkplaceCriteria(WORKPLACE_CRITERIA);
-      setAcademicCriteria(ACADEMIC_CRITERIA);
-      setHistory(HISTORY);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    getEvaluations()
+      .then((data) => {
+        const evals = data || [];
+        const workplace = evals.filter((e) => e.evaluator_type === "workplace");
+        const academic = evals.filter((e) => e.evaluator_type === "academic");
+
+        setWorkplaceCriteria(
+          workplace.map((e) => ({
+            label: e.criteria_name,
+            score: e.score,
+            weight: e.criteria_weight || 5,
+          }))
+        );
+        setAcademicCriteria(
+          academic.map((e) => ({
+            label: e.criteria_name,
+            score: e.score,
+            weight: e.criteria_weight || 5,
+          }))
+        );
+        setHistory(
+          evals
+            .filter((e) => e.is_finalised)
+            .map((e) => ({
+              date: e.evaluated_at?.split("T")[0] || "—",
+              evaluator: e.evaluator_username || (e.evaluator_type === "workplace" ? "Workplace Supervisor" : "Academic Supervisor"),
+              score: e.score,
+              status: "approved",
+            }))
+        );
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   const wpTotal = workplaceCriteria.reduce((s, c) => s + c.score, 0);
@@ -148,7 +152,7 @@ export default function EvaluationsPage() {
                 <tr key={i}>
                   <td>{h.date}</td>
                   <td>{h.evaluator}</td>
-                  <td className="eval-table__score">{h.score}%</td>
+                  <td className="eval-table__score">{h.score}/5</td>
                   <td><Chip kind={STATUS_KIND[h.status] || "ok"}>{h.status}</Chip></td>
                 </tr>
               ))}
