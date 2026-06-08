@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PageHead, Card, Stat, Chip } from "../../components/common/Primitives";
+import { PageHead, Card, Stat, Chip, Btn } from "../../components/common/Primitives";
 import "./AdminPlacementsPage.css";
 
 const FILTERS = ["All", "pending", "approved", "rejected"];
@@ -73,7 +73,14 @@ export default function AdminPlacementsPage() {
                   <td>{p.company}</td>
                   <td>{p.supervisor}</td>
                   <td><Chip kind={KIND[p.status]}>{p.status}</Chip></td>
-                  <td></td>
+                  <td>
+                    {p.status === "pending" && (
+                      <div className="ap-actions">
+                        <Btn kind="primary" sm>Approve</Btn>
+                        <Btn kind="danger" sm>Reject</Btn>
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ))
             )}
