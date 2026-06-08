@@ -115,7 +115,7 @@ export default function EvaluationsPage() {
     <div className="page">
       <PageHead
         title="My Evaluations"
-        sub="Scores from your workplace and academic supervisors."
+        sub={hasAnyEvals ? `${workplaceCriteria.length + academicCriteria.length} criteria scored across ${(workplaceCriteria.length > 0 ? 1 : 0) + (academicCriteria.length > 0 ? 1 : 0)} evaluators` : "Scores from your workplace and academic supervisors."}
       />
 
       {!hasAnyEvals ? (
