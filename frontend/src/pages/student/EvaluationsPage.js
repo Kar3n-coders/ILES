@@ -81,10 +81,12 @@ export default function EvaluationsPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Totals computed from API data — score and weight come from evaluation records
   const wpTotal = workplaceCriteria.reduce((s, c) => s + c.score, 0);
   const wpMax   = workplaceCriteria.reduce((s, c) => s + c.weight, 0);
   const acTotal = academicCriteria.reduce((s, c) => s + c.score, 0);
   const acMax   = academicCriteria.reduce((s, c) => s + c.weight, 0);
+  const hasAnyEvals = workplaceCriteria.length > 0 || academicCriteria.length > 0;
 
   if (loading) {
     return (
@@ -116,7 +118,7 @@ export default function EvaluationsPage() {
         sub="Scores from your workplace and academic supervisors."
       />
 
-      {(workplaceCriteria.length === 0 && academicCriteria.length === 0) ? (
+      {!hasAnyEvals ? (
         <Card label="Evaluations">
           <p className="eval-empty">No evaluations yet. Scores will appear here once your supervisors submit them.</p>
         </Card>
