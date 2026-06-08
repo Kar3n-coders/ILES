@@ -103,42 +103,56 @@ export default function EvaluationsPage() {
         sub="Scores from your workplace and academic supervisors."
       />
 
-      <div className="grid grid--2">
-        <EvalCard
-          title="Workplace Evaluation"
-          total={wpTotal}
-          max={wpMax}
-          criteria={workplaceCriteria}
-        />
-        <EvalCard
-          title="Academic Evaluation"
-          total={acTotal}
-          max={acMax}
-          criteria={academicCriteria}
-        />
-      </div>
+      {(workplaceCriteria.length === 0 && academicCriteria.length === 0) ? (
+        <Card label="Evaluations">
+          <p className="eval-empty">No evaluations yet. Scores will appear here once your supervisors submit them.</p>
+        </Card>
+      ) : (
+        <div className="grid grid--2">
+          {workplaceCriteria.length > 0 && (
+            <EvalCard
+              title="Workplace Evaluation"
+              total={wpTotal}
+              max={wpMax}
+              criteria={workplaceCriteria}
+            />
+          )}
+          {academicCriteria.length > 0 && (
+            <EvalCard
+              title="Academic Evaluation"
+              total={acTotal}
+              max={acMax}
+              criteria={academicCriteria}
+            />
+          )}
+        </div>
+      )}
 
       <Card label="Evaluation History">
-        <table className="eval-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Evaluator</th>
-              <th>Score</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history.map((h, i) => (
-              <tr key={i}>
-                <td>{h.date}</td>
-                <td>{h.evaluator}</td>
-                <td className="eval-table__score">{h.score}%</td>
-                <td><Chip kind="ok">{h.status}</Chip></td>
+        {history.length === 0 ? (
+          <p className="eval-empty">No completed evaluations yet.</p>
+        ) : (
+          <table className="eval-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Evaluator</th>
+                <th>Score</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {history.map((h, i) => (
+                <tr key={i}>
+                  <td>{h.date}</td>
+                  <td>{h.evaluator}</td>
+                  <td className="eval-table__score">{h.score}%</td>
+                  <td><Chip kind="ok">{h.status}</Chip></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </Card>
     </div>
   );

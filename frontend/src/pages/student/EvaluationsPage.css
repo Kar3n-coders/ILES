@@ -24,3 +24,8 @@
 }
 .eval-table tr:last-child td { border-bottom: none; }
 .eval-table__score { font-weight: 600; color: var(--color-primary); }
+
+.eval-empty {
+  font-size: 0.875rem; color: var(--color-text-muted);
+  padding: 24px 0; text-align: center;
+}
