@@ -159,7 +159,12 @@ function LogbookPage() {
             <span className="tiny">Weeks</span>
           </div>
           <ul style={{ listStyle: "none", margin: 0, padding: 6 }}>
-            {logbooks.map((it) => {
+            {logbooks.length === 0 ? (
+              <li style={{ padding: 16, textAlign: "center", fontSize: 13, color: "var(--color-text-muted)" }}>
+                No entries yet
+              </li>
+            ) : (
+              logbooks.map((it) => {
               const isActive = selected?.id === it.id;
               return (
                 <li
@@ -197,8 +202,8 @@ function LogbookPage() {
                       : it.created_at?.split("T")[0] || "—"}
                   </div>
                 </li>
-              );
-            })}
+              ))
+            )}
           </ul>
         </Card>
         <div className="col">
@@ -327,9 +332,9 @@ function LogbookPage() {
           <Card kind="ghost" label="Supervisor approval">
             <div className="row row--between row--center">
               <div className="row row--center" style={{ gap: 12 }}>
-                <span className="av av--orange">JO</span>
+                <span className="av av--orange">WS</span>
                 <div>
-                  <b>Mr. Okello</b> — Workplace supervisor
+                  <b>Your Workplace Supervisor</b>
                   <div className="muted" style={{ fontSize: 12 }}>
                     Will review this entry once you submit. Approval typically
                     within 48 hours.
@@ -340,20 +345,22 @@ function LogbookPage() {
             </div>
           </Card>
 
-          <Card kind="warn" label="Week 4 was returned">
-            <div className="row row--between row--center">
-              <div className="flex-1" style={{ paddingRight: 16 }}>
-                <b>
-                  "Add more detail on the API testing task. Mention which
-                  endpoints you tested and what tools you used."
-                </b>
-                <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-                  — Mr. Okello · 16 Apr 2026
+          {selected.status === "returned" && (
+            <Card kind="warn" label={`Week ${selected.week_number} was returned`}>
+              <div className="row row--between row--center">
+                <div className="flex-1" style={{ paddingRight: 16 }}>
+                  <b>
+                    Your supervisor has requested revisions. Please review
+                    their feedback and resubmit.
+                  </b>
+                  <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
+                    Check the comments on your entry for details.
+                  </div>
                 </div>
+                <Btn sm>Edit entry {I.arrow}</Btn>
               </div>
-              <Btn sm>Open Week 4 {I.arrow}</Btn>
-            </div>
-          </Card>
+            </Card>
+          )}
         </div>
       </div>
     </div>
