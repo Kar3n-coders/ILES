@@ -16,6 +16,8 @@ const ACADEMIC_CRITERIA = [
   { label: "Progress Report",    weight: 30, score: 25 },
 ];
 
+const STATUS_KIND = { approved: "ok", pending: "warn", rejected: "err", scheduled: "accent" };
+
 const HISTORY = [
   { date: "2026-04-28", evaluator: "Mr. Okello (WS)", score: 82, status: "approved" },
   { date: "2026-03-31", evaluator: "Dr. Nakato (AS)", score: 78, status: "approved" },
@@ -135,10 +137,10 @@ export default function EvaluationsPage() {
           <table className="eval-table">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Evaluator</th>
-                <th>Score</th>
-                <th>Status</th>
+                <th scope="col">Date</th>
+                <th scope="col">Evaluator</th>
+                <th scope="col">Score</th>
+                <th scope="col">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -147,7 +149,7 @@ export default function EvaluationsPage() {
                   <td>{h.date}</td>
                   <td>{h.evaluator}</td>
                   <td className="eval-table__score">{h.score}%</td>
-                  <td><Chip kind="ok">{h.status}</Chip></td>
+                  <td><Chip kind={STATUS_KIND[h.status] || "ok"}>{h.status}</Chip></td>
                 </tr>
               ))}
             </tbody>
