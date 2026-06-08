@@ -1,0 +1,72 @@
+.criteria-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.criteria-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.criteria-field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.criteria-field input {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.criteria-field input:focus {
+  border-color: var(--color-primary);
+}
+
+.criteria-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.criteria-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.criteria-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.criteria-table tr:last-child td {
+  border-bottom: none;
+}
+
+.criteria-table__name {
+  font-weight: 600;
+}
+
+.criteria-table__desc {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.criteria-empty {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  padding: 24px 0;
+  text-align: center;
+}

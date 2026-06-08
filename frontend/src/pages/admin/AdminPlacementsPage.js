@@ -1,28 +1,82 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHead, Card, Stat, Chip, Btn } from "../../components/common/Primitives";
+import { getPlacements, updatePlacement } from "../../services/api";
 import "./AdminPlacementsPage.css";
 
 const FILTERS = ["All", "pending", "approved", "rejected"];
 const KIND = { approved: "ok", pending: "warn", rejected: "err" };
 
-const PLACEMENTS = [
-  { id: 1, student: "Alice Namukasa", company: "Airtel Uganda",     supervisor: "Mr. Okello",  status: "approved" },
-  { id: 2, student: "Brian Ssemanda", company: "MTN Uganda",        supervisor: "Ms. Akello",  status: "pending"  },
-  { id: 3, student: "Carol Atim",     company: "Stanbic Bank",      supervisor: "Mr. Mugisha", status: "approved" },
-  { id: 4, student: "David Kato",     company: "Makerere E-Health", supervisor: "—",           status: "pending"  },
-  { id: 5, student: "Eva Nambi",      company: "NITA-U",            supervisor: "Ms. Nanteza", status: "rejected" },
-];
-
 export default function AdminPlacementsPage() {
+  const [placements, setPlacements] = useState([]);
   const [filter, setFilter] = useState("All");
-  const visible = filter === "All" ? PLACEMENTS : PLACEMENTS.filter((p) => p.status === filter);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [updating, setUpdating] = useState(null);
+
+  useEffect(() => {
+    getPlacements()
+      .then((data) => setPlacements(data || []))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const visible = filter === "All" ? placements : placements.filter((p) => p.status === filter);
 
   const counts = {
-    total:    PLACEMENTS.length,
-    pending:  PLACEMENTS.filter((p) => p.status === "pending").length,
-    approved: PLACEMENTS.filter((p) => p.status === "approved").length,
-    rejected: PLACEMENTS.filter((p) => p.status === "rejected").length,
+    total:    placements.length,
+    pending:  placements.filter((p) => p.status === "pending").length,
+    approved: placements.filter((p) => p.status === "approved").length,
+    rejected: placements.filter((p) => p.status === "rejected").length,
   };
+
+  async function handleApprove(id) {
+    setUpdating(id);
+    try {
+      await updatePlacement(id, { status: "approved" });
+      setPlacements((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, status: "approved", status_display: "Approved" } : p))
+      );
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUpdating(null);
+    }
+  }
+
+  async function handleReject(id) {
+    setUpdating(id);
+    try {
+      await updatePlacement(id, { status: "rejected" });
+      setPlacements((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, status: "rejected", status_display: "Rejected" } : p))
+      );
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUpdating(null);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="page">
+        <PageHead title="Placements" />
+        <p className="muted" style={{ padding: 24, textAlign: "center" }}>Loading placements…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page">
+        <PageHead title="Placements" />
+        <Card label="Error">
+          <p style={{ color: "var(--color-error)", marginBottom: 12 }}>{error}</p>
+          <Btn kind="primary" sm onClick={() => window.location.reload()}>Retry</Btn>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="page">
@@ -69,15 +123,33 @@ export default function AdminPlacementsPage() {
             ) : (
               visible.map((p) => (
                 <tr key={p.id}>
-                  <td>{p.student}</td>
-                  <td>{p.company}</td>
-                  <td>{p.supervisor}</td>
-                  <td><Chip kind={KIND[p.status]}>{p.status}</Chip></td>
+                  <td>{p.student_full_name || p.student_username || "—"}</td>
+                  <td>{p.company_name || "—"}</td>
+                  <td>{p.supervisor_full_name || p.supervisor_username || "—"}</td>
+                  <td>
+                    <Chip kind={KIND[p.status] || "accent"}>
+                      {p.status_display || p.status}
+                    </Chip>
+                  </td>
                   <td>
                     {p.status === "pending" && (
                       <div className="ap-actions">
-                        <Btn kind="primary" sm>Approve</Btn>
-                        <Btn kind="danger" sm>Reject</Btn>
+                        <Btn
+                          kind="primary"
+                          sm
+                          disabled={updating === p.id}
+                          onClick={() => handleApprove(p.id)}
+                        >
+                          {updating === p.id ? "…" : "Approve"}
+                        </Btn>
+                        <Btn
+                          kind="danger"
+                          sm
+                          disabled={updating === p.id}
+                          onClick={() => handleReject(p.id)}
+                        >
+                          {updating === p.id ? "…" : "Reject"}
+                        </Btn>
                       </div>
                     )}
                   </td>
