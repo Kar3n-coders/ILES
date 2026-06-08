@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   PageHead,
   Card,
@@ -9,24 +9,73 @@ import {
   Lines,
 } from "../../components/common/Primitives";
 import { I } from "../../components/common/Icons";
+import {
+  getLogbooks,
+  createLogbook,
+  submitLogbook,
+  getPlacements,
+} from "../../services/api";
 
-const WEEKS = [
-  {
-    w: 7,
-    status: "Draft",
-    active: true,
-    date: "May 4 — May 8",
-    kind: "accent",
-  },
-  { w: 6, status: "Approved", date: "Apr 27 — May 1", kind: "ok" },
-  { w: 5, status: "Approved", date: "Apr 20 — Apr 24", kind: "ok" },
-  { w: 4, status: "Returned", date: "Apr 13 — Apr 17", kind: "warn" },
-  { w: 3, status: "Approved", date: "Apr 6 — Apr 10", kind: "ok" },
-  { w: 2, status: "Approved", date: "Mar 30 — Apr 3", kind: "ok" },
-  { w: 1, status: "Approved", date: "Mar 23 — Mar 27", kind: "ok" },
-];
+const STATUS_KIND = {
+  draft: "accent",
+  pending: "warn",
+  approved: "ok",
+  returned: "warn",
+};
 
 function LogbookPage() {
+  const [logbooks, setLogbooks] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [placement, setPlacement] = useState(null);
+
+  useEffect(() => {
+    Promise.all([getLogbooks(), getPlacements()])
+      .then(([logData, placementsData]) => {
+        const sorted = (logData || []).sort((a, b) => b.week_number - a.week_number);
+        setLogbooks(sorted);
+        setSelected(sorted[0] || null);
+        setPlacement(placementsData?.[0] || null);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="page">
+        <PageHead crumb="Workspace · Logbook" title="Weekly logbook" />
+        <p className="muted" style={{ padding: 24, textAlign: 'center' }}>Loading logbook…</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page">
+        <PageHead crumb="Workspace · Logbook" title="Weekly logbook" />
+        <Card label="Error"><p style={{ color: 'var(--color-error)' }}>{error}</p></Card>
+      </div>
+    );
+  }
+
+  if (!selected) {
+    return (
+      <div className="page">
+        <PageHead
+          crumb="Workspace · Logbook"
+          title="Weekly logbook"
+          sub="Each week, summarize what you did, learned, and need help with."
+          actions={<Btn sm kind="primary">{I.plus} New week</Btn>}
+        />
+        <Card label="Logbook">
+          <p className="muted" style={{ padding: 24, textAlign: 'center' }}>No logbook entries yet. Create your first week entry to get started.</p>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="page">
       <PageHead
@@ -56,38 +105,46 @@ function LogbookPage() {
             <span className="tiny">Weeks</span>
           </div>
           <ul style={{ listStyle: "none", margin: 0, padding: 6 }}>
-            {WEEKS.map((it) => (
-              <li
-                key={it.w}
-                style={{
-                  padding: "10px 12px",
-                  margin: 2,
-                  borderRadius: 8,
-                  background: it.active ? "var(--primary-soft)" : "transparent",
-                  cursor: "pointer",
-                  border: it.active
-                    ? "1px solid rgba(26,54,93,0.2)"
-                    : "1px solid transparent",
-                }}
-              >
-                <div className="row row--between row--center">
-                  <b
-                    style={{
-                      fontSize: 14,
-                      color: it.active
-                        ? "var(--color-primary)"
-                        : "var(--color-text)",
-                    }}
-                  >
-                    Week {it.w}
-                  </b>
-                  <Chip kind={it.kind}>{it.status}</Chip>
-                </div>
-                <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>
-                  {it.date}
-                </div>
-              </li>
-            ))}
+            {logbooks.map((it) => {
+              const isActive = selected?.id === it.id;
+              return (
+                <li
+                  key={it.id}
+                  onClick={() => setSelected(it)}
+                  style={{
+                    padding: "10px 12px",
+                    margin: 2,
+                    borderRadius: 8,
+                    background: isActive ? "var(--primary-soft)" : "transparent",
+                    cursor: "pointer",
+                    border: isActive
+                      ? "1px solid rgba(26,54,93,0.2)"
+                      : "1px solid transparent",
+                  }}
+                >
+                  <div className="row row--between row--center">
+                    <b
+                      style={{
+                        fontSize: 14,
+                        color: isActive
+                          ? "var(--color-primary)"
+                          : "var(--color-text)",
+                      }}
+                    >
+                      Week {it.week_number}
+                    </b>
+                    <Chip kind={STATUS_KIND[it.status] || "accent"}>
+                      {it.status_display || it.status}
+                    </Chip>
+                  </div>
+                  <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>
+                    {it.start_date && it.end_date
+                      ? `${it.start_date} — ${it.end_date}`
+                      : it.created_at?.split("T")[0] || "—"}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </Card>
         <div className="col">
