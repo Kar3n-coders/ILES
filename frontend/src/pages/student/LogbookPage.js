@@ -164,9 +164,7 @@ function LogbookPage() {
                 No entries yet
               </li>
             ) : (
-              logbooks.map((it) => {
-              const isActive = selected?.id === it.id;
-              return (
+              logbooks.map((it) => (
                 <li
                   key={it.id}
                   onClick={() => setSelected(it)}
@@ -174,9 +172,9 @@ function LogbookPage() {
                     padding: "10px 12px",
                     margin: 2,
                     borderRadius: 8,
-                    background: isActive ? "var(--primary-soft)" : "transparent",
+                    background: selected?.id === it.id ? "var(--primary-soft)" : "transparent",
                     cursor: "pointer",
-                    border: isActive
+                    border: selected?.id === it.id
                       ? "1px solid rgba(26,54,93,0.2)"
                       : "1px solid transparent",
                   }}
@@ -185,7 +183,7 @@ function LogbookPage() {
                     <b
                       style={{
                         fontSize: 14,
-                        color: isActive
+                        color: selected?.id === it.id
                           ? "var(--color-primary)"
                           : "var(--color-text)",
                       }}
