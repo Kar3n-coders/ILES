@@ -99,7 +99,12 @@ export default function EvaluationsPage() {
     return (
       <div className="page">
         <PageHead title="My Evaluations" sub="Scores from your workplace and academic supervisors." />
-        <Card label="Error"><p style={{ color: 'var(--color-error)' }}>{error}</p></Card>
+        <Card label="Error">
+          <p style={{ color: 'var(--color-error)', marginBottom: 12 }}>{error}</p>
+          <button className="btn btn--primary btn--sm" onClick={() => window.location.reload()}>
+            Retry
+          </button>
+        </Card>
       </div>
     );
   }
