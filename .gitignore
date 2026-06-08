@@ -8,14 +8,13 @@ documentation
 backend/iles/__pycache__
 backend/logbook/__pycache__
 backend/users/__pycache__
-backend/iles/__pycache__
-backend/logbook/__pycache__
-backend/users/__pycache__
 backend/evaluation/__pycache__
 backend/evaluation/migrations
 backend/logbook/migrations
 backend/reviews/__pycache__
-<<<<<<< HEAD
+backend/placements/migrations
+backend/placements/__pycache__
+backend/staticfiles
 /backend/evaluation/migrations/__pycache__
 /backend/logbook/migrations/__pycache__
 /backend/placements/__pycache__
@@ -30,11 +29,10 @@ backend/reviews/__pycache__
 .claude/worktrees
 tickets
 CLAUDE.md
-<<<<<<< ours
-=======
->>>>>>> main
-=======
->>>>>>> theirs
-backend/placements/migrations
-backend/placements/__pycache__
-backend/staticfiles
+
+# Unwanted tracked files — ignore from now on
+.aider*
+AGENTS.md
+docs/
+.vscode/
+*.md
