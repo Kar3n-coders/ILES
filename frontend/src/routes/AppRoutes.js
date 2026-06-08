@@ -10,10 +10,8 @@ import RegisterPage from "../pages/RegisterPage";
 // Student imports
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import LogbookPage from "../pages/student/LogbookPage";
-import ProgressPage from "../pages/student/ProgressPage";
 import ProfilePage from "../pages/student/ProfilePage";
 import SchedulePage from "../pages/student/SchedulePage";
-import DocumentsPage from "../pages/student/DocumentsPage";
 import EvaluationsPage from "../pages/student/EvaluationsPage";
 
 // WorkplaceSupervisor imports
@@ -50,9 +48,7 @@ function AppRoutes() {
               element={<StudentDashboardPage />}
             />
             <Route path="/student/logbook" element={<LogbookPage />} />
-            <Route path="/student/progress" element={<ProgressPage />} />
             <Route path="/student/schedule" element={<SchedulePage />} />
-            <Route path="/student/documents" element={<DocumentsPage />} />
             <Route path="/student/profile" element={<ProfilePage />} />
             <Route path="/student/evaluations" element={<EvaluationsPage />} />
           </Route>
