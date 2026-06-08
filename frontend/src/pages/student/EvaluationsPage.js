@@ -69,7 +69,9 @@ export default function EvaluationsPage() {
             .filter((e) => e.is_finalised)
             .map((e) => ({
               date: e.evaluated_at?.split("T")[0] || "—",
+              type: e.evaluator_type === "workplace" ? "Workplace" : "Academic",
               evaluator: e.evaluator_username || (e.evaluator_type === "workplace" ? "Workplace Supervisor" : "Academic Supervisor"),
+              criteria: e.criteria_name,
               score: e.score,
               status: "approved",
             }))
@@ -142,7 +144,9 @@ export default function EvaluationsPage() {
             <thead>
               <tr>
                 <th scope="col">Date</th>
+                <th scope="col">Type</th>
                 <th scope="col">Evaluator</th>
+                <th scope="col">Criteria</th>
                 <th scope="col">Score</th>
                 <th scope="col">Status</th>
               </tr>
@@ -151,7 +155,9 @@ export default function EvaluationsPage() {
               {history.map((h, i) => (
                 <tr key={i}>
                   <td>{h.date}</td>
+                  <td>{h.type}</td>
                   <td>{h.evaluator}</td>
+                  <td>{h.criteria}</td>
                   <td className="eval-table__score">{h.score}/5</td>
                   <td><Chip kind={STATUS_KIND[h.status] || "ok"}>{h.status}</Chip></td>
                 </tr>
