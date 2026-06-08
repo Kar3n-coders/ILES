@@ -24,6 +24,7 @@ import WorkplaceStudentsPage from "../pages/workplace_supervisor/StudentsPage";
 import AcademicSupervisorDashboardPage from "../pages/academic_supervisor/AcademicSupervisorDashboardPage";
 import AcademicEvaluationPage from "../pages/academic_supervisor/AcademicEvaluationPage";
 import AcademicSupervisorProfilePage from "../pages/academic_supervisor/ProfilePage";
+import AcademicStudentsPage from "../pages/academic_supervisor/StudentsPage";
 
 //Admin imports
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
@@ -82,6 +83,10 @@ function AppRoutes() {
             <Route
               path="/academic/dashboard"
               element={<AcademicSupervisorDashboardPage />}
+            />
+            <Route
+              path="/academic/students"
+              element={<AcademicStudentsPage />}
             />
             <Route
               path="/academic/evaluation"
