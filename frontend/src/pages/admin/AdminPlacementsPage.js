@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { PageHead, Card, Stat } from "../../components/common/Primitives";
 import "./AdminPlacementsPage.css";
+
+const FILTERS = ["All", "pending", "approved", "rejected"];
 
 const PLACEMENTS = [
   { id: 1, student: "Alice Namukasa", company: "Airtel Uganda",     supervisor: "Mr. Okello",  status: "approved" },
@@ -10,6 +13,9 @@ const PLACEMENTS = [
 ];
 
 export default function AdminPlacementsPage() {
+  const [filter, setFilter] = useState("All");
+  const visible = filter === "All" ? PLACEMENTS : PLACEMENTS.filter((p) => p.status === filter);
+
   const counts = {
     total:    PLACEMENTS.length,
     pending:  PLACEMENTS.filter((p) => p.status === "pending").length,
@@ -32,6 +38,18 @@ export default function AdminPlacementsPage() {
       </div>
 
       <Card label="All Placements">
+        <div className="ap-filters">
+          {FILTERS.map((f) => (
+            <button
+              key={f}
+              className={`ap-filter${filter === f ? " ap-filter--active" : ""}`}
+              onClick={() => setFilter(f)}
+            >
+              {f.charAt(0).toUpperCase() + f.slice(1)}
+            </button>
+          ))}
+        </div>
+
         <table className="ap-table">
           <thead>
             <tr>
@@ -43,7 +61,7 @@ export default function AdminPlacementsPage() {
             </tr>
           </thead>
           <tbody>
-            {PLACEMENTS.map((p) => (
+            {visible.map((p) => (
               <tr key={p.id}>
                 <td>{p.student}</td>
                 <td>{p.company}</td>
