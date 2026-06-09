@@ -135,6 +135,12 @@ export function updatePlacement(id, data) {
   });
 }
 
+export function deletePlacement(id) {
+  return request(`/placements/${id}/`, {
+    method: "DELETE",
+  });
+}
+
 //-------EVALUTATION ENDPOINTS ----------
 
 export function getEvaluationCriteria() {
