@@ -6,12 +6,13 @@ import {
   Chip,
   Field,
   Bar,
-  Lines,
 } from "../../components/common/Primitives";
 import { I } from "../../components/common/Icons";
+import "../supervisor/FeedbackModal.css";
 import {
   getLogbooks,
   createLogbook,
+  updateLogbook,
   submitLogbook,
   getPlacements,
 } from "../../services/api";
@@ -31,7 +32,9 @@ function LogbookPage() {
   const [placement, setPlacement] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [newEntry, setNewEntry] = useState({
     week_number: "",
     start_date: "",
@@ -67,6 +70,31 @@ function LogbookPage() {
       setError(err.message);
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function handleSaveDraft() {
+    if (!selected) return;
+    setSaving(true);
+    setSaveSuccess(false);
+    try {
+      const updated = await updateLogbook(selected.id, {
+        week_number: selected.week_number,
+        start_date: selected.start_date,
+        end_date: selected.end_date,
+        activities: selected.activities || "",
+        status: "draft",
+      });
+      setLogbooks((prev) =>
+        prev.map((l) => (l.id === selected.id ? { ...l, ...updated } : l))
+      );
+      setSelected((prev) => ({ ...prev, ...updated }));
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -106,6 +134,7 @@ function LogbookPage() {
   }
 
   if (!selected) {
+    const canCreate = placement && placement.status !== "pending";
     return (
       <div className="page">
         <PageHead
@@ -113,13 +142,21 @@ function LogbookPage() {
           title="Weekly logbook"
           sub="Each week, summarize what you did, learned, and need help with."
           actions={
-            <Btn sm kind="primary" onClick={() => setShowCreateForm(true)}>
-              {I.plus} New week
-            </Btn>
+            canCreate ? (
+              <Btn sm kind="primary" onClick={() => setShowCreateForm(true)}>
+                {I.plus} New week
+              </Btn>
+            ) : null
           }
         />
         <Card label="Logbook">
-          <p className="muted" style={{ padding: 24, textAlign: 'center' }}>No logbook entries yet. Create your first week entry to get started.</p>
+          <p className="muted" style={{ padding: 24, textAlign: 'center' }}>
+            {!placement
+              ? "Complete your placement onboarding to start logging entries."
+              : placement.status === "pending"
+              ? "Your placement is pending approval. Logbook unlocks after approval."
+              : "No logbook entries yet. Create your first week entry to get started."}
+          </p>
         </Card>
       </div>
     );
@@ -210,46 +247,65 @@ function LogbookPage() {
         </Card>
         <div className="col">
           {showCreateForm && (
-            <Card label="New logbook entry">
-              <div className="grid grid--2" style={{ marginBottom: 12 }}>
-                <Field label="Week number">
-                  <input
-                    name="week_number"
-                    type="number"
-                    value={newEntry.week_number}
-                    onChange={(e) => setNewEntry((p) => ({ ...p, week_number: e.target.value }))}
-                    placeholder="e.g. 8"
-                  />
-                </Field>
-                <Field label="Start date">
-                  <input
-                    name="start_date"
-                    type="date"
-                    value={newEntry.start_date}
-                    onChange={(e) => setNewEntry((p) => ({ ...p, start_date: e.target.value }))}
-                  />
-                </Field>
-                <Field label="End date">
-                  <input
-                    name="end_date"
-                    type="date"
-                    value={newEntry.end_date}
-                    onChange={(e) => setNewEntry((p) => ({ ...p, end_date: e.target.value }))}
-                  />
-                </Field>
-                <Field label="Activities">
-                  <input
-                    name="activities"
-                    value={newEntry.activities}
-                    onChange={(e) => setNewEntry((p) => ({ ...p, activities: e.target.value }))}
-                    placeholder="Summary of work done…"
-                  />
-                </Field>
+            <div className="modal-overlay" onClick={() => setShowCreateForm(false)}>
+              <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 520 }}>
+                <div className="modal-header">
+                  <h3>New logbook entry</h3>
+                  <p>Fill in the details for this week's log.</p>
+                  <button className="modal-close" onClick={() => setShowCreateForm(false)} aria-label="Close">&times;</button>
+                </div>
+                <div className="modal-body">
+                  <div className="grid grid--2">
+                    <div>
+                      <label>Week number</label>
+                      <input
+                        type="number"
+                        value={newEntry.week_number}
+                        onChange={(e) => setNewEntry((p) => ({ ...p, week_number: e.target.value }))}
+                        placeholder="e.g. 8"
+                      />
+                    </div>
+                    <div>
+                      <label>Start date</label>
+                      <input
+                        type="date"
+                        value={newEntry.start_date}
+                        onChange={(e) => setNewEntry((p) => ({ ...p, start_date: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <label>End date</label>
+                      <input
+                        type="date"
+                        value={newEntry.end_date}
+                        onChange={(e) => setNewEntry((p) => ({ ...p, end_date: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label>Activities</label>
+                    <textarea
+                      rows={4}
+                      value={newEntry.activities}
+                      onChange={(e) => setNewEntry((p) => ({ ...p, activities: e.target.value }))}
+                      placeholder="Describe what you worked on this week…"
+                    />
+                  </div>
+                  {error && <p style={{ color: "var(--color-error)", fontSize: 13 }}>{error}</p>}
+                  <div className="modal-actions">
+                    <Btn sm kind="ghost" onClick={() => setShowCreateForm(false)}>Cancel</Btn>
+                    <Btn
+                      sm
+                      kind="primary"
+                      disabled={creating || !newEntry.week_number || !newEntry.start_date || !newEntry.end_date}
+                      onClick={handleCreate}
+                    >
+                      {creating ? "Creating…" : "Create entry"}
+                    </Btn>
+                  </div>
+                </div>
               </div>
-              <Btn kind="primary" sm disabled={creating} onClick={handleCreate}>
-                {creating ? "Creating…" : "Create entry"}
-              </Btn>
-            </Card>
+            </div>
           )}
 
           <Card kind="accent">
@@ -269,7 +325,12 @@ function LogbookPage() {
                 <Chip kind={STATUS_KIND[selected.status] || "accent"} dot>
                   {selected.status_display || selected.status}
                 </Chip>
-                <Btn sm kind="ghost">Save draft</Btn>
+                {saveSuccess && (
+                  <span style={{ fontSize: 12, color: "var(--color-success)" }}>✓ Saved</span>
+                )}
+                <Btn sm kind="ghost" disabled={saving} onClick={handleSaveDraft}>
+                  {saving ? "Saving…" : "Save draft"}
+                </Btn>
                 {selected.status === "draft" && (
                   <Btn
                     sm
@@ -287,47 +348,9 @@ function LogbookPage() {
             </div>
           </Card>
 
-          <Card label="① Tasks completed this week">
+          <Card label="Activities">
             <Field kind="ta">
-              <Lines count={4} />
-            </Field>
-          </Card>
-
-          <div className="grid grid--2">
-            <Card label="② Skills practiced">
-              <div className="row row--wrap" style={{ gap: 6 }}>
-                <Chip kind="accent">REST APIs</Chip>
-                <Chip kind="accent">PostgreSQL</Chip>
-                <Chip kind="accent">Docker</Chip>
-                <Chip>{I.plus} add skill</Chip>
-              </div>
-              <div className="field__hint" style={{ marginTop: 12 }}>
-                Tagged skills automatically appear on your Progress page.
-              </div>
-            </Card>
-            <Card label="③ Hours">
-              <div className="row" style={{ gap: 8 }}>
-                {["Mon", "Tue", "Wed", "Thu", "Fri"].map((d, i) => (
-                  <Field key={d} label={d} placeholder={i < 3 ? "8" : "—"} />
-                ))}
-              </div>
-              <div className="field__hint" style={{ marginTop: 8 }}>
-                Total: 24 hrs · 16 hrs remaining this week
-              </div>
-            </Card>
-          </div>
-
-          <Card label="④ Challenges & lessons learned">
-            <Field kind="ta">
-              <Lines count={3} />
-            </Field>
-          </Card>
-
-          <Card label="⑤ Attachments (optional)">
-            <Field kind="file">
-              <span style={{ color: "var(--color-primary)", fontWeight: 600 }}>
-                {I.upload} Drop screenshots, code, photos…
-              </span>
+              {selected.activities || <span className="muted" style={{ fontSize: 13 }}>No activities recorded.</span>}
             </Field>
           </Card>
 
