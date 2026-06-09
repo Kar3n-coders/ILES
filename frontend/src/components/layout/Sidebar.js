@@ -36,12 +36,6 @@ const NAV_CONFIG = {
         title: "Resources",
         items: [
           {
-            path: "/student/schedule",
-            label: "Schedule",
-            icon: <CalendarIcon />,
-            description: "Week-by-week timeline",
-          },
-          {
             path: "/student/profile",
             label: "My Profile",
             icon: <ProfileIcon />,

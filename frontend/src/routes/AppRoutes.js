@@ -11,7 +11,6 @@ import RegisterPage from "../pages/RegisterPage";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import LogbookPage from "../pages/student/LogbookPage";
 import ProfilePage from "../pages/student/ProfilePage";
-import SchedulePage from "../pages/student/SchedulePage";
 import EvaluationsPage from "../pages/student/EvaluationsPage";
 
 // WorkplaceSupervisor imports
@@ -52,7 +51,6 @@ function AppRoutes() {
               element={<StudentDashboardPage />}
             />
             <Route path="/student/logbook" element={<LogbookPage />} />
-            <Route path="/student/schedule" element={<SchedulePage />} />
             <Route path="/student/profile" element={<ProfilePage />} />
             <Route path="/student/evaluations" element={<EvaluationsPage />} />
           </Route>
