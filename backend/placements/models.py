@@ -26,6 +26,13 @@ class InternshipPlacement(models.Model):
         blank=True,
         related_name="supervised_placements",
     )
+    academic_supervisor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="academic_supervised_placements",
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
 
     def __str__(self):
