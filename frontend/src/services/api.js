@@ -107,7 +107,7 @@ export async function updateLogbook(logId, logData) {
 
 export function submitLogbook(logId) {
   return request(`/logbook/${logId}/submit/`, {
-    method: "POST",
+    method: "PATCH",
     body: JSON.stringify({}),
   });
 }
