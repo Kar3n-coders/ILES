@@ -133,9 +133,15 @@ class LogbookViewSet(viewsets.ModelViewSet):
             )
 
         #Perform the state transition
-        logbook.status = "pending"
-        logbook.submitted_at = timezone.now()
-        logbook.save(updated_fields=["status", "submitted_at"])
+        try:
+            logbook.status = "pending"
+            logbook.submitted_at = timezone.now()
+            logbook.save()
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to submit logbook: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
         return Response(
             LogbookSerializer(logbook).data,
