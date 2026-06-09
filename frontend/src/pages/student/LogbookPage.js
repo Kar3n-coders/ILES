@@ -112,7 +112,11 @@ function LogbookPage() {
           crumb="Workspace · Logbook"
           title="Weekly logbook"
           sub="Each week, summarize what you did, learned, and need help with."
-          actions={<Btn sm kind="primary">{I.plus} New week</Btn>}
+          actions={
+            <Btn sm kind="primary" onClick={() => setShowCreateForm(true)}>
+              {I.plus} New week
+            </Btn>
+          }
         />
         <Card label="Logbook">
           <p className="muted" style={{ padding: 24, textAlign: 'center' }}>No logbook entries yet. Create your first week entry to get started.</p>
@@ -133,15 +137,15 @@ function LogbookPage() {
             <Btn
               sm
               kind="primary"
-              disabled={!placement}
-              title={!placement ? "Complete your placement onboarding first" : ""}
+              disabled={!placement || placement?.status === "pending"}
+              title={!placement ? "Complete your placement onboarding first" : placement?.status === "pending" ? "Placement pending approval" : ""}
               onClick={() => setShowCreateForm((v) => !v)}
             >
               {I.plus} New week
             </Btn>
-            {!placement && (
+            {(!placement || placement?.status === "pending") && (
               <span className="muted" style={{ fontSize: 12 }}>
-                Complete placement onboarding to create entries
+                {!placement ? "Complete placement onboarding to create entries" : "Placement pending approval — logbook unlocks after approval"}
               </span>
             )}
           </>
