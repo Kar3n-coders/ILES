@@ -148,7 +148,7 @@ export function getEvaluationCriteria() {
 }
 
 export function createEvaluationCriteria(data) {
-  return request("/evaluation/criteria/", {
+  return request("/evaluation-criteria/", {
     method: "POST",
     body: JSON.stringify(data),
   });
