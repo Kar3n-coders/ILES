@@ -144,11 +144,11 @@ export function deletePlacement(id) {
 //-------EVALUTATION ENDPOINTS ----------
 
 export function getEvaluationCriteria() {
-  return request("/evaluation/criteria/");
+  return request("/evaluation-criteria/");
 }
 
 export function createEvaluationCriteria(data) {
-  return request("/evaluation/criteria/", {
+  return request("/evaluation-criteria/", {
     method: "POST",
     body: JSON.stringify(data),
   });

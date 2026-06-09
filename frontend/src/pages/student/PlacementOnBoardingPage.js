@@ -9,12 +9,12 @@ export default function OnboardingPage() {
   const [form, setForm] = useState({
     company_name: "",
     supervisor: "",
+    academic_supervisor: "",
     start_date: "",
     end_date: "",
   });
   const [wsSupervisors, setWsSupervisors] = useState([]);
   const [asSupervisors, setAsSupervisors] = useState([]);
-  const [supervisorType, setSupervisorType] = useState("workplace_supervisor");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -29,8 +29,6 @@ export default function OnboardingPage() {
       })
       .catch(() => {});
   }, []);
-
-  const supervisors = supervisorType === "workplace_supervisor" ? wsSupervisors : asSupervisors;
 
   function update(k, v) {
     setForm(p => ({ ...p, [k]: v }));
@@ -48,6 +46,7 @@ export default function OnboardingPage() {
       await createPlacement({
         company_name: form.company_name,
         supervisor: form.supervisor || null,
+        academic_supervisor: form.academic_supervisor || null,
         start_date: form.start_date,
         end_date: form.end_date,
       });
@@ -139,24 +138,15 @@ export default function OnboardingPage() {
           </div>
         </Card>
 
-        <Card label="Supervisor">
+        <Card label="Workplace Supervisor">
           <div className="col" style={{ gap: 12 }}>
-            <Field label="Supervisor type">
-              <select
-                value={supervisorType}
-                onChange={e => { setSupervisorType(e.target.value); update("supervisor", ""); }}
-              >
-                <option value="workplace_supervisor">Workplace Supervisor</option>
-                <option value="academic_supervisor">Academic Supervisor</option>
-              </select>
-            </Field>
-            <Field label="Select supervisor">
+            <Field label="Select workplace supervisor">
               <select
                 value={form.supervisor}
                 onChange={e => update("supervisor", e.target.value)}
               >
-                <option value="">Choose a supervisor…</option>
-                {supervisors.map(s => (
+                <option value="">Choose…</option>
+                {wsSupervisors.map(s => (
                   <option key={s.id} value={s.id}>
                     {s.first_name} {s.last_name} ({s.email})
                   </option>
@@ -165,9 +155,28 @@ export default function OnboardingPage() {
             </Field>
           </div>
           <div className="field__hint" style={{ marginTop: 12 }}>
-            {supervisors.length === 0
-              ? "No supervisors available yet. You can submit without one."
-              : "Select the supervisor assigned to your placement."}
+            {wsSupervisors.length === 0 ? "No workplace supervisors available." : "Your day-to-day supervisor at the company."}
+          </div>
+        </Card>
+
+        <Card label="Academic Supervisor">
+          <div className="col" style={{ gap: 12 }}>
+            <Field label="Select academic supervisor">
+              <select
+                value={form.academic_supervisor}
+                onChange={e => update("academic_supervisor", e.target.value)}
+              >
+                <option value="">Choose…</option>
+                {asSupervisors.map(s => (
+                  <option key={s.id} value={s.id}>
+                    {s.first_name} {s.last_name} ({s.email})
+                  </option>
+                ))}
+              </select>
+            </Field>
+          </div>
+          <div className="field__hint" style={{ marginTop: 12 }}>
+            {asSupervisors.length === 0 ? "No academic supervisors available." : "Your faculty supervisor at the university."}
           </div>
         </Card>
       </div>
