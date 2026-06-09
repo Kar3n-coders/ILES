@@ -35,6 +35,20 @@ function LogbookPage() {
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [editActivities, setEditActivities] = useState("");
+  const [editWeek, setEditWeek] = useState("");
+  const [editStart, setEditStart] = useState("");
+  const [editEnd, setEditEnd] = useState("");
+
+  // Sync edit fields when selected changes
+  useEffect(() => {
+    if (selected) {
+      setEditActivities(selected.activities || "");
+      setEditWeek(selected.week_number || "");
+      setEditStart(selected.start_date ? selected.start_date.split("T")[0] : "");
+      setEditEnd(selected.end_date ? selected.end_date.split("T")[0] : "");
+    }
+  }, [selected?.id]);
   const [newEntry, setNewEntry] = useState({
     week_number: "",
     start_date: "",
@@ -79,10 +93,10 @@ function LogbookPage() {
     setSaveSuccess(false);
     try {
       const updated = await updateLogbook(selected.id, {
-        week_number: selected.week_number,
-        start_date: selected.start_date,
-        end_date: selected.end_date,
-        activities: selected.activities || "",
+        week_number: editWeek || selected.week_number,
+        start_date: editStart || selected.start_date,
+        end_date: editEnd || selected.end_date,
+        activities: editActivities,
         status: "draft",
       });
       setLogbooks((prev) =>
@@ -314,12 +328,30 @@ function LogbookPage() {
                 <div className="tiny" style={{ color: "var(--color-primary)" }}>
                   Currently editing
                 </div>
-                <h3 className="section-title" style={{ marginTop: 4 }}>
-                  Week {selected.week_number}
-                  {selected.start_date && selected.end_date
-                    ? ` · ${selected.start_date} — ${selected.end_date}`
-                    : ""}
-                </h3>
+                {selected.status === "draft" ? (
+                  <div className="row" style={{ gap: 8, marginTop: 4, flexWrap: "wrap" }}>
+                    <input type="number" min={1} max={52}
+                      value={editWeek}
+                      onChange={e => setEditWeek(e.target.value)}
+                      style={{ width: 64, padding: "4px 8px", fontSize: 14, border: "1px solid var(--color-border)", borderRadius: 6, background: "var(--color-background)", color: "var(--color-text)" }}
+                      placeholder="Week" />
+                    <input type="date"
+                      value={editStart}
+                      onChange={e => setEditStart(e.target.value)}
+                      style={{ padding: "4px 8px", fontSize: 14, border: "1px solid var(--color-border)", borderRadius: 6, background: "var(--color-background)", color: "var(--color-text)" }} />
+                    <input type="date"
+                      value={editEnd}
+                      onChange={e => setEditEnd(e.target.value)}
+                      style={{ padding: "4px 8px", fontSize: 14, border: "1px solid var(--color-border)", borderRadius: 6, background: "var(--color-background)", color: "var(--color-text)" }} />
+                  </div>
+                ) : (
+                  <h3 className="section-title" style={{ marginTop: 4 }}>
+                    Week {selected.week_number}
+                    {selected.start_date && selected.end_date
+                      ? ` · ${selected.start_date} — ${selected.end_date}`
+                      : ""}
+                  </h3>
+                )}
               </div>
               <div className="row row--center" style={{ gap: 8 }}>
                 <Chip kind={STATUS_KIND[selected.status] || "accent"} dot>
@@ -349,9 +381,20 @@ function LogbookPage() {
           </Card>
 
           <Card label="Activities">
-            <Field kind="ta">
-              {selected.activities || <span className="muted" style={{ fontSize: 13 }}>No activities recorded.</span>}
-            </Field>
+            {selected.status === "draft" ? (
+              <Field kind="ta">
+                <textarea
+                  rows={6}
+                  value={editActivities}
+                  onChange={e => setEditActivities(e.target.value)}
+                  placeholder="Describe what you worked on this week…"
+                />
+              </Field>
+            ) : (
+              <Field kind="ta">
+                {selected.activities || <span className="muted" style={{ fontSize: 13 }}>No activities recorded.</span>}
+              </Field>
+            )}
           </Card>
 
           <Card kind="ghost" label="Supervisor approval">
