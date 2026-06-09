@@ -21,6 +21,11 @@ class PlacementSerializer(serializers.ModelSerializer):
     )
     supervisor_full_name = serializers.SerializerMethodField()
 
+    academic_supervisor_username = serializers.CharField(
+        source="academic_supervisor.username", read_only=True
+    )
+    academic_supervisor_full_name = serializers.SerializerMethodField()
+
     status_display = serializers.CharField(source="get_status_display", read_only=True)
 
     logbook_count = serializers.SerializerMethodField()
@@ -40,6 +45,9 @@ class PlacementSerializer(serializers.ModelSerializer):
             "supervisor",
             "supervisor_username",
             "supervisor_full_name",
+            "academic_supervisor",
+            "academic_supervisor_username",
+            "academic_supervisor_full_name",
             "logbook_count",
         ]
 
@@ -51,6 +59,11 @@ class PlacementSerializer(serializers.ModelSerializer):
     def get_supervisor_full_name(self, obj):
         if obj.supervisor:
             return f"{obj.supervisor.first_name} {obj.supervisor.last_name}".strip()
+        return None
+
+    def get_academic_supervisor_full_name(self, obj):
+        if obj.academic_supervisor:
+            return f"{obj.academic_supervisor.first_name} {obj.academic_supervisor.last_name}".strip()
         return None
 
     def get_logbook_count(self, obj):
@@ -75,13 +88,15 @@ class PlacementCreateSerializer(serializers.ModelSerializer):
             "start_date",
             "end_date",
             "supervisor",
+            "academic_supervisor",
         ]
 
         extra_kwargs = {
             "supervisor": {"required": False, "allow_null": True},
+            "academic_supervisor": {"required": False, "allow_null": True},
             "student": {
                 "required": False
-            },  # set automatically in view for student role
+            },
         }
 
     def validate_student(self, value):
