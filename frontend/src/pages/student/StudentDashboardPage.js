@@ -213,17 +213,6 @@ export default function StudentDashboardPage() {
             )}
           </Card>
 
-          {/* Quick actions */}
-          <Card label="Quick actions">
-            <div className="row row--wrap" style={{ gap: 8 }}>
-              <Btn onClick={() => navigate("/student/logbook")}>
-                {I.plus} New log entry
-              </Btn>
-              <Btn>{I.upload} Upload document</Btn>
-              <Btn>{I.cal} Request visit</Btn>
-              <Btn>{I.pencil} Update CV</Btn>
-            </div>
-          </Card>
         </div>
 
         {/* Right col */}
