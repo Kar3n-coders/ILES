@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHead, Card, Btn, Field } from '../../components/common/Primitives';
 import { I } from '../../components/common/Icons';
-import { createPlacement, getUsers } from '../../services/api';
-
-const API_URL = process.env.REACT_APP_API_BASE_URL || '';
+import { createPlacement, getUsersByRole } from '../../services/api';
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
@@ -22,22 +20,8 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/api/users/?role=workplace_supervisor`, {
-        headers: {
-          "Content-Type": "application/json",
-          ...(localStorage.getItem("iles_auth_token") && {
-            Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-          }),
-        },
-      }).then(r => r.json()),
-      fetch(`${API_URL}/api/users/?role=academic_supervisor`, {
-        headers: {
-          "Content-Type": "application/json",
-          ...(localStorage.getItem("iles_auth_token") && {
-            Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
-          }),
-        },
-      }).then(r => r.json()),
+      getUsersByRole("workplace_supervisor"),
+      getUsersByRole("academic_supervisor"),
     ])
       .then(([ws, as]) => {
         setWsSupervisors(Array.isArray(ws) ? ws : []);

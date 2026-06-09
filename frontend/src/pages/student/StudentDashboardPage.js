@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { getPlacements, getLogbooks } from "../../services/api";
+import { getPlacements, getLogbooks, createLogbook } from "../../services/api";
 import PlacementOnBoardingPage from "./PlacementOnBoardingPage";
 import {
   PageHead,
@@ -10,6 +10,7 @@ import {
   Btn,
   Chip,
   Bar,
+  Field,
 } from "../../components/common/Primitives";
 import { I } from "../../components/common/Icons";
 
@@ -23,6 +24,11 @@ export default function StudentDashboardPage() {
   const [error, setError] = useState(null);
   const [noPlacement, setNoPlacement] = useState(false);
   const [placementPending, setPlacementPending] = useState(false);
+  const [showLogForm, setShowLogForm] = useState(false);
+  const [logForm, setLogForm] = useState({ week_number: "", start_date: "", end_date: "", activities: "" });
+  const [logSubmitting, setLogSubmitting] = useState(false);
+  const [logSuccess, setLogSuccess] = useState(false);
+  const [logError, setLogError] = useState(null);
 
   useEffect(() => {
     Promise.all([getPlacements(), getLogbooks()])
@@ -131,12 +137,61 @@ export default function StudentDashboardPage() {
             <Btn sm kind="ghost">
               This week ▾
             </Btn>
-            <Btn sm kind="primary" onClick={() => navigate("/student/logbook")}>
+            <Btn sm kind="primary" onClick={() => { setShowLogForm((v) => !v); setLogSuccess(false); setLogError(null); }}>
               {I.plus} Log entry
             </Btn>
           </>
         }
       />
+
+      {/* ── Log entry form ── */}
+      {showLogForm && (
+        <Card label="New log entry">
+          <div className="grid grid--2" style={{ marginBottom: 12 }}>
+            <Field label="Week number">
+              <input type="number" min={1} max={52}
+                value={logForm.week_number}
+                onChange={e => setLogForm(p => ({ ...p, week_number: e.target.value }))}
+                placeholder="e.g. 8" />
+            </Field>
+            <Field label="Start date">
+              <input type="date"
+                value={logForm.start_date}
+                onChange={e => setLogForm(p => ({ ...p, start_date: e.target.value }))} />
+            </Field>
+            <Field label="End date">
+              <input type="date"
+                value={logForm.end_date}
+                onChange={e => setLogForm(p => ({ ...p, end_date: e.target.value }))} />
+            </Field>
+          </div>
+          <Field label="Activities" kind="ta">
+            <textarea rows={4}
+              value={logForm.activities}
+              onChange={e => setLogForm(p => ({ ...p, activities: e.target.value }))}
+              placeholder="Describe what you worked on this week…" />
+          </Field>
+          {logError && <p style={{ color: "var(--color-error)", fontSize: 13, marginTop: 8 }}>{logError}</p>}
+          {logSuccess && <p style={{ color: "var(--color-success)", fontSize: 13, marginTop: 8 }}>✓ Log entry created.</p>}
+          <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+            <Btn sm kind="ghost" onClick={() => setShowLogForm(false)}>Cancel</Btn>
+            <Btn sm kind="primary" disabled={logSubmitting || !logForm.week_number || !logForm.start_date || !logForm.end_date}
+              onClick={async () => {
+                setLogSubmitting(true); setLogError(null); setLogSuccess(false);
+                try {
+                  await createLogbook({ ...logForm, placement: placement.id });
+                  setLogForm({ week_number: "", start_date: "", end_date: "", activities: "" });
+                  setLogSuccess(true);
+                } catch (err) {
+                  setLogError(err.message);
+                } finally { setLogSubmitting(false); }
+              }}
+            >
+              {logSubmitting ? "Submitting…" : "Submit entry"}
+            </Btn>
+          </div>
+        </Card>
+      )}
 
       {/* ── 4-stat row ── */}
       <div className="grid grid--4">

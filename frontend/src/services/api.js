@@ -50,6 +50,10 @@ export function getUsers() {
   return request("/users/");
 }
 
+export function getUsersByRole(role) {
+  return request(`/users/?role=${role}`);
+}
+
 // ---- AUTH ENDPOINTS-----
 export async function loginUser({ username, password }) {
   const data = await request("/auth/login/", {
