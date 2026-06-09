@@ -1,22 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHead, Card, Btn, Field } from '../../components/common/Primitives';
 import { I } from '../../components/common/Icons';
-import { createPlacement } from '../../services/api';
+import { createPlacement, getUsers } from '../../services/api';
+
+const API_URL = process.env.REACT_APP_API_BASE_URL || '';
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     company_name: "",
-    supervisor_name: "",
-    supervisor_email: "",
+    supervisor: "",
     start_date: "",
     end_date: "",
   });
+  const [wsSupervisors, setWsSupervisors] = useState([]);
+  const [asSupervisors, setAsSupervisors] = useState([]);
+  const [supervisorType, setSupervisorType] = useState("workplace_supervisor");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const update = (k, v) => setForm(p => ({ ...p, [k]: v }));
+  useEffect(() => {
+    Promise.all([
+      fetch(`${API_URL}/api/users/?role=workplace_supervisor`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(localStorage.getItem("iles_auth_token") && {
+            Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
+          }),
+        },
+      }).then(r => r.json()),
+      fetch(`${API_URL}/api/users/?role=academic_supervisor`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(localStorage.getItem("iles_auth_token") && {
+            Authorization: `Bearer ${localStorage.getItem("iles_auth_token")}`,
+          }),
+        },
+      }).then(r => r.json()),
+    ])
+      .then(([ws, as]) => {
+        setWsSupervisors(Array.isArray(ws) ? ws : []);
+        setAsSupervisors(Array.isArray(as) ? as : []);
+      })
+      .catch(() => {});
+  }, []);
+
+  const supervisors = supervisorType === "workplace_supervisor" ? wsSupervisors : asSupervisors;
+
+  function update(k, v) {
+    setForm(p => ({ ...p, [k]: v }));
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -29,6 +63,7 @@ export default function OnboardingPage() {
     try {
       await createPlacement({
         company_name: form.company_name,
+        supervisor: form.supervisor || null,
         start_date: form.start_date,
         end_date: form.end_date,
       });
@@ -43,11 +78,11 @@ export default function OnboardingPage() {
   return (
     <div className="page">
       <PageHead
-        crumb="Onboarding · Step 1 of 2"
+        crumb="Onboarding"
         title="Set up your internship placement"
         sub="You'll unlock your dashboard once your placement is approved."
         actions={<>
-          <Btn kind="ghost" sm disabled title="Draft saving not supported">Save draft</Btn>
+          <Btn kind="ghost" sm disabled>Save draft</Btn>
           <Btn kind="primary" sm onClick={handleSubmit} disabled={loading}>
             {loading ? "Submitting..." : <>{I.arrow} Submit for approval</>}
           </Btn>
@@ -99,29 +134,6 @@ export default function OnboardingPage() {
           </Field>
         </Card>
 
-        <Card label="Workplace supervisor">
-          <div className="col" style={{ gap: 12 }}>
-            <Field label="Full name">
-              <input
-                value={form.supervisor_name}
-                onChange={e => update("supervisor_name", e.target.value)}
-                placeholder="Mr. / Mrs. ___________"
-              />
-            </Field>
-            <Field label="Email address">
-              <input
-                type="email"
-                value={form.supervisor_email}
-                onChange={e => update("supervisor_email", e.target.value)}
-                placeholder="supervisor@company.com"
-              />
-            </Field>
-          </div>
-          <div className="field__hint" style={{ marginTop: 12 }}>
-            We'll email them an invite to confirm and create a supervisor account.
-          </div>
-        </Card>
-
         <Card label="Placement dates">
           <div className="row" style={{ gap: 12 }}>
             <Field label="Start date">
@@ -142,13 +154,45 @@ export default function OnboardingPage() {
             </Field>
           </div>
         </Card>
+
+        <Card label="Supervisor">
+          <div className="col" style={{ gap: 12 }}>
+            <Field label="Supervisor type">
+              <select
+                value={supervisorType}
+                onChange={e => { setSupervisorType(e.target.value); update("supervisor", ""); }}
+              >
+                <option value="workplace_supervisor">Workplace Supervisor</option>
+                <option value="academic_supervisor">Academic Supervisor</option>
+              </select>
+            </Field>
+            <Field label="Select supervisor">
+              <select
+                value={form.supervisor}
+                onChange={e => update("supervisor", e.target.value)}
+              >
+                <option value="">Choose a supervisor…</option>
+                {supervisors.map(s => (
+                  <option key={s.id} value={s.id}>
+                    {s.first_name} {s.last_name} ({s.email})
+                  </option>
+                ))}
+              </select>
+            </Field>
+          </div>
+          <div className="field__hint" style={{ marginTop: 12 }}>
+            {supervisors.length === 0
+              ? "No supervisors available yet. You can submit without one."
+              : "Select the supervisor assigned to your placement."}
+          </div>
+        </Card>
       </div>
 
       <Card kind="ghost" label="What happens next">
         <ol style={{ margin: 0, paddingLeft: 20, fontSize: 14, lineHeight: 1.8, color: "var(--color-text-muted)" }}>
-          <li>Academic supervisor reviews and approves your placement (typically 1–2 days).</li>
-          <li>Workplace supervisor receives an invite email and confirms.</li>
-          <li>Your dashboard, logbook, and evaluations unlock automatically.</li>
+          <li>Admin reviews and approves your placement.</li>
+          <li>Your dashboard, logbook, and evaluations unlock once approved.</li>
+          <li>You can submit another placement while waiting.</li>
         </ol>
       </Card>
     </div>
