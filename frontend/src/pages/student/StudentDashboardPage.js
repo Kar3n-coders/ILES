@@ -22,13 +22,17 @@ export default function StudentDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [noPlacement, setNoPlacement] = useState(false);
+  const [placementPending, setPlacementPending] = useState(false);
 
   useEffect(() => {
     Promise.all([getPlacements(), getLogbooks()])
       .then(([placementsData, logbooksData]) => {
         const p = placementsData?.results?.[0] || placementsData?.[0] || null;
         if (!p) setNoPlacement(true);
-        else setPlacement(p);
+        else {
+          setPlacement(p);
+          if (p.status === "pending") setPlacementPending(true);
+        }
         setLogbooks(logbooksData || []);
       })
       .catch((err) => setError(err.message))
@@ -56,6 +60,39 @@ export default function StudentDashboardPage() {
   }
 
   if (noPlacement) return <PlacementOnBoardingPage />;
+
+  if (placementPending && placement) {
+    return (
+      <div className="page">
+        <PageHead
+          crumb={`Welcome back, ${firstName}`}
+          title="Placement Pending Approval"
+          sub="Your placement has been submitted and is awaiting admin review."
+        />
+        <Card kind="warn">
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 24 }}>⏳</span>
+            <div>
+              <b style={{ color: "var(--color-text)" }}>
+                {placement.company_name || "Your placement"}
+              </b>
+              <div className="muted" style={{ fontSize: 13 }}>
+                Status: Pending approval · You'll be notified once reviewed.
+              </div>
+            </div>
+          </div>
+        </Card>
+        <Card label="What you can do">
+          <p className="muted" style={{ marginBottom: 16 }}>
+            While you wait, you can submit another placement or check back later.
+          </p>
+          <Btn kind="primary" sm onClick={() => { setNoPlacement(true); setPlacementPending(false); }}>
+            Submit another placement
+          </Btn>
+        </Card>
+      </div>
+    );
+  }
 
   // ── Derive display values ────────────────────────────────────────
   const firstName = user?.first_name
