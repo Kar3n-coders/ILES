@@ -51,9 +51,7 @@ function AdminDashboardPage() {
             : u.username,
           role: ROLE_DISPLAY[u.role] || u.role,
           rawRole: u.role,
-          org: u.cohort || "—",
           status: "Active",
-          seen: "—",
         }));
         const placements = placementsData?.results || placementsData || [];
 
@@ -195,9 +193,7 @@ function AdminDashboardPage() {
                   <tr>
                     <th>Name</th>
                     <th>Role</th>
-                    <th>Cohort / Org</th>
                     <th>Status</th>
-                    <th>Last seen</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -211,13 +207,11 @@ function AdminDashboardPage() {
                         </div>
                       </td>
                       <td className="muted">{u.role}</td>
-                      <td className="muted">{u.org}</td>
                       <td>
                         <Chip kind={u.status === "Active" ? "ok" : "warn"} dot>
                           {u.status}
                         </Chip>
                       </td>
-                      <td className="muted">{u.seen}</td>
                       <td style={{ textAlign: "right" }}>
                         <Btn sm kind="ghost" icon>
                           {I.dots}
@@ -228,32 +222,6 @@ function AdminDashboardPage() {
                 </tbody>
               </table>
             )}
-          </Card>
-          <Card label="Pairings · students ↔ supervisors">
-            <div className="muted" style={{ fontSize: 13, marginBottom: 12 }}>
-              Assign students to academic and workplace supervisors by cohort
-              and company.
-            </div>
-            <div
-              style={{
-                height: 160,
-                border: "2px dashed var(--color-border)",
-                borderRadius: 8,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <span className="muted" style={{ fontSize: 13 }}>
-                Pairing UI — coming soon
-              </span>
-            </div>
-            <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-              <Btn sm>Auto-assign by company</Btn>
-              <Btn sm kind="ghost">
-                {I.upload} Bulk import CSV
-              </Btn>
-            </div>
           </Card>
         </div>
 
