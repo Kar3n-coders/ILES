@@ -73,6 +73,17 @@ export default function WorkplaceEvaluationPage() {
     );
   }
 
+  if (!loading && criteria.length === 0) {
+    return (
+      <div className="page">
+        <PageHead title="Submit Evaluation" />
+        <div style={{ padding: "40px 32px", color: "var(--color-text-secondary)", fontSize: 14 }}>
+          No evaluation criteria have been set up yet. Contact the internship admin.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page">
       <PageHead
