@@ -10,7 +10,6 @@ import {
   Bar,
   Av,
 } from "../../components/common/Primitives";
-import { I } from "../../components/common/Icons";
 import "../../components/common/Primitives.css";
 
 export default function AcademicDashboardPage() {
@@ -18,7 +17,6 @@ export default function AcademicDashboardPage() {
 
   const [students, setStudents] = useState([]);
   const [todos, setTodos] = useState([]);
-  const [visits, setVisits] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,12 +41,9 @@ export default function AcademicDashboardPage() {
 
         setStudents(studentList);
         setTodos([]);
-        setVisits([]);
         setStats({
           assigned: placements.length,
           placements: placements.filter((p) => p.status === "approved").length,
-          visits: 0,
-          visitsTotal: 0,
           grading: logbooks.filter((l) => l.status === "pending").length,
         });
       })
@@ -80,8 +75,6 @@ export default function AcademicDashboardPage() {
     ? `${user.first_name} ${user.last_name || ""}`.trim()
     : user?.username || "Supervisor";
 
-  const cohortLabel = user?.cohort || "Cohort 2026-S2";
-
   const atRiskCount = students.filter((s) => s.flagKind === "warn").length;
   const noPlacementCount = students.filter(
     (s) => s.flagKind === "danger",
@@ -103,12 +96,7 @@ export default function AcademicDashboardPage() {
       <PageHead
         crumb="Cohort · Dashboard"
         title="Cohort overview"
-        sub={`${cohortLabel} · ${students.length} student${students.length !== 1 ? "s" : ""} assigned`}
-        actions={
-          <Btn sm kind="ghost">
-            {cohortLabel} ▾
-          </Btn>
-        }
+        sub={`${students.length} student${students.length !== 1 ? "s" : ""} assigned`}
       />
 
       <div className="grid grid--4">
@@ -122,11 +110,6 @@ export default function AcademicDashboardPage() {
           delta={
             stats ? `${stats.assigned - stats.placements} pending` : undefined
           }
-        />
-        <Stat
-          label="Visits this month"
-          value={stats ? String(stats.visits) : String(visits.length)}
-          unit={stats ? ` of ${stats.visitsTotal}` : undefined}
         />
         <Stat
           label="Awaiting grading"
@@ -281,37 +264,6 @@ export default function AcademicDashboardPage() {
                 ))}
               </div>
             )}
-          </Card>
-          <Card label="Visit schedule">
-            {visits.length === 0 ? (
-              <div className="empty-state">No visits scheduled.</div>
-            ) : (
-              <>
-                <ul className="timeline">
-                  {visits.map((v, i) => (
-                    <li key={i} className={v.warn ? "is-warn" : ""}>
-                      <b>{v.name}</b> · {v.org}
-                      <div className="meta">{v.time}</div>
-                    </li>
-                  ))}
-                </ul>
-                <Btn sm kind="ghost" style={{ marginTop: 6 }}>
-                  Open visit calendar {I.arrow}
-                </Btn>
-              </>
-            )}
-          </Card>
-          <Card label="Active rubric">
-            <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>
-              Set for this cohort
-            </div>
-            <b style={{ fontSize: 14 }}>Default 5-criteria · 1–5 scale</b>
-            <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-              <Btn sm>Edit rubric</Btn>
-              <Btn sm kind="ghost">
-                Duplicate
-              </Btn>
-            </div>
           </Card>
         </div>
       </div>
