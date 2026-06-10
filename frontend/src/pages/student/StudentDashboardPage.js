@@ -13,6 +13,7 @@ import {
   Field,
 } from "../../components/common/Primitives";
 import { I } from "../../components/common/Icons";
+import "../supervisor/FeedbackModal.css";
 
 export default function StudentDashboardPage() {
   const { user } = useAuth();
