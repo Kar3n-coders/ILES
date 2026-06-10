@@ -134,9 +134,6 @@ export default function StudentDashboardPage() {
         sub={`Here's what's happening with your internship at ${company}.`}
         actions={
           <>
-            <Btn sm kind="ghost">
-              This week ▾
-            </Btn>
             <Btn sm kind="primary" onClick={() => { setShowLogForm((v) => !v); setLogSuccess(false); setLogError(null); }}>
               {I.plus} Log entry
             </Btn>
@@ -146,51 +143,65 @@ export default function StudentDashboardPage() {
 
       {/* ── Log entry form ── */}
       {showLogForm && (
-        <Card label="New log entry">
-          <div className="grid grid--2" style={{ marginBottom: 12 }}>
-            <Field label="Week number">
-              <input type="number" min={1} max={52}
-                value={logForm.week_number}
-                onChange={e => setLogForm(p => ({ ...p, week_number: e.target.value }))}
-                placeholder="e.g. 8" />
-            </Field>
-            <Field label="Start date">
-              <input type="date"
-                value={logForm.start_date}
-                onChange={e => setLogForm(p => ({ ...p, start_date: e.target.value }))} />
-            </Field>
-            <Field label="End date">
-              <input type="date"
-                value={logForm.end_date}
-                onChange={e => setLogForm(p => ({ ...p, end_date: e.target.value }))} />
-            </Field>
+        <div className="modal-overlay" onClick={() => { setShowLogForm(false); }}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 520 }}>
+            <div className="modal-header">
+              <h3>New log entry</h3>
+              <p>Fill in the details for this week's log.</p>
+              <button className="modal-close" onClick={() => setShowLogForm(false)} aria-label="Close">&times;</button>
+            </div>
+            <div className="modal-body">
+              <div className="grid grid--2">
+                <div>
+                  <label>Week number</label>
+                  <input type="number" min={1} max={52}
+                    value={logForm.week_number}
+                    onChange={e => setLogForm(p => ({ ...p, week_number: e.target.value }))}
+                    placeholder="e.g. 8" />
+                </div>
+                <div>
+                  <label>Start date</label>
+                  <input type="date"
+                    value={logForm.start_date}
+                    onChange={e => setLogForm(p => ({ ...p, start_date: e.target.value }))} />
+                </div>
+                <div>
+                  <label>End date</label>
+                  <input type="date"
+                    value={logForm.end_date}
+                    onChange={e => setLogForm(p => ({ ...p, end_date: e.target.value }))} />
+                </div>
+              </div>
+              <div>
+                <label>Activities</label>
+                <textarea rows={4}
+                  value={logForm.activities}
+                  onChange={e => setLogForm(p => ({ ...p, activities: e.target.value }))}
+                  placeholder="Describe what you worked on this week…" />
+              </div>
+              {logError && <p style={{ color: "var(--color-error)", fontSize: 13 }}>{logError}</p>}
+              {logSuccess && <p style={{ color: "var(--color-success)", fontSize: 13 }}>✓ Log entry created.</p>}
+              <div className="modal-actions">
+                <Btn sm kind="ghost" onClick={() => setShowLogForm(false)}>Cancel</Btn>
+                <Btn sm kind="primary"
+                  disabled={logSubmitting || !logForm.week_number || !logForm.start_date || !logForm.end_date}
+                  onClick={async () => {
+                    setLogSubmitting(true); setLogError(null); setLogSuccess(false);
+                    try {
+                      await createLogbook({ ...logForm, placement: placement.id });
+                      setLogForm({ week_number: "", start_date: "", end_date: "", activities: "" });
+                      setLogSuccess(true);
+                    } catch (err) {
+                      setLogError(err.message);
+                    } finally { setLogSubmitting(false); }
+                  }}
+                >
+                  {logSubmitting ? "Submitting…" : "Submit entry"}
+                </Btn>
+              </div>
+            </div>
           </div>
-          <Field label="Activities" kind="ta">
-            <textarea rows={4}
-              value={logForm.activities}
-              onChange={e => setLogForm(p => ({ ...p, activities: e.target.value }))}
-              placeholder="Describe what you worked on this week…" />
-          </Field>
-          {logError && <p style={{ color: "var(--color-error)", fontSize: 13, marginTop: 8 }}>{logError}</p>}
-          {logSuccess && <p style={{ color: "var(--color-success)", fontSize: 13, marginTop: 8 }}>✓ Log entry created.</p>}
-          <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-            <Btn sm kind="ghost" onClick={() => setShowLogForm(false)}>Cancel</Btn>
-            <Btn sm kind="primary" disabled={logSubmitting || !logForm.week_number || !logForm.start_date || !logForm.end_date}
-              onClick={async () => {
-                setLogSubmitting(true); setLogError(null); setLogSuccess(false);
-                try {
-                  await createLogbook({ ...logForm, placement: placement.id });
-                  setLogForm({ week_number: "", start_date: "", end_date: "", activities: "" });
-                  setLogSuccess(true);
-                } catch (err) {
-                  setLogError(err.message);
-                } finally { setLogSubmitting(false); }
-              }}
-            >
-              {logSubmitting ? "Submitting…" : "Submit entry"}
-            </Btn>
-          </div>
-        </Card>
+        </div>
       )}
 
       {/* ── 4-stat row ── */}
