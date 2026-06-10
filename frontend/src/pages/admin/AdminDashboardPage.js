@@ -114,14 +114,9 @@ function AdminDashboardPage() {
         title="Admin dashboard"
         sub="Manage users, pairings, cohorts, and system health."
         actions={
-          <>
-            <Btn sm kind="ghost">
-              Export CSV
-            </Btn>
-            <Btn sm kind="primary">
-              {I.plus} Invite user
-            </Btn>
-          </>
+          <Btn sm kind="ghost">
+            Export CSV
+          </Btn>
         }
       />
 
