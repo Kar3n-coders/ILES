@@ -15,7 +15,7 @@ export default function AdminPlacementsPage() {
   const [updating, setUpdating] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState(null);
-  const [editForm, setEditForm] = useState({ supervisor: "", company_name: "", start_date: "", end_date: "" });
+  const [editForm, setEditForm] = useState({ supervisor: "", academic_supervisor: "", company_name: "", start_date: "", end_date: "" });
   const [wsUsers, setWsUsers] = useState([]);
   const [asUsers, setAsUsers] = useState([]);
 
@@ -70,6 +70,7 @@ export default function AdminPlacementsPage() {
     setEditingPlacement(p);
     setEditForm({
       supervisor: p.supervisor || "",
+      academic_supervisor: p.academic_supervisor || "",
       company_name: p.company_name || "",
       start_date: p.start_date ? p.start_date.split("T")[0] : "",
       end_date: p.end_date ? p.end_date.split("T")[0] : "",
@@ -83,6 +84,7 @@ export default function AdminPlacementsPage() {
     try {
       const updated = await updatePlacement(editingPlacement.id, {
         supervisor: editForm.supervisor || null,
+        academic_supervisor: editForm.academic_supervisor || null,
         company_name: editForm.company_name,
         start_date: editForm.start_date,
         end_date: editForm.end_date,
@@ -175,6 +177,13 @@ export default function AdminPlacementsPage() {
                 <select value={editForm.supervisor} onChange={e => setEditForm(p => ({ ...p, supervisor: e.target.value }))}>
                   <option value="">None</option>
                   {wsUsers.map(u => <option key={u.id} value={u.id}>{u.first_name} {u.last_name} ({u.email})</option>)}
+                </select>
+              </div>
+              <div>
+                <label>Academic Supervisor</label>
+                <select value={editForm.academic_supervisor} onChange={e => setEditForm(p => ({ ...p, academic_supervisor: e.target.value }))}>
+                  <option value="">None</option>
+                  {asUsers.map(u => <option key={u.id} value={u.id}>{u.first_name} {u.last_name} ({u.email})</option>)}
                 </select>
               </div>
               <div>
