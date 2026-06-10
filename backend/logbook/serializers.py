@@ -17,7 +17,7 @@ class LogbookSerializer(serializers.ModelSerializer):
 
     # Placement company name
     company_name = serializers.CharField(
-        source="placement.company_name", read_only=True
+        source="placement.company_name", read_only=True, allow_null=True, default=""
     )
 
     class Meta:
