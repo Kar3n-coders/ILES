@@ -36,10 +36,16 @@ class LogbookViewSet(viewsets.ModelViewSet):
                 .order_by("-created_at")
             )
 
-        elif user.role in ["workplace_supervisor", "academic_supervisor"]:
-            # Supervisors see all logs, from placements they supervise
+        elif user.role == "workplace_supervisor":
             return (
                 Logbook.objects.filter(placement__supervisor=user)
+                .select_related("student", "placement")
+                .order_by("-created_at")
+            )
+
+        elif user.role == "academic_supervisor":
+            return (
+                Logbook.objects.filter(placement__academic_supervisor=user)
                 .select_related("student", "placement")
                 .order_by("-created_at")
             )
