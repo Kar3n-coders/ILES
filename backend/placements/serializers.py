@@ -108,11 +108,16 @@ class PlacementCreateSerializer(serializers.ModelSerializer):
         return value
 
     def validate_supervisor(self, value):
-        """Ensure the assigned supervisor has a supervisor role."""
-        valid_supervisor_roles = ["workplace_supervisor", "academic_supervisor"]
-        if value.role not in valid_supervisor_roles:
+        if value.role != "workplace_supervisor":
             raise serializers.ValidationError(
-                f"User '{value.username}' is not a supervisor (role: {value.role})."
+                f"User '{value.username}' is not a workplace supervisor (role: {value.role})."
+            )
+        return value
+
+    def validate_academic_supervisor(self, value):
+        if value is not None and value.role != "academic_supervisor":
+            raise serializers.ValidationError(
+                f"User '{value.username}' is not an academic supervisor (role: {value.role})."
             )
         return value
 
