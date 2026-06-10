@@ -18,10 +18,11 @@ import {
 } from "../../services/api";
 
 const STATUS_KIND = {
-  draft: "accent",
+  draft: "ghost",
   pending: "warn",
+  submitted: "accent",
+  reviewed: "accent",
   approved: "ok",
-  returned: "warn",
 };
 
 function LogbookPage() {
@@ -376,7 +377,7 @@ function LogbookPage() {
               </div>
             </div>
             <div style={{ marginTop: 12 }}>
-              <Bar pct={selected.status === "approved" ? 100 : selected.status === "pending" ? 50 : 40} />
+              <Bar pct={selected.status === "approved" ? 100 : selected.status === "reviewed" ? 75 : selected.status === "submitted" ? 60 : selected.status === "pending" ? 50 : 40} />
             </div>
           </Card>
 
@@ -413,8 +414,8 @@ function LogbookPage() {
             </div>
           </Card>
 
-          {selected.status === "returned" && (
-            <Card kind="warn" label={`Week ${selected.week_number} was returned`}>
+          {selected.status === "reviewed" && (
+            <Card kind="warn" label={`Week ${selected.week_number} was reviewed`}>
               <div className="row row--between row--center">
                 <div className="flex-1" style={{ paddingRight: 16 }}>
                   <b>
