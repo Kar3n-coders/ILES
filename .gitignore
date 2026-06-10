@@ -36,3 +36,4 @@ AGENTS.md
 docs/
 .vscode/
 *.md
+.worktrees/
