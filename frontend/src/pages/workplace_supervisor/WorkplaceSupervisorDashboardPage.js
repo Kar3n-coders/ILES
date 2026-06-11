@@ -33,6 +33,7 @@ export default function WorkplaceSupervisorDashboardPage() {
   const [error, setError] = useState(null);
   const [acting, setActing] = useState(null);
   const [returnForms, setReturnForms] = useState({});
+  const [actionError, setActionError] = useState(null);
 
   useEffect(() => {
     Promise.all([getPlacements(), getLogbooks(), getEvaluations()])
@@ -85,12 +86,13 @@ export default function WorkplaceSupervisorDashboardPage() {
 
   async function handleApprove(entryId) {
     setActing(entryId);
+    setActionError(null);
     try {
       await createReview({ Logbook: entryId, action: "approved", comment: "" });
       setPending((prev) => prev.filter((e) => e.id !== entryId));
       setStats((s) => s ? { ...s, awaitingReview: s.awaitingReview - 1, approvedThisWeek: s.approvedThisWeek + 1 } : s);
     } catch (err) {
-      setError(err.message);
+      setActionError(err.message);
     } finally {
       setActing(null);
     }
@@ -100,13 +102,14 @@ export default function WorkplaceSupervisorDashboardPage() {
     const comment = returnForms[entryId] || "";
     if (!comment.trim()) return;
     setActing(entryId);
+    setActionError(null);
     try {
       await createReview({ Logbook: entryId, action: "revision_requested", comment });
       setPending((prev) => prev.filter((e) => e.id !== entryId));
       setStats((s) => s ? { ...s, awaitingReview: s.awaitingReview - 1 } : s);
       setReturnForms((prev) => { const next = { ...prev }; delete next[entryId]; return next; });
     } catch (err) {
-      setError(err.message);
+      setActionError(err.message);
     } finally {
       setActing(null);
     }
@@ -233,6 +236,7 @@ export default function WorkplaceSupervisorDashboardPage() {
 
         <div className="col">
           <Card kind="warn" label="Pending approvals">
+            {actionError && <p style={{ color: "var(--color-error)", fontSize: 12, marginBottom: 8 }}>{actionError}</p>}
             {pending.length === 0 ? (
               <div className="empty-state">No pending approvals.</div>
             ) : (
