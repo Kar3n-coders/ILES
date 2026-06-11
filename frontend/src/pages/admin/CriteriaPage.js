@@ -46,7 +46,7 @@ export default function CriteriaPage() {
           <div>
             <b style={{ fontSize: 14 }}>Criteria are managed by academic supervisors</b>
             <div className="muted" style={{ fontSize: 13, marginTop: 2 }}>
-              Academic supervisors set the scoring categories used to evaluate students. Workplace supervisors submit scores against these criteria.
+              Academic supervisors set the scoring categories used to evaluate students. Workplace supervisors submit scores against these criteria. Criteria management is available under the Academic Supervisor portal.
             </div>
           </div>
         </div>
