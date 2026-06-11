@@ -75,7 +75,7 @@ class EvaluationCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_score(self, value):
-        if value < 1 or value > 5:
+        if value is not None and (value < 1 or value > 5):
             raise serializers.ValidationError("Score must be between 1 and 5.")
         return value
 
