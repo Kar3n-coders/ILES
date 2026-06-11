@@ -32,10 +32,17 @@ class PlacementViewSet(viewsets.ModelViewSet):
                 .prefetch_related("Weekly_logs")
             )
 
-        elif user.role in ["workplace_supervisor", "academic_supervisor"]:
+        elif user.role == "workplace_supervisor":
             return (
                 InternshipPlacement.objects.filter(supervisor=user)
                 .select_related("student", "supervisor")
+                .prefetch_related("Weekly_logs")
+            )
+
+        elif user.role == "academic_supervisor":
+            return (
+                InternshipPlacement.objects.filter(academic_supervisor=user)
+                .select_related("student", "supervisor", "academic_supervisor")
                 .prefetch_related("Weekly_logs")
             )
 
