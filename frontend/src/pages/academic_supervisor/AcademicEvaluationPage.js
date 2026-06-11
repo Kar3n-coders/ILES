@@ -70,7 +70,7 @@ export default function AcademicEvaluationPage() {
       <PageHead
         crumb="Workspace · Grades"
         title="Student Grades"
-        sub="View workplace supervisor scores for your assigned students."
+        sub={`${placements.length} student${placements.length !== 1 ? "s" : ""} assigned · grades from workplace supervisor evaluations`}
       />
 
       {placements.length === 0 ? (
