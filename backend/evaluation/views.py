@@ -98,9 +98,13 @@ class EvaluationViewSet(viewsets.ModelViewSet):
         user = request.user
 
         if user.role == "student" and placement.student != user:
-            return Response(
-                {"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN
-            )
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
+
+        if user.role == "workplace_supervisor" and placement.supervisor != user:
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
+
+        if user.role == "academic_supervisor" and placement.academic_supervisor != user:
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
 
         evaluations = Evaluation.objects.filter(
             placement=placement, is_finalised=True
