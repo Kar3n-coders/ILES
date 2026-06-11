@@ -13,6 +13,7 @@ export default function AdminPlacementsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updating, setUpdating] = useState(null);
+  const [actionError, setActionError] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPlacement, setEditingPlacement] = useState(null);
   const [editForm, setEditForm] = useState({ supervisor: "", academic_supervisor: "", company_name: "", start_date: "", end_date: "" });
@@ -40,19 +41,21 @@ export default function AdminPlacementsPage() {
 
   async function handleApprove(id) {
     setUpdating(id);
+    setActionError(null);
     try {
       await updatePlacement(id, { status: "approved" });
       setPlacements((prev) => prev.map((p) => (p.id === id ? { ...p, status: "approved", status_display: "Approved" } : p)));
-    } catch (err) { setError(err.message); }
+    } catch (err) { setActionError(err.message); }
     finally { setUpdating(null); }
   }
 
   async function handleReject(id) {
     setUpdating(id);
+    setActionError(null);
     try {
       await updatePlacement(id, { status: "rejected" });
       setPlacements((prev) => prev.map((p) => (p.id === id ? { ...p, status: "rejected", status_display: "Rejected" } : p)));
-    } catch (err) { setError(err.message); }
+    } catch (err) { setActionError(err.message); }
     finally { setUpdating(null); }
   }
 
@@ -115,6 +118,9 @@ export default function AdminPlacementsPage() {
       </div>
 
       <Card label="All Placements">
+        {actionError && (
+          <p style={{ color: "var(--color-error)", fontSize: 13, padding: "8px 0 0" }}>{actionError}</p>
+        )}
         <div className="ap-filters">
           {FILTERS.map((f) => (
             <button key={f} className={`ap-filter${filter === f ? " ap-filter--active" : ""}`} onClick={() => setFilter(f)}>
