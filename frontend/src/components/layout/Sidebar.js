@@ -67,6 +67,12 @@ const NAV_CONFIG = {
             description: "Assigned interns",
           },
           {
+            path: "/supervisor/logs",
+            label: "Logs",
+            icon: <LogbookIcon />,
+            description: "Review student logbooks",
+          },
+          {
             path: "/supervisor/evaluation",
             label: "Evaluations",
             icon: <StarIcon />,
