@@ -15,7 +15,7 @@ from .serializers import (
 
 
 class EvaluationCriteriaViewSet(viewsets.ModelViewSet):
-    queryset = EvaluationCriteria.objects.all().order_by("name")
+    queryset = EvaluationCriteria.objects.all().order_by("-weight", "name")
     serializer_class = EvaluationCriteriaSerializer
     permission_classes = [permissions.IsAuthenticated]
 
