@@ -26,6 +26,7 @@ class EvaluationCriteria(models.Model):
 
     class Meta:
         verbose_name_plural = "Evaluation Criteria"
+        ordering = ["-weight", "name"]
 
 
 class Evaluation(models.Model):
