@@ -7,9 +7,14 @@ logger = logging.getLogger(__name__)
 
 
 class EvaluationCriteriaSerializer(serializers.ModelSerializer):
+    weight_pct = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = EvaluationCriteria
-        fields = ["id", "name", "description", "weight"]
+        fields = ["id", "name", "description", "weight", "weight_pct"]
+
+    def get_weight_pct(self, obj):
+        return round(obj.weight * 100, 1)
 
     def validate_weight(self, value):
         if value <= 0 or value > 1:
