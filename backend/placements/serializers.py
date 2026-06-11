@@ -124,6 +124,14 @@ class PlacementCreateSerializer(serializers.ModelSerializer):
             )
         return value
 
+    def validate_status(self, value):
+        valid = [choice[0] for choice in InternshipPlacement.STATUS_CHOICES]
+        if value not in valid:
+            raise serializers.ValidationError(
+                f"Invalid status '{value}'. Must be one of: {', '.join(valid)}."
+            )
+        return value
+
     def validate(self, data):
         """Cross-field: end date must be after start date."""
         if data.get("start_date") and data.get("end_date"):
