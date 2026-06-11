@@ -89,7 +89,7 @@ export default function StudentDashboardPage() {
   const activity = pendingLogbooks.map((l) => ({
     done: false,
     warn: true,
-    text: `Week ${l.week_number} logbook awaiting review`,
+    text: `Week ${l.week_number} logbook awaiting supervisor review`,
     meta: l.submitted_at ? l.submitted_at.split("T")[0] : "submitted",
   }));
   const upcoming = [];
