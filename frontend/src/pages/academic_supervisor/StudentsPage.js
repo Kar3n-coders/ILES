@@ -9,6 +9,7 @@ export default function StudentsPage() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     getPlacements()
@@ -53,13 +54,32 @@ export default function StudentsPage() {
         sub={`${students.length} student${students.length !== 1 ? "s" : ""} assigned to you.`}
       />
 
+      {students.length > 0 && (
+        <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+          {["all", "approved", "pending"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              style={{
+                padding: "4px 12px", borderRadius: 6, fontSize: 13, cursor: "pointer",
+                border: "1px solid var(--color-border)",
+                background: filter === f ? "var(--color-primary)" : "var(--color-surface)",
+                color: filter === f ? "#fff" : "var(--color-text)",
+              }}
+            >
+              {f.charAt(0).toUpperCase() + f.slice(1)}
+            </button>
+          ))}
+        </div>
+      )}
+
       {students.length === 0 ? (
         <Card>
           <p className="students-empty">No students assigned to you yet. Ask the internship admin to assign students to your placements.</p>
         </Card>
       ) : (
         <div className="students-grid">
-          {students.map((s) => (
+          {students.filter((s) => filter === "all" || s.status === filter).map((s) => (
             <Card key={s.placement_id}>
               <div className="students-card">
                 <div className="students-card__name">{s.name}</div>
