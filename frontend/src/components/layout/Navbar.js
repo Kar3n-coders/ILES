@@ -16,7 +16,6 @@ const ROLE_NAV_LINKS = {
   student: [
     { path: "/student/dashboard", label: "Overview", icon: "⌂" },
     { path: "/student/logbook", label: "My Logbook", icon: "✎" },
-    { path: "/student/progress", label: "Progress", icon: "↗" },
     { path: "/student/evaluations", label: "Evaluations", icon: "★" },
   ],
   workplace_supervisor: [
