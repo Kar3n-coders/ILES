@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { PageHead, Card, Chip } from "../../components/common/Primitives";
-import { getUsers } from "../../services/api";
+import { getPlacements } from "../../services/api";
 import "./StudentsPage.css";
+
+const STATUS_KIND = { approved: "ok", pending: "warn", rejected: "err" };
 
 export default function StudentsPage() {
   const [students, setStudents] = useState([]);
@@ -9,8 +11,17 @@ export default function StudentsPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getUsers()
-      .then((data) => setStudents(data || []))
+    getPlacements()
+      .then((placements) => {
+        const list = (placements || []).map((p) => ({
+          id: p.student,
+          placement_id: p.id,
+          name: p.student_full_name || p.student_username || `Student #${p.student}`,
+          company: p.company_name || "—",
+          status: p.status,
+        }));
+        setStudents(list);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
@@ -36,28 +47,27 @@ export default function StudentsPage() {
   return (
     <div className="page">
       <PageHead
+        crumb="Workspace · Students"
         title="My Students"
         sub={`${students.length} student${students.length !== 1 ? "s" : ""} assigned to you.`}
       />
 
       {students.length === 0 ? (
-        <Card label="Students">
-          <p className="students-empty">No students assigned to you yet.</p>
+        <Card>
+          <p className="students-empty">No students assigned to you yet. Ask the internship admin to assign students to your placements.</p>
         </Card>
       ) : (
         <div className="students-grid">
           {students.map((s) => (
-            <Card key={s.id}>
+            <Card key={s.placement_id}>
               <div className="students-card">
-                <div className="students-card__name">
-                  {s.first_name} {s.last_name}
+                <div className="students-card__name">{s.name}</div>
+                <div className="students-card__email">{s.company}</div>
+                <div style={{ marginTop: 8 }}>
+                  <Chip kind={STATUS_KIND[s.status] || "ghost"}>
+                    {s.status ? s.status.charAt(0).toUpperCase() + s.status.slice(1) : "—"}
+                  </Chip>
                 </div>
-                <div className="students-card__email">{s.email}</div>
-                <div className="students-card__meta">
-                  {s.university && <span>{s.university}</span>}
-                  {s.course && <span>{s.course}</span>}
-                </div>
-                <Chip kind="accent">{s.role_display || s.role}</Chip>
               </div>
             </Card>
           ))}
