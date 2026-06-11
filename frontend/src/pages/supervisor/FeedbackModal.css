@@ -17,7 +17,8 @@
     box-shadow: var(--shadow-lg);
     width: 100%;
     max-width: 480px;
-    overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
     animation:modal-in 0.2s ease;
 }
 
