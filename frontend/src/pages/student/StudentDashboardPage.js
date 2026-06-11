@@ -68,39 +68,6 @@ export default function StudentDashboardPage() {
 
   if (noPlacement) return <PlacementOnBoardingPage />;
 
-  if (placementPending && placement) {
-    return (
-      <div className="page">
-        <PageHead
-          crumb={`Welcome back, ${firstName}`}
-          title="Placement Pending Approval"
-          sub="Your placement has been submitted and is awaiting admin review."
-        />
-        <Card kind="warn">
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ fontSize: 24 }}>⏳</span>
-            <div>
-              <b style={{ color: "var(--color-text)" }}>
-                {placement.company_name || "Your placement"}
-              </b>
-              <div className="muted" style={{ fontSize: 13 }}>
-                Status: Pending approval · You'll be notified once reviewed.
-              </div>
-            </div>
-          </div>
-        </Card>
-        <Card label="What you can do">
-          <p className="muted" style={{ marginBottom: 16 }}>
-            While you wait, you can submit another placement or check back later.
-          </p>
-          <Btn kind="primary" sm onClick={() => { setNoPlacement(true); setPlacementPending(false); }}>
-            Submit another placement
-          </Btn>
-        </Card>
-      </div>
-    );
-  }
-
   // ── Derive display values ────────────────────────────────────────
   const firstName = user?.first_name
     ? `${user.first_name} ${user.last_name || ""}`.trim()
@@ -115,14 +82,14 @@ export default function StudentDashboardPage() {
     totalWeeks > 0 ? Math.round((weeksCompleted / totalWeeks) * 100) : 0;
   const startDate = placement?.start_date ?? "—";
   const endDate = placement?.end_date ?? "—";
-  const workplaceSup = placement?.supervisor_name ?? "—";
-  const academicSup = "—";
+  const workplaceSup = placement?.supervisor_full_name || placement?.supervisor_username || "—";
+  const academicSup = placement?.academic_supervisor_full_name || placement?.academic_supervisor_username || "—";
   const currentWeek = Math.min(weeksCompleted + 1, totalWeeks);
   const lastEntry = logbooks.sort((a, b) => b.week_number - a.week_number)[0];
   const activity = pendingLogbooks.map((l) => ({
     done: false,
     warn: true,
-    text: `Week ${l.week_number} logbook awaiting review`,
+    text: `Week ${l.week_number} logbook awaiting supervisor review`,
     meta: l.submitted_at ? l.submitted_at.split("T")[0] : "submitted",
   }));
   const upcoming = [];
@@ -132,15 +99,34 @@ export default function StudentDashboardPage() {
       <PageHead
         crumb="Workspace · Dashboard"
         title={`Welcome back, ${firstName} 👋`}
-        sub={`Here's what's happening with your internship at ${company}.`}
+        sub={placementPending ? "Your placement is pending admin approval." : `Here's what's happening with your internship at ${company}.`}
         actions={
           <>
-            <Btn sm kind="primary" onClick={() => { setShowLogForm((v) => !v); setLogSuccess(false); setLogError(null); }}>
+            <Btn
+              sm
+              kind="primary"
+              disabled={placementPending}
+              onClick={() => { if (!placementPending) { setShowLogForm((v) => !v); setLogSuccess(false); setLogError(null); } }}
+            >
               {I.plus} Log entry
             </Btn>
           </>
         }
       />
+
+      {placementPending && (
+        <Card kind="warn">
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 20 }}>⏳</span>
+            <div>
+              <b style={{ fontSize: 14 }}>{placement?.company_name || "Your placement"} — pending approval</b>
+              <div className="muted" style={{ fontSize: 13, marginTop: 2 }}>
+                Your placement is awaiting admin review. Log entries are disabled until it's approved.
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* ── Log entry form ── */}
       {showLogForm && (
