@@ -83,11 +83,16 @@ class EvaluationCreateSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request and request.user:
             placement = data.get("placement")
-            if placement and placement.supervisor != request.user:
-                if request.user.role != "internship_admin":
-                    raise serializers.ValidationError(
-                        {
-                            "placement": "You can only evaluate students in your own supervised placements."
-                        }
-                    )
+            user = request.user
+            if placement and user.role != "internship_admin":
+                if user.role == "workplace_supervisor":
+                    if placement.supervisor != user:
+                        raise serializers.ValidationError(
+                            {"placement": "You can only evaluate students in your supervised placements."}
+                        )
+                elif user.role == "academic_supervisor":
+                    if placement.academic_supervisor != user:
+                        raise serializers.ValidationError(
+                            {"placement": "You can only evaluate students assigned to you as academic supervisor."}
+                        )
         return data
