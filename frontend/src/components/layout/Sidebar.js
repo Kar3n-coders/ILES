@@ -162,7 +162,7 @@ const NAV_CONFIG = {
             path: "/admin/criteria",
             label: "Criteria",
             icon: <ClipboardIcon />,
-            description: "Evaluation criteria",
+            description: "Evaluation criteria (read-only)",
           },
           {
             path: "/admin/profile",
