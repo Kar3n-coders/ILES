@@ -11,23 +11,30 @@ const PROFILE_PATHS = {
   internship_admin: "/admin/profile",
 };
 
-// TODO: ILES-21: Add ROLE_NAV_LINK and ROLE_CONFIG constanst here
+// Role-based nav links for the top navbar
 const ROLE_NAV_LINKS = {
   student: [
     { path: "/student/dashboard", label: "Overview", icon: "⌂" },
     { path: "/student/logbook", label: "My Logbook", icon: "✎" },
-    { path: "/student/progress", label: "Progress", icon: "↗" },
     { path: "/student/evaluations", label: "Evaluations", icon: "★" },
   ],
   workplace_supervisor: [
     { path: "/supervisor/dashboard", label: "Dashboard", icon: "⌂" },
+    { path: "/supervisor/logs", label: "Logs", icon: "✎" },
     { path: "/supervisor/evaluation", label: "Evaluations", icon: "★" },
+    { path: "/supervisor/students", label: "Students", icon: "⚇" },
   ],
   academic_supervisor: [
-    { path: "/supervisor/dashboard", label: "Dashboard", icon: "⌂" },
-    { path: "/supervisor/evaluation", label: "Evaluations", icon: "★" },
+    { path: "/academic/dashboard", label: "Dashboard", icon: "⌂" },
+    { path: "/academic/criteria", label: "Criteria", icon: "✎" },
+    { path: "/academic/evaluation", label: "Grades", icon: "★" },
+    { path: "/academic/students", label: "Students", icon: "⚇" },
   ],
-  internship_admin: [{ path: "/admin/dashboard", label: "Admin Dashboard", icon: "⌂" }],
+  internship_admin: [
+    { path: "/admin/dashboard", label: "Dashboard", icon: "⌂" },
+    { path: "/admin/placements", label: "Placements", icon: "✎" },
+    { path: "/admin/users", label: "Users", icon: "⚇" },
+  ],
 };
 
 const ROLE_CONFIG = {

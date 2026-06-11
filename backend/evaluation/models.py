@@ -56,7 +56,11 @@ class Evaluation(models.Model):
     evalutor_type = models.CharField(max_length=20, choices=EVALUATOR_TYPE_CHOICES)
 
     criteria = models.ForeignKey(
-        EvaluationCriteria, on_delete=models.CASCADE, related_name="evaluations"
+        EvaluationCriteria,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="evaluations"
     )
 
     score = models.FloatField(

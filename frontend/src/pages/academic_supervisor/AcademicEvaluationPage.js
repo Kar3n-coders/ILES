@@ -136,7 +136,9 @@ export default function AcademicEvaluationPage() {
                   {wsEvals.map((ev) => (
                     <tr key={ev.id}>
                       <td>
-                        <div className="criteria-table__name">{ev.criteria_name || `Criterion #${ev.criteria}`}</div>
+                        <div className="criteria-table__name">
+                          {ev.criteria_name || <span className="muted" style={{ fontSize: 12 }}>Deleted criterion</span>}
+                        </div>
                       </td>
                       <td><Chip kind="accent">{ev.score} / 5</Chip></td>
                       <td className="muted">{ev.criteria_weight ? `${Math.round(ev.criteria_weight * 100)}%` : "—"}</td>
@@ -161,7 +163,9 @@ export default function AcademicEvaluationPage() {
                 <tbody>
                   {asEvals.map((ev) => (
                     <tr key={ev.id}>
-                      <td className="criteria-table__name">{ev.criteria_name || `Criterion #${ev.criteria}`}</td>
+                      <td className="criteria-table__name">
+                        {ev.criteria_name || <span className="muted" style={{ fontSize: 12 }}>Deleted criterion</span>}
+                      </td>
                       <td><Chip kind="accent">{ev.score} / 5</Chip></td>
                       <td className="muted">{ev.weighted_score?.toFixed(2) ?? "—"}</td>
                     </tr>
