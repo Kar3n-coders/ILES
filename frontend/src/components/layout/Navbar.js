@@ -30,7 +30,11 @@ const ROLE_NAV_LINKS = {
     { path: "/academic/evaluation", label: "Grades", icon: "★" },
     { path: "/academic/students", label: "Students", icon: "⚇" },
   ],
-  internship_admin: [{ path: "/admin/dashboard", label: "Admin Dashboard", icon: "⌂" }],
+  internship_admin: [
+    { path: "/admin/dashboard", label: "Dashboard", icon: "⌂" },
+    { path: "/admin/placements", label: "Placements", icon: "✎" },
+    { path: "/admin/users", label: "Users", icon: "⚇" },
+  ],
 };
 
 const ROLE_CONFIG = {
