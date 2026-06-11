@@ -19,6 +19,7 @@ export default function StudentsPage() {
           name: p.student_full_name || p.student_username || `Student #${p.student}`,
           company: p.company_name || "—",
           status: p.status,
+          logbook_count: p.logbook_count ?? 0,
         }));
         setStudents(list);
       })
@@ -63,6 +64,9 @@ export default function StudentsPage() {
               <div className="students-card">
                 <div className="students-card__name">{s.name}</div>
                 <div className="students-card__email">{s.company}</div>
+                <div className="students-card__meta">
+                  <span>{s.logbook_count} log{s.logbook_count !== 1 ? "s" : ""}</span>
+                </div>
                 <div style={{ marginTop: 8 }}>
                   <Chip kind={STATUS_KIND[s.status] || "ghost"}>
                     {s.status ? s.status.charAt(0).toUpperCase() + s.status.slice(1) : "—"}
