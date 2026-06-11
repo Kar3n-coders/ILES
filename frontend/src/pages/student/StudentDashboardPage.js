@@ -102,12 +102,31 @@ export default function StudentDashboardPage() {
         sub={`Here's what's happening with your internship at ${company}.`}
         actions={
           <>
-            <Btn sm kind="primary" onClick={() => { setShowLogForm((v) => !v); setLogSuccess(false); setLogError(null); }}>
+            <Btn
+              sm
+              kind="primary"
+              disabled={placementPending}
+              onClick={() => { if (!placementPending) { setShowLogForm((v) => !v); setLogSuccess(false); setLogError(null); } }}
+            >
               {I.plus} Log entry
             </Btn>
           </>
         }
       />
+
+      {placementPending && (
+        <Card kind="warn">
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ fontSize: 20 }}>⏳</span>
+            <div>
+              <b style={{ fontSize: 14 }}>{placement?.company_name || "Your placement"} — pending approval</b>
+              <div className="muted" style={{ fontSize: 13, marginTop: 2 }}>
+                Your placement is awaiting admin review. Log entries are disabled until it's approved.
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* ── Log entry form ── */}
       {showLogForm && (
