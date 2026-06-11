@@ -82,6 +82,7 @@ class PlacementViewSet(viewsets.ModelViewSet):
                 {"error": "Only administrators can update placements."},
                 status=status.HTTP_403_FORBIDDEN,
             )
+        kwargs["partial"] = True
         return super().update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
