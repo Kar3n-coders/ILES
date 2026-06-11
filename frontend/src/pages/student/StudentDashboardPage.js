@@ -82,8 +82,8 @@ export default function StudentDashboardPage() {
     totalWeeks > 0 ? Math.round((weeksCompleted / totalWeeks) * 100) : 0;
   const startDate = placement?.start_date ?? "—";
   const endDate = placement?.end_date ?? "—";
-  const workplaceSup = placement?.supervisor_name ?? "—";
-  const academicSup = "—";
+  const workplaceSup = placement?.supervisor_full_name || placement?.supervisor_username || "—";
+  const academicSup = placement?.academic_supervisor_full_name || placement?.academic_supervisor_username || "—";
   const currentWeek = Math.min(weeksCompleted + 1, totalWeeks);
   const lastEntry = logbooks.sort((a, b) => b.week_number - a.week_number)[0];
   const activity = pendingLogbooks.map((l) => ({
