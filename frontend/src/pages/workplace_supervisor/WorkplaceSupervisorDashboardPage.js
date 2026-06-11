@@ -285,7 +285,14 @@ export default function WorkplaceSupervisorDashboardPage() {
 
           <Card label="Recent evaluations">
             {evals.length === 0 ? (
-              <div className="empty-state">No evaluations yet.</div>
+              <div className="empty-state" style={{ paddingBottom: 8 }}>
+                No evaluations submitted yet.
+                <div style={{ marginTop: 10 }}>
+                  <Btn sm kind="ghost" onClick={() => navigate("/supervisor/evaluation")}>
+                    Submit evaluation {I.arrow}
+                  </Btn>
+                </div>
+              </div>
             ) : (
               <ul className="timeline">
                 {evals.slice(0, 5).map((ev, i) => (
