@@ -173,6 +173,7 @@ export default function WorkplaceSupervisorDashboardPage() {
         <Stat
           label="Total log entries"
           value={String(interns.reduce((sum, i) => sum + i.prog, 0))}
+          delta="all time"
         />
       </div>
 
