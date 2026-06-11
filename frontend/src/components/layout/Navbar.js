@@ -23,8 +23,10 @@ const ROLE_NAV_LINKS = {
     { path: "/supervisor/evaluation", label: "Evaluations", icon: "★" },
   ],
   academic_supervisor: [
-    { path: "/supervisor/dashboard", label: "Dashboard", icon: "⌂" },
-    { path: "/supervisor/evaluation", label: "Evaluations", icon: "★" },
+    { path: "/academic/dashboard", label: "Dashboard", icon: "⌂" },
+    { path: "/academic/criteria", label: "Criteria", icon: "✎" },
+    { path: "/academic/evaluation", label: "Grades", icon: "★" },
+    { path: "/academic/students", label: "Students", icon: "⚇" },
   ],
   internship_admin: [{ path: "/admin/dashboard", label: "Admin Dashboard", icon: "⌂" }],
 };
