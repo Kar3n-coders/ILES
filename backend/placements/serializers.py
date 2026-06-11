@@ -89,14 +89,17 @@ class PlacementCreateSerializer(serializers.ModelSerializer):
             "end_date",
             "supervisor",
             "academic_supervisor",
+            "status",
         ]
 
         extra_kwargs = {
             "supervisor": {"required": False, "allow_null": True},
             "academic_supervisor": {"required": False, "allow_null": True},
-            "student": {
-                "required": False
-            },
+            "student": {"required": False},
+            "status": {"required": False},
+            "company_name": {"required": False, "allow_null": True},
+            "start_date": {"required": False},
+            "end_date": {"required": False},
         }
 
     def validate_student(self, value):
@@ -118,6 +121,14 @@ class PlacementCreateSerializer(serializers.ModelSerializer):
         if value is not None and value.role != "academic_supervisor":
             raise serializers.ValidationError(
                 f"User '{value.username}' is not an academic supervisor (role: {value.role})."
+            )
+        return value
+
+    def validate_status(self, value):
+        valid = [choice[0] for choice in InternshipPlacement.STATUS_CHOICES]
+        if value not in valid:
+            raise serializers.ValidationError(
+                f"Invalid status '{value}'. Must be one of: {', '.join(valid)}."
             )
         return value
 
