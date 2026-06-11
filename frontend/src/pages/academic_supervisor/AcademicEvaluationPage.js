@@ -51,9 +51,9 @@ export default function AcademicEvaluationPage() {
   const wsEvals = placementEvals.filter((e) => e.evalutor_type === "workplace");
   const asEvals = placementEvals.filter((e) => e.evalutor_type === "academic");
 
-  const totalWeighted = placementEvals.reduce((sum, e) => sum + (e.weighted_score || 0), 0);
-  const maxWeighted = criteria.reduce((sum, c) => sum + (c.weight || 0), 0) * 5;
-  const pct = maxWeighted > 0 ? Math.round((totalWeighted / maxWeighted) * 100) : 0;
+  const totalWeighted = summary?.total_weighted_score ?? placementEvals.reduce((sum, e) => sum + (e.weighted_score || 0), 0);
+  const maxWeighted = summary?.max_possible_score ?? (criteria.reduce((sum, c) => sum + (c.weight || 0), 0) * 5);
+  const pct = summary?.percentage ?? (maxWeighted > 0 ? Math.round((totalWeighted / maxWeighted) * 100) : 0);
 
   function gradeLabel(p) {
     if (p >= 80) return { label: "Distinction", kind: "ok" };
