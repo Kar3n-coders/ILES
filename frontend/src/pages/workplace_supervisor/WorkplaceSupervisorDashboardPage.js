@@ -152,6 +152,13 @@ export default function WorkplaceSupervisorDashboardPage() {
         crumb="Workspace · My interns"
         title={`Welcome, ${displayName}`}
         sub={`You're supervising ${interns.length} intern${interns.length !== 1 ? "s" : ""} this cohort.`}
+        actions={
+          awaitingCount > 0 ? (
+            <Btn sm kind="primary" onClick={() => navigate("/supervisor/logs")}>
+              Review logs {I.arrow}
+            </Btn>
+          ) : undefined
+        }
       />
 
       <div className="grid grid--4">
