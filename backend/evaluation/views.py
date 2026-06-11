@@ -55,7 +55,7 @@ class EvaluationViewSet(viewsets.ModelViewSet):
         elif user.role == "workplace_supervisor":
             return Evaluation.objects.filter(evalutor=user).select_related(
                 "placement", "evalutor", "criteria", "placement__student"
-            )
+            ).order_by("-evaluated_at")
 
         elif user.role == "academic_supervisor":
             placement_ids = InternshipPlacement.objects.filter(
@@ -63,7 +63,7 @@ class EvaluationViewSet(viewsets.ModelViewSet):
             ).values_list("id", flat=True)
             return Evaluation.objects.filter(
                 placement__in=placement_ids
-            ).select_related("placement", "evalutor", "criteria", "placement__student")
+            ).select_related("placement", "evalutor", "criteria", "placement__student").order_by("-evaluated_at")
 
         elif user.role == "student":
             return Evaluation.objects.filter(
