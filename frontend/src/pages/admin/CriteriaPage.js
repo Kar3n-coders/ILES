@@ -52,6 +52,14 @@ export default function CriteriaPage() {
         </div>
       </Card>
 
+      {criteria.length > 0 && Math.abs(totalWeight - 1) > 0.001 && (
+        <Card kind="warn">
+          <p style={{ fontSize: 13 }}>
+            ⚠ Criteria weights sum to <b>{Math.round(totalWeight * 100)}%</b> — should total 100%.
+          </p>
+        </Card>
+      )}
+
       <Card label={`Criteria (${criteria.length}) · ${Math.round(totalWeight * 100)}% total weight`} padless>
         {criteria.length === 0 ? (
           <div className="empty-state" style={{ padding: 24 }}>
