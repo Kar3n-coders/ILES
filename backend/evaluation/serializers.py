@@ -16,10 +16,15 @@ class EvaluationCriteriaSerializer(serializers.ModelSerializer):
     def get_weight_pct(self, obj):
         return round(obj.weight * 100, 1)
 
+    def validate_name(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Criteria name cannot be empty.")
+        return value.strip()
+
     def validate_weight(self, value):
         if value <= 0 or value > 1:
             raise serializers.ValidationError("Weight must be between 0.01 and 1.00")
-        return value
+        return round(value, 4)
 
 
 class EvaluationSerializer(serializers.ModelSerializer):
