@@ -63,7 +63,7 @@ export default function CriteriaPage() {
       <Card label={`Criteria (${criteria.length}) · ${Math.round(totalWeight * 100)}% total weight`} padless>
         {criteria.length === 0 ? (
           <div className="empty-state" style={{ padding: 24 }}>
-            No evaluation criteria have been created yet.
+            No evaluation criteria created yet. Academic supervisors can add them from their portal.
           </div>
         ) : (
           <table className="criteria-table" style={{ width: "100%" }}>
