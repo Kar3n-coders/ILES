@@ -91,7 +91,7 @@ export default function LogsPage() {
       <PageHead
         crumb="Workspace · Logs"
         title="Student Logbooks"
-        sub="Review and approve your students' weekly log submissions."
+        sub={`${pending.length} awaiting review · ${history.length} processed`}
       />
 
       {error && (
