@@ -99,7 +99,7 @@ export default function StudentDashboardPage() {
       <PageHead
         crumb="Workspace · Dashboard"
         title={`Welcome back, ${firstName} 👋`}
-        sub={`Here's what's happening with your internship at ${company}.`}
+        sub={placementPending ? "Your placement is pending admin approval." : `Here's what's happening with your internship at ${company}.`}
         actions={
           <>
             <Btn
