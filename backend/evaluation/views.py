@@ -15,22 +15,33 @@ from .serializers import (
 
 
 class EvaluationCriteriaViewSet(viewsets.ModelViewSet):
-    queryset = EvaluationCriteria.objects.all()
+    queryset = EvaluationCriteria.objects.all().order_by("name")
     serializer_class = EvaluationCriteriaSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def _can_mutate(self, user):
+        return user.role in ["academic_supervisor", "internship_admin"]
+
     def create(self, request, *args, **kwargs):
-        if request.user.role != "internship_admin":
+        if not self._can_mutate(request.user):
             return Response(
-                {"error": "Only administrators can create evaluation criteria."},
+                {"error": "Only academic supervisors can create evaluation criteria."},
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().create(request, *args, **kwargs)
 
-    def destroy(self, request, *args, **kwargs):
-        if request.user.role != "internship_admin":
+    def update(self, request, *args, **kwargs):
+        if not self._can_mutate(request.user):
             return Response(
-                {"error": "Only administrators can delete criteria."},
+                {"error": "Only academic supervisors can update evaluation criteria."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if not self._can_mutate(request.user):
+            return Response(
+                {"error": "Only academic supervisors can delete criteria."},
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().destroy(request, *args, **kwargs)
