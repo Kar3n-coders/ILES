@@ -20,7 +20,9 @@ const ROLE_NAV_LINKS = {
   ],
   workplace_supervisor: [
     { path: "/supervisor/dashboard", label: "Dashboard", icon: "⌂" },
+    { path: "/supervisor/logs", label: "Logs", icon: "✎" },
     { path: "/supervisor/evaluation", label: "Evaluations", icon: "★" },
+    { path: "/supervisor/students", label: "Students", icon: "⚇" },
   ],
   academic_supervisor: [
     { path: "/academic/dashboard", label: "Dashboard", icon: "⌂" },
