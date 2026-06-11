@@ -7,14 +7,24 @@ logger = logging.getLogger(__name__)
 
 
 class EvaluationCriteriaSerializer(serializers.ModelSerializer):
+    weight_pct = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = EvaluationCriteria
-        fields = ["id", "name", "description", "weight"]
+        fields = ["id", "name", "description", "weight", "weight_pct"]
+
+    def get_weight_pct(self, obj):
+        return round(obj.weight * 100, 1)
+
+    def validate_name(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Criteria name cannot be empty.")
+        return value.strip()
 
     def validate_weight(self, value):
         if value <= 0 or value > 1:
             raise serializers.ValidationError("Weight must be between 0.01 and 1.00")
-        return value
+        return round(value, 4)
 
 
 class EvaluationSerializer(serializers.ModelSerializer):
@@ -75,7 +85,7 @@ class EvaluationCreateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_score(self, value):
-        if value < 1 or value > 5:
+        if value is not None and (value < 1 or value > 5):
             raise serializers.ValidationError("Score must be between 1 and 5.")
         return value
 
@@ -83,11 +93,16 @@ class EvaluationCreateSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if request and request.user:
             placement = data.get("placement")
-            if placement and placement.supervisor != request.user:
-                if request.user.role != "internship_admin":
-                    raise serializers.ValidationError(
-                        {
-                            "placement": "You can only evaluate students in your own supervised placements."
-                        }
-                    )
+            user = request.user
+            if placement and user.role != "internship_admin":
+                if user.role == "workplace_supervisor":
+                    if placement.supervisor != user:
+                        raise serializers.ValidationError(
+                            {"placement": "You can only evaluate students in your supervised placements."}
+                        )
+                elif user.role == "academic_supervisor":
+                    if placement.academic_supervisor != user:
+                        raise serializers.ValidationError(
+                            {"placement": "You can only evaluate students assigned to you as academic supervisor."}
+                        )
         return data

@@ -154,6 +154,10 @@ export function createEvaluationCriteria(data) {
   });
 }
 
+export function deleteEvaluationCriteria(id) {
+  return request(`/evaluation-criteria/${id}/`, { method: "DELETE" });
+}
+
 export function getEvaluations() {
   return request("/evaluation/");
 }

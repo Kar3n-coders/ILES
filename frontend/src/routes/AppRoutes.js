@@ -23,6 +23,7 @@ import WorkplaceLogsPage from "../pages/workplace_supervisor/LogsPage";
 // Academic Supervisor imports
 import AcademicSupervisorDashboardPage from "../pages/academic_supervisor/AcademicSupervisorDashboardPage";
 import AcademicEvaluationPage from "../pages/academic_supervisor/AcademicEvaluationPage";
+import AcademicCriteriaPage from "../pages/academic_supervisor/CriteriaPage";
 import AcademicSupervisorProfilePage from "../pages/academic_supervisor/ProfilePage";
 import AcademicStudentsPage from "../pages/academic_supervisor/StudentsPage";
 
@@ -95,6 +96,7 @@ function AppRoutes() {
               element={<AcademicEvaluationPage />}
             />
             <Route path="/academic/profile" element={<AcademicSupervisorProfilePage />} />
+            <Route path="/academic/criteria" element={<AcademicCriteriaPage />} />
           </Route>
         </Route>
         {/* Admin Routes*/}

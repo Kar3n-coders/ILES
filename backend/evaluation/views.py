@@ -15,22 +15,33 @@ from .serializers import (
 
 
 class EvaluationCriteriaViewSet(viewsets.ModelViewSet):
-    queryset = EvaluationCriteria.objects.all()
+    queryset = EvaluationCriteria.objects.all().order_by("-weight", "name")
     serializer_class = EvaluationCriteriaSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def _can_mutate(self, user):
+        return user.role in ["academic_supervisor", "internship_admin"]
+
     def create(self, request, *args, **kwargs):
-        if request.user.role != "internship_admin":
+        if not self._can_mutate(request.user):
             return Response(
-                {"error": "Only administrators can create evaluation criteria."},
+                {"error": "Only academic supervisors can create evaluation criteria."},
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().create(request, *args, **kwargs)
 
-    def destroy(self, request, *args, **kwargs):
-        if request.user.role != "internship_admin":
+    def update(self, request, *args, **kwargs):
+        if not self._can_mutate(request.user):
             return Response(
-                {"error": "Only administrators can delete criteria."},
+                {"error": "Only academic supervisors can update evaluation criteria."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if not self._can_mutate(request.user):
+            return Response(
+                {"error": "Only academic supervisors can delete criteria."},
                 status=status.HTTP_403_FORBIDDEN,
             )
         return super().destroy(request, *args, **kwargs)
@@ -52,10 +63,18 @@ class EvaluationViewSet(viewsets.ModelViewSet):
                 "placement", "evalutor", "criteria", "placement__student"
             )
 
-        elif user.role in ["workplace_supervisor", "academic_supervisor"]:
+        elif user.role == "workplace_supervisor":
             return Evaluation.objects.filter(evalutor=user).select_related(
                 "placement", "evalutor", "criteria", "placement__student"
-            )
+            ).order_by("-evaluated_at")
+
+        elif user.role == "academic_supervisor":
+            placement_ids = InternshipPlacement.objects.filter(
+                academic_supervisor=user
+            ).values_list("id", flat=True)
+            return Evaluation.objects.filter(
+                placement__in=placement_ids
+            ).select_related("placement", "evalutor", "criteria", "placement__student").order_by("-evaluated_at")
 
         elif user.role == "student":
             return Evaluation.objects.filter(
@@ -90,9 +109,13 @@ class EvaluationViewSet(viewsets.ModelViewSet):
         user = request.user
 
         if user.role == "student" and placement.student != user:
-            return Response(
-                {"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN
-            )
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
+
+        if user.role == "workplace_supervisor" and placement.supervisor != user:
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
+
+        if user.role == "academic_supervisor" and placement.academic_supervisor != user:
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
 
         evaluations = Evaluation.objects.filter(
             placement=placement, is_finalised=True

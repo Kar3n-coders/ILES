@@ -104,10 +104,16 @@ const NAV_CONFIG = {
             description: "Evaluation overview",
           },
           {
-            path: "/academic/evaluation",
-            label: "Evaluations",
+            path: "/academic/criteria",
+            label: "Criteria",
             icon: <StarIcon />,
-            description: "Weighted scoring",
+            description: "Manage evaluation criteria",
+          },
+          {
+            path: "/academic/evaluation",
+            label: "Grades",
+            icon: <LogbookIcon />,
+            description: "Student evaluation scores",
           },
           {
             path: "/academic/students",
@@ -156,7 +162,7 @@ const NAV_CONFIG = {
             path: "/admin/criteria",
             label: "Criteria",
             icon: <ClipboardIcon />,
-            description: "Evaluation criteria",
+            description: "Evaluation criteria (read-only)",
           },
           {
             path: "/admin/profile",
