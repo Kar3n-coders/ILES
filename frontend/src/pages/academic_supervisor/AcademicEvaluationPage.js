@@ -56,11 +56,11 @@ export default function AcademicEvaluationPage() {
   const pct = summary?.percentage ?? (maxWeighted > 0 ? Math.round((totalWeighted / maxWeighted) * 100) : 0);
 
   function gradeLabel(p) {
-    if (p >= 80) return { label: "Distinction", kind: "ok" };
-    if (p >= 65) return { label: "Credit", kind: "accent" };
-    if (p >= 50) return { label: "Pass", kind: "warn" };
-    if (p > 0) return { label: "Fail", kind: "err" };
-    return { label: "Not scored", kind: "ghost" };
+    if (p >= 80) return { label: "Distinction (≥80%)", kind: "ok" };
+    if (p >= 65) return { label: "Credit (≥65%)", kind: "accent" };
+    if (p >= 50) return { label: "Pass (≥50%)", kind: "warn" };
+    if (p > 0) return { label: "Fail (<50%)", kind: "err" };
+    return { label: "Not scored yet", kind: "ghost" };
   }
 
   const grade = gradeLabel(pct);
