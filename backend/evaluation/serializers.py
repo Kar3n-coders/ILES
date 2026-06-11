@@ -29,8 +29,8 @@ class EvaluationCriteriaSerializer(serializers.ModelSerializer):
 
 class EvaluationSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(source="placement.company_name", read_only=True)
-    criteria_name = serializers.CharField(source="criteria.name", read_only=True)
-    criteria_weight = serializers.FloatField(source="criteria.weight", read_only=True)
+    criteria_name = serializers.CharField(source="criteria.name", read_only=True, allow_null=True, default=None)
+    criteria_weight = serializers.FloatField(source="criteria.weight", read_only=True, allow_null=True, default=None)
     evalutor_username = serializers.CharField(
         source="evalutor.username", read_only=True
     )
