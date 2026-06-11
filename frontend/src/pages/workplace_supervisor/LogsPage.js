@@ -35,8 +35,8 @@ export default function LogsPage() {
 
   const hasApprovedPlacements = approvedPlacementIds.size > 0;
 
-  const pending = logbooks.filter((l) => l.status === "pending");
-  const history = logbooks.filter((l) => l.status !== "pending" && l.status !== "draft");
+  const pending = logbooks.filter((l) => l.status === "pending" || l.status === "submitted");
+  const history = logbooks.filter((l) => l.status === "approved" || l.status === "reviewed");
 
   async function handleApprove(logId) {
     setActing(logId);
