@@ -51,7 +51,7 @@ export default function StudentsPage() {
       <PageHead
         crumb="Workspace · Students"
         title="My Students"
-        sub={`${students.length} student${students.length !== 1 ? "s" : ""} assigned to you.`}
+        sub={`${students.length} student${students.length !== 1 ? "s" : ""} · ${students.filter(s => s.status === "approved").length} approved`}
       />
 
       {students.length > 0 && (
