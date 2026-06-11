@@ -18,6 +18,7 @@ import WorkplaceSupervisorDashboardPage from "../pages/workplace_supervisor/Work
 import WorkplaceEvaluationPage from "../pages/workplace_supervisor/WorkplaceEvaluationPage";
 import WorkplaceSupervisorProfilePage from "../pages/workplace_supervisor/ProfilePage";
 import WorkplaceStudentsPage from "../pages/workplace_supervisor/StudentsPage";
+import WorkplaceLogsPage from "../pages/workplace_supervisor/LogsPage";
 
 // Academic Supervisor imports
 import AcademicSupervisorDashboardPage from "../pages/academic_supervisor/AcademicSupervisorDashboardPage";
@@ -73,6 +74,7 @@ function AppRoutes() {
               element={<WorkplaceEvaluationPage />}
             />
             <Route path="/supervisor/profile" element={<WorkplaceSupervisorProfilePage />} />
+            <Route path="/supervisor/logs" element={<WorkplaceLogsPage />} />
           </Route>
         </Route>
         {/* Academic Supervisor */}
