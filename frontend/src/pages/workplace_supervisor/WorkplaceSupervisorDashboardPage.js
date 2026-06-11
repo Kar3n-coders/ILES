@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { getPlacements, getLogbooks, getEvaluations } from "../../services/api";
+import { getPlacements, getLogbooks, getEvaluations, createReview } from "../../services/api";
 import {
   PageHead,
   Card,
@@ -31,6 +31,8 @@ export default function WorkplaceSupervisorDashboardPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [acting, setActing] = useState(null);
+  const [returnForms, setReturnForms] = useState({});
 
   useEffect(() => {
     Promise.all([getPlacements(), getLogbooks(), getEvaluations()])
@@ -39,21 +41,31 @@ export default function WorkplaceSupervisorDashboardPage() {
         const logbooks = logbooksData || [];
         const evaluations = evalsData || [];
 
-        const internList = placements.map((p) => ({
-          id: p.id,
-          name: p.student_name || p.student_username || `Student #${p.id}`,
-          prog: 0,
-          last: "—",
-          hrs: "—",
-          status: "Up to date",
-          avKind: undefined,
-        }));
+        const logsByPlacement = {};
+        logbooks.forEach((l) => {
+          if (!logsByPlacement[l.placement]) logsByPlacement[l.placement] = [];
+          logsByPlacement[l.placement].push(l);
+        });
+
+        const internList = placements.map((p) => {
+          const pLogs = logsByPlacement[p.id] || [];
+          const lastLog = pLogs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
+          const hasPending = pLogs.some((l) => l.status === "pending");
+          return {
+            id: p.id,
+            name: p.student_full_name || p.student_username || `Student #${p.id}`,
+            prog: pLogs.length,
+            last: lastLog ? lastLog.start_date?.split("T")[0] : "—",
+            status: hasPending ? "Awaiting review" : "Up to date",
+            avKind: undefined,
+          };
+        });
 
         const pendingList = logbooks
-          .filter((l) => l.status === "pending")
+          .filter((l) => l.status === "pending" || l.status === "submitted")
           .map((l) => ({
-            who: l.student_username || `Student #${l.student}`,
-            what: `Week ${l.week_number} logbook`,
+            who: l.student_fullname || l.student_username || `Student #${l.student}`,
+            what: `Week ${l.week_number}`,
             when: l.submitted_at ? l.submitted_at.split("T")[0] : "—",
             id: l.id,
           }));
@@ -65,12 +77,48 @@ export default function WorkplaceSupervisorDashboardPage() {
           activeInterns: placements.length,
           awaitingReview: pendingList.length,
           approvedThisWeek: logbooks.filter((l) => l.status === "approved").length,
-          avgScore: 0,
         });
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
+
+  async function handleApprove(entryId) {
+    setActing(entryId);
+    try {
+      await createReview({ Logbook: entryId, action: "approved", comment: "" });
+      setPending((prev) => prev.filter((e) => e.id !== entryId));
+      setStats((s) => s ? { ...s, awaitingReview: s.awaitingReview - 1, approvedThisWeek: s.approvedThisWeek + 1 } : s);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setActing(null);
+    }
+  }
+
+  async function handleReturn(entryId) {
+    const comment = returnForms[entryId] || "";
+    if (!comment.trim()) return;
+    setActing(entryId);
+    try {
+      await createReview({ Logbook: entryId, action: "revision_requested", comment });
+      setPending((prev) => prev.filter((e) => e.id !== entryId));
+      setStats((s) => s ? { ...s, awaitingReview: s.awaitingReview - 1 } : s);
+      setReturnForms((prev) => { const next = { ...prev }; delete next[entryId]; return next; });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setActing(null);
+    }
+  }
+
+  function toggleReturn(entryId) {
+    setReturnForms((prev) =>
+      prev[entryId] !== undefined
+        ? (() => { const next = { ...prev }; delete next[entryId]; return next; })()
+        : { ...prev, [entryId]: "" }
+    );
+  }
 
   if (loading) {
     return (
@@ -96,8 +144,6 @@ export default function WorkplaceSupervisorDashboardPage() {
     ? `${user.first_name} ${user.last_name || ""}`.trim()
     : user?.username || "Supervisor";
 
-  const org = user?.organization || "Your Organisation";
-
   const awaitingCount = stats?.awaitingReview ?? pending.length;
 
   return (
@@ -105,12 +151,7 @@ export default function WorkplaceSupervisorDashboardPage() {
       <PageHead
         crumb="Workspace · My interns"
         title={`Welcome, ${displayName}`}
-        sub={`You're supervising ${interns.length} intern${interns.length !== 1 ? "s" : ""} at ${org} this cohort.`}
-        actions={
-          <Btn sm kind="ghost">
-            {org} ▾
-          </Btn>
-        }
+        sub={`You're supervising ${interns.length} intern${interns.length !== 1 ? "s" : ""} this cohort.`}
       />
 
       <div className="grid grid--4">
@@ -130,9 +171,8 @@ export default function WorkplaceSupervisorDashboardPage() {
           value={stats ? String(stats.approvedThisWeek) : "—"}
         />
         <Stat
-          label="Avg score given"
-          value={stats ? String(stats.avgScore) : "—"}
-          unit=" / 5"
+          label="Total log entries"
+          value={String(interns.reduce((sum, i) => sum + i.prog, 0))}
         />
       </div>
 
@@ -145,9 +185,8 @@ export default function WorkplaceSupervisorDashboardPage() {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Progress</th>
+                  <th>Entries</th>
                   <th>Last entry</th>
-                  <th>Hrs</th>
                   <th>Status</th>
                   <th></th>
                 </tr>
@@ -161,19 +200,8 @@ export default function WorkplaceSupervisorDashboardPage() {
                         <b style={{ fontSize: 13 }}>{intern.name}</b>
                       </div>
                     </td>
-                    <td>
-                      <div style={{ width: 140 }}>
-                        <Bar pct={intern.prog} />
-                      </div>
-                      <span
-                        className="tiny"
-                        style={{ display: "block", marginTop: 4 }}
-                      >
-                        {intern.prog}%
-                      </span>
-                    </td>
+                    <td className="muted">{intern.prog}</td>
                     <td className="muted">{intern.last}</td>
-                    <td>{intern.hrs}</td>
                     <td>
                       <Chip kind={STATUS_KIND[intern.status] || ""} dot>
                         {intern.status}
@@ -183,11 +211,9 @@ export default function WorkplaceSupervisorDashboardPage() {
                       <Btn
                         sm
                         kind="ghost"
-                        onClick={() =>
-                          navigate(`/supervisor/intern/${intern.id}`)
-                        }
+                        onClick={() => navigate("/supervisor/logs")}
                       >
-                        Open {I.arrow}
+                        Logs {I.arrow}
                       </Btn>
                     </td>
                   </tr>
@@ -203,43 +229,65 @@ export default function WorkplaceSupervisorDashboardPage() {
               <div className="empty-state">No pending approvals.</div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                {pending.map((entry, i) => (
-                  <div
-                    key={i}
-                    className="row row--between row--center"
-                    style={{
-                      padding: "10px 0",
-                      borderBottom:
-                        i < pending.length - 1
-                          ? "1px solid rgba(192,86,33,0.2)"
-                          : "none",
-                    }}
-                  >
-                    <div style={{ fontSize: 13 }}>
-                      <b>{entry.who}</b> ·{" "}
-                      <span className="muted">{entry.what}</span>
-                      <div className="muted" style={{ fontSize: 11 }}>
-                        {entry.when}
+                {pending.map((entry, i) => {
+                  const showReturn = returnForms[entry.id] !== undefined;
+                  return (
+                    <div key={i}>
+                      <div
+                        className="row row--between row--center"
+                        style={{
+                          padding: "10px 0",
+                          borderBottom:
+                            i < pending.length - 1 && !showReturn
+                              ? "1px solid rgba(192,86,33,0.2)"
+                              : "none",
+                        }}
+                      >
+                        <div style={{ fontSize: 13 }}>
+                          <b>{entry.who}</b> ·{" "}
+                          <span className="muted">{entry.what}</span>
+                          <div className="muted" style={{ fontSize: 11 }}>
+                            {entry.when}
+                          </div>
+                        </div>
+                        <div className="row" style={{ gap: 6 }}>
+                          <Btn sm disabled={acting === entry.id} onClick={() => handleApprove(entry.id)}>
+                            {acting === entry.id ? "…" : "Approve"}
+                          </Btn>
+                          <Btn sm kind="ghost" disabled={acting === entry.id} onClick={() => toggleReturn(entry.id)}>
+                            {showReturn ? "Cancel" : "Return"}
+                          </Btn>
+                        </div>
                       </div>
+                      {showReturn && (
+                        <div style={{ paddingBottom: 10, borderBottom: i < pending.length - 1 ? "1px solid rgba(192,86,33,0.2)" : "none" }}>
+                          <textarea
+                            rows={2}
+                            style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid var(--color-border)", fontSize: 13, resize: "vertical", boxSizing: "border-box" }}
+                            placeholder="Reason for returning…"
+                            value={returnForms[entry.id] || ""}
+                            onChange={(e) => setReturnForms((prev) => ({ ...prev, [entry.id]: e.target.value }))}
+                          />
+                          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
+                            <Btn sm kind="primary" disabled={acting === entry.id || !returnForms[entry.id]?.trim()} onClick={() => handleReturn(entry.id)}>
+                              Send
+                            </Btn>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="row" style={{ gap: 6 }}>
-                      <Btn sm>Approve</Btn>
-                      <Btn sm kind="ghost">
-                        Return
-                      </Btn>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </Card>
 
-          <Card label="Upcoming evaluations">
+          <Card label="Recent evaluations">
             {evals.length === 0 ? (
-              <div className="empty-state">No upcoming evaluations.</div>
+              <div className="empty-state">No evaluations yet.</div>
             ) : (
               <ul className="timeline">
-                {evals.map((ev, i) => (
+                {evals.slice(0, 5).map((ev, i) => (
                   <li key={i}>
                     <b>
                       {ev.student_username} — {ev.criteria_name}
@@ -252,35 +300,6 @@ export default function WorkplaceSupervisorDashboardPage() {
           </Card>
         </div>
       </div>
-
-      {pending.length > 0 && (
-        <Card
-          label="Drill-in preview · clicking a row opens →"
-          style={{ marginTop: 20 }}
-        >
-          <div className="row row--between row--center">
-            <div>
-              <b style={{ fontSize: 14 }}>
-                {pending[0].who} — {pending[0].what}
-              </b>
-              <div className="muted" style={{ fontSize: 12 }}>
-                Submitted {pending[0].when} · awaiting your signature
-              </div>
-            </div>
-            <div className="row" style={{ gap: 8 }}>
-              <Btn sm kind="ghost">
-                View entry
-              </Btn>
-              <Btn sm kind="ghost">
-                Return with comment
-              </Btn>
-              <Btn sm kind="primary">
-                {I.check} Approve & sign
-              </Btn>
-            </div>
-          </div>
-        </Card>
-      )}
     </div>
   );
 }
