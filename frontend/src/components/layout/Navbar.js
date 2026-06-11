@@ -11,7 +11,7 @@ const PROFILE_PATHS = {
   internship_admin: "/admin/profile",
 };
 
-// TODO: ILES-21: Add ROLE_NAV_LINK and ROLE_CONFIG constanst here
+// Role-based nav links for the top navbar
 const ROLE_NAV_LINKS = {
   student: [
     { path: "/student/dashboard", label: "Overview", icon: "⌂" },
