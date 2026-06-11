@@ -22,7 +22,7 @@ export default function AcademicCriteriaPage() {
   const [deleting, setDeleting] = useState(null);
 
   async function handleDelete(id) {
-    if (!window.confirm("Delete this criterion? This cannot be undone.")) return;
+    if (!window.confirm("Delete this criterion? Existing scores will be kept but will no longer show the criterion name.")) return;
     setDeleting(id);
     try {
       await deleteEvaluationCriteria(id);
