@@ -52,10 +52,18 @@ class EvaluationViewSet(viewsets.ModelViewSet):
                 "placement", "evalutor", "criteria", "placement__student"
             )
 
-        elif user.role in ["workplace_supervisor", "academic_supervisor"]:
+        elif user.role == "workplace_supervisor":
             return Evaluation.objects.filter(evalutor=user).select_related(
                 "placement", "evalutor", "criteria", "placement__student"
-            )
+            ).order_by("-evaluated_at")
+
+        elif user.role == "academic_supervisor":
+            placement_ids = InternshipPlacement.objects.filter(
+                academic_supervisor=user
+            ).values_list("id", flat=True)
+            return Evaluation.objects.filter(
+                placement__in=placement_ids
+            ).select_related("placement", "evalutor", "criteria", "placement__student").order_by("-evaluated_at")
 
         elif user.role == "student":
             return Evaluation.objects.filter(
@@ -90,9 +98,13 @@ class EvaluationViewSet(viewsets.ModelViewSet):
         user = request.user
 
         if user.role == "student" and placement.student != user:
-            return Response(
-                {"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN
-            )
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
+
+        if user.role == "workplace_supervisor" and placement.supervisor != user:
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
+
+        if user.role == "academic_supervisor" and placement.academic_supervisor != user:
+            return Response({"error": "Access denied."}, status=status.HTTP_403_FORBIDDEN)
 
         evaluations = Evaluation.objects.filter(
             placement=placement, is_finalised=True
