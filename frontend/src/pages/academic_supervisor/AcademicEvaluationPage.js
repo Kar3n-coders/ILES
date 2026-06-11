@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { PageHead, Card, Chip } from "../../components/common/Primitives";
-import { getPlacements, getEvaluations, getEvaluationCriteria } from "../../services/api";
+import { getPlacements, getEvaluations, getEvaluationCriteria, getEvaluationSummary } from "../../services/api";
 import "./AcademicEvaluationPage.css";
 
 export default function AcademicEvaluationPage() {
@@ -10,6 +10,7 @@ export default function AcademicEvaluationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [summary, setSummary] = useState(null);
 
   useEffect(() => {
     Promise.all([getPlacements(), getEvaluations(), getEvaluationCriteria()])
@@ -17,7 +18,10 @@ export default function AcademicEvaluationPage() {
         setPlacements(pData || []);
         setEvaluations(evData || []);
         setCriteria(cData || []);
-        if (pData && pData.length > 0) setSelected(pData[0].id);
+        if (pData && pData.length > 0) {
+          setSelected(pData[0].id);
+          getEvaluationSummary(pData[0].id).then(setSummary).catch(() => {});
+        }
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -83,7 +87,12 @@ export default function AcademicEvaluationPage() {
                 <select
                   className="aeval-select"
                   value={selected || ""}
-                  onChange={(e) => setSelected(Number(e.target.value))}
+                  onChange={(e) => {
+                    const id = Number(e.target.value);
+                    setSelected(id);
+                    setSummary(null);
+                    getEvaluationSummary(id).then(setSummary).catch(() => {});
+                  }}
                 >
                   {placements.map((p) => (
                     <option key={p.id} value={p.id}>
