@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { PageHead, Card, Btn, Chip } from "../../components/common/Primitives";
-import { getEvaluationCriteria, createEvaluationCriteria } from "../../services/api";
+import { getEvaluationCriteria, createEvaluationCriteria, deleteEvaluationCriteria } from "../../services/api";
 import "../admin/CriteriaPage.css";
 
 export default function AcademicCriteriaPage() {
@@ -19,6 +19,20 @@ export default function AcademicCriteriaPage() {
   }, []);
 
   const totalWeight = criteria.reduce((sum, c) => sum + (c.weight || 0), 0);
+  const [deleting, setDeleting] = useState(null);
+
+  async function handleDelete(id) {
+    if (!window.confirm("Delete this criterion? This cannot be undone.")) return;
+    setDeleting(id);
+    try {
+      await deleteEvaluationCriteria(id);
+      setCriteria((prev) => prev.filter((c) => c.id !== id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeleting(null);
+    }
+  }
 
   async function handleCreate(e) {
     e.preventDefault();
@@ -131,6 +145,7 @@ export default function AcademicCriteriaPage() {
                   <th scope="col">Name</th>
                   <th scope="col">Weight</th>
                   <th scope="col">Max</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -146,6 +161,11 @@ export default function AcademicCriteriaPage() {
                       <Chip kind="accent">{c.weight_pct ?? Math.round(c.weight * 100)}%</Chip>
                     </td>
                     <td>5</td>
+                    <td>
+                      <Btn sm kind="ghost" disabled={deleting === c.id} onClick={() => handleDelete(c.id)}>
+                        {deleting === c.id ? "…" : "Delete"}
+                      </Btn>
+                    </td>
                   </tr>
                 ))}
               </tbody>
