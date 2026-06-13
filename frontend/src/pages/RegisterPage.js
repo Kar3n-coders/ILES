@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   GraduationCap, Eye, EyeOff, Lock, User, Mail, Phone,
@@ -6,13 +6,14 @@ import {
   ChevronRight, ClipboardCheck, Moon, Sun,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
-import { registerUser } from "../services/api";
+import { registerUser, getCompanies, getInstitutions } from "../services/api";
 import "./RegisterPage.css";
 
 const ROLES = [
-  { value: "student",              label: "Student Intern",           icon: GraduationCap,   desc: "Submit weekly logs, track your internship",       color: "#1a365d" },
-  { value: "workplace_supervisor", label: "Workplace Supervisor",     icon: ClipboardCheck,  desc: "Review logs from your assigned interns",          color: "#276749" },
-  { value: "academic_supervisor",  label: "Academic Supervisor",      icon: BookOpen,        desc: "Evaluate and grade students academically",        color: "#c05621" },
+  { value: "student",              label: "Student Intern",             icon: GraduationCap,   desc: "Submit weekly logs, track your internship",                       color: "#1a365d" },
+  { value: "workplace_supervisor", label: "Workplace Supervisor",       icon: ClipboardCheck,  desc: "Review logs from your assigned interns",                          color: "#276749" },
+  { value: "academic_supervisor",  label: "Academic Supervisor",        icon: BookOpen,        desc: "Evaluate and grade students academically",                        color: "#c05621" },
+  { value: "internship_admin",     label: "Internship Administrator",   icon: Building2,       desc: "Manage company placements and workplace supervisors",              color: "#6b21a8" },
 ];
 
 function getSteps(role) {
@@ -47,6 +48,13 @@ export default function RegisterPage() {
   const [error, setError]       = useState("");
   const [loading, setLoading]   = useState(false);
   const [done, setDone]         = useState(false);
+  const [companies, setCompanies]       = useState([]);
+  const [institutions, setInstitutions] = useState([]);
+
+  useEffect(() => {
+    getCompanies().then(setCompanies).catch(() => {});
+    getInstitutions().then(setInstitutions).catch(() => {});
+  }, []);
 
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const selectedRole = ROLES.find((r) => r.value === role);
@@ -244,7 +252,7 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {(role === "internship_admin" || role === "workplace_supervisor") && (
+              {role === "internship_admin" && (
                 <div className="reg-group">
                   <label className="reg-label">Company / Organisation <span style={{ color: "red" }}>*</span></label>
                   <div className="reg-input-wrap">
@@ -258,9 +266,28 @@ export default function RegisterPage() {
                     />
                   </div>
                   <p className="reg-hint" style={{ marginTop: 4 }}>
-                    {role === "internship_admin"
-                      ? "This becomes your company on the platform. Students will select it during onboarding."
-                      : "Enter your employer's company name exactly as the admin registered it."}
+                    This becomes your company on the platform. Students will select it during onboarding.
+                  </p>
+                </div>
+              )}
+
+              {role === "workplace_supervisor" && (
+                <div className="reg-group">
+                  <label className="reg-label">Company / Organisation <span style={{ color: "red" }}>*</span></label>
+                  <div className="reg-input-wrap">
+                    <Building2 size={14} className="reg-input-icon" />
+                    <select
+                      className="reg-input reg-input--icon"
+                      value={form.company}
+                      onChange={(e) => update("company", e.target.value)}
+                      required
+                    >
+                      <option value="">Select a company…</option>
+                      {companies.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <p className="reg-hint" style={{ marginTop: 4 }}>
+                    Select the company where you work. If your company isn't listed, the internship administrator must register first.
                   </p>
                 </div>
               )}
@@ -314,7 +341,28 @@ export default function RegisterPage() {
                 <label className="reg-label">University / Institution</label>
                 <div className="reg-input-wrap">
                   <Building2 size={14} className="reg-input-icon" />
-                  <input className="reg-input reg-input--icon" value={form.university} onChange={(e) => update("university", e.target.value)} placeholder="Makerere University" />
+                  <select
+                    className="reg-input reg-input--icon"
+                    value={form.university}
+                    onChange={(e) => update("university", e.target.value)}
+                  >
+                    <option value="">Select your university…</option>
+                    {institutions.map((i) => <option key={i} value={i}>{i}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="reg-group">
+                <label className="reg-label">Company / Internship Host</label>
+                <div className="reg-input-wrap">
+                  <Building2 size={14} className="reg-input-icon" />
+                  <select
+                    className="reg-input reg-input--icon"
+                    value={form.company}
+                    onChange={(e) => update("company", e.target.value)}
+                  >
+                    <option value="">Select a company…</option>
+                    {companies.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
                 </div>
               </div>
               <div className="reg-row">

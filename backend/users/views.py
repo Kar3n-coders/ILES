@@ -70,10 +70,11 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
         return CustomUser.objects.filter(id=user.id)
 
-    @action(detail=False, methods=['get'], url_path='companies', permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'], url_path='companies', permission_classes=[permissions.AllowAny])
     def companies(self, request):
         """Return distinct company names from internship_admin accounts.
-        Used by student onboarding to populate the company dropdown.
+        Used by student onboarding and registration to populate the company dropdown.
+        AllowAny: called by unauthenticated users during registration.
         """
         companies = (
             CustomUser.objects
@@ -84,3 +85,19 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             .order_by('company')
         )
         return Response(list(companies))
+
+    @action(detail=False, methods=['get'], url_path='institutions', permission_classes=[permissions.AllowAny])
+    def institutions(self, request):
+        """Return distinct university/institution names from academic_supervisor accounts.
+        Used by registration to populate the university dropdown.
+        AllowAny: called by unauthenticated users during registration.
+        """
+        institutions = (
+            CustomUser.objects
+            .filter(role='academic_supervisor')
+            .exclude(university='')
+            .values_list('university', flat=True)
+            .distinct()
+            .order_by('university')
+        )
+        return Response(list(institutions))
