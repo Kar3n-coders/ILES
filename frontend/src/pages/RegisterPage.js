@@ -351,6 +351,20 @@ export default function RegisterPage() {
                   </select>
                 </div>
               </div>
+              <div className="reg-group">
+                <label className="reg-label">Company / Internship Host</label>
+                <div className="reg-input-wrap">
+                  <Building2 size={14} className="reg-input-icon" />
+                  <select
+                    className="reg-input reg-input--icon"
+                    value={form.company}
+                    onChange={(e) => update("company", e.target.value)}
+                  >
+                    <option value="">Select a company…</option>
+                    {companies.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
               <div className="reg-row">
                 <div className="reg-group">
                   <label className="reg-label">Course / Program</label>
