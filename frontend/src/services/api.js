@@ -54,6 +54,14 @@ export function getUsersByRole(role) {
   return request(`/users/?role=${role}`);
 }
 
+export function getUsersByRoleAndCompany(role, company) {
+  return request(`/users/?role=${role}&company=${encodeURIComponent(company)}`);
+}
+
+export function getCompanies() {
+  return request("/users/companies/");
+}
+
 // ---- AUTH ENDPOINTS-----
 export async function loginUser({ username, password }) {
   const data = await request("/auth/login/", {
