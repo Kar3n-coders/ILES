@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   GraduationCap, Eye, EyeOff, Lock, User, Mail, Phone,
@@ -6,7 +6,7 @@ import {
   ChevronRight, ClipboardCheck, Moon, Sun,
 } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
-import { registerUser } from "../services/api";
+import { registerUser, getCompanies, getInstitutions } from "../services/api";
 import "./RegisterPage.css";
 
 const ROLES = [
@@ -48,6 +48,13 @@ export default function RegisterPage() {
   const [error, setError]       = useState("");
   const [loading, setLoading]   = useState(false);
   const [done, setDone]         = useState(false);
+  const [companies, setCompanies]       = useState([]);
+  const [institutions, setInstitutions] = useState([]);
+
+  useEffect(() => {
+    getCompanies().then(setCompanies).catch(() => {});
+    getInstitutions().then(setInstitutions).catch(() => {});
+  }, []);
 
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const selectedRole = ROLES.find((r) => r.value === role);
