@@ -52,8 +52,8 @@ export default function RegisterPage() {
   const [institutions, setInstitutions] = useState([]);
 
   useEffect(() => {
-    getCompanies().then(setCompanies).catch(() => {});
-    getInstitutions().then(setInstitutions).catch(() => {});
+    getCompanies().then((d) => { if (Array.isArray(d)) setCompanies(d); }).catch(() => {});
+    getInstitutions().then((d) => { if (Array.isArray(d)) setInstitutions(d); }).catch(() => {});
   }, []);
 
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
