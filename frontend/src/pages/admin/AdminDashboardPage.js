@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { getUsers, getPlacements } from "../../services/api";
+import { getUsers, getPlacements, getProfile } from "../../services/api";
 import {
   PageHead,
   Card,
@@ -36,14 +36,16 @@ function AdminDashboardPage() {
   const [cohorts, setCohorts] = useState([]);
   const [audit, setAudit] = useState([]);
   const [stats, setStats] = useState(null);
+  const [adminCompany, setAdminCompany] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    Promise.all([getUsers(), getPlacements()])
-      .then(([usersData, placementsData]) => {
+    Promise.all([getUsers(), getPlacements(), getProfile()])
+      .then(([usersData, placementsData, profileData]) => {
+        setAdminCompany(profileData?.company || "");
         const userList = (usersData?.results || usersData || []).map((u) => ({
           id: u.id,
           name: u.first_name
@@ -110,7 +112,7 @@ function AdminDashboardPage() {
       <PageHead
         crumb="System · Overview"
         title="Admin dashboard"
-        sub="Manage users, pairings, cohorts, and system health."
+        sub={adminCompany ? `Managing ${adminCompany} internship placements` : "Manage users, pairings, cohorts, and system health."}
         actions={
           <Btn sm kind="ghost">
             Export CSV

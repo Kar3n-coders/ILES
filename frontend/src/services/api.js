@@ -54,6 +54,18 @@ export function getUsersByRole(role) {
   return request(`/users/?role=${role}`);
 }
 
+export function getUsersByRoleAndCompany(role, company) {
+  return request(`/users/?role=${role}&company=${encodeURIComponent(company)}`);
+}
+
+export function getCompanies() {
+  return request("/users/companies/");
+}
+
+export function getInstitutions() {
+  return request("/users/?role=academic_supervisor");
+}
+
 // ---- AUTH ENDPOINTS-----
 export async function loginUser({ username, password }) {
   const data = await request("/auth/login/", {
@@ -185,7 +197,7 @@ export function createReview(data) {
   });
 }
 
-export async function registerUser({ username, email, password, confirmPassword, firstName, lastName, phone, role, university, course, department }) {
+export async function registerUser({ username, email, password, confirmPassword, firstName, lastName, phone, role, company, university, course, department }) {
   return request("/auth/register/", {
     method: "POST",
     body: JSON.stringify({
@@ -197,6 +209,7 @@ export async function registerUser({ username, email, password, confirmPassword,
       last_name: lastName,
       phone_number: phone,
       role,
+      company: company || "",
       university,
       course,
       department,

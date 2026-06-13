@@ -2,33 +2,52 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageHead, Card, Btn, Field } from '../../components/common/Primitives';
 import { I } from '../../components/common/Icons';
-import { createPlacement, getUsersByRole } from '../../services/api';
+import { createPlacement, getCompanies, getUsersByRoleAndCompany, getUsersByRole } from '../../services/api';
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    company_name: "",
+    selected_company: "",
     supervisor: "",
     academic_supervisor: "",
     start_date: "",
     end_date: "",
   });
+  const [companies, setCompanies] = useState([]);
   const [wsSupervisors, setWsSupervisors] = useState([]);
   const [asSupervisors, setAsSupervisors] = useState([]);
+  const [loadingWs, setLoadingWs] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Load companies and all AS on mount
   useEffect(() => {
     Promise.all([
-      getUsersByRole("workplace_supervisor"),
+      getCompanies(),
       getUsersByRole("academic_supervisor"),
     ])
-      .then(([ws, as]) => {
-        setWsSupervisors(Array.isArray(ws) ? ws : []);
+      .then(([cos, as]) => {
+        setCompanies(Array.isArray(cos) ? cos : []);
         setAsSupervisors(Array.isArray(as) ? as : []);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoadingInitial(false));
   }, []);
+
+  // When company changes, load WS for that company
+  useEffect(() => {
+    if (!form.selected_company) {
+      setWsSupervisors([]);
+      return;
+    }
+    setLoadingWs(true);
+    setForm(p => ({ ...p, supervisor: "" }));
+    getUsersByRoleAndCompany("workplace_supervisor", form.selected_company)
+      .then((ws) => setWsSupervisors(Array.isArray(ws) ? ws : []))
+      .catch(() => setWsSupervisors([]))
+      .finally(() => setLoadingWs(false));
+  }, [form.selected_company]);
 
   function update(k, v) {
     setForm(p => ({ ...p, [k]: v }));
@@ -36,15 +55,23 @@ export default function OnboardingPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!form.company_name || !form.start_date || !form.end_date) {
-      setError("Company name, start date, and end date are required.");
+    if (!form.selected_company) {
+      setError("Please select a company.");
+      return;
+    }
+    if (!form.start_date || !form.end_date) {
+      setError("Start date and end date are required.");
+      return;
+    }
+    if (new Date(form.end_date) <= new Date(form.start_date)) {
+      setError("End date must be after start date.");
       return;
     }
     setLoading(true);
     setError(null);
     try {
       await createPlacement({
-        company_name: form.company_name,
+        company_name: form.selected_company,
         supervisor: form.supervisor || null,
         academic_supervisor: form.academic_supervisor || null,
         start_date: form.start_date,
@@ -56,6 +83,15 @@ export default function OnboardingPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (loadingInitial) {
+    return (
+      <div className="page">
+        <PageHead crumb="Onboarding" title="Set up your internship placement" />
+        <p className="muted" style={{ padding: 24, textAlign: "center" }}>Loading available companies…</p>
+      </div>
+    );
   }
 
   return (
@@ -106,14 +142,24 @@ export default function OnboardingPage() {
       </Card>
 
       <div className="grid grid--2">
-        <Card label="Company / Organization">
-          <Field label="Company name">
-            <input
-              value={form.company_name}
-              onChange={e => update("company_name", e.target.value)}
-              placeholder="e.g. Acme Telecoms Ltd."
-              required
-            />
+        <Card label="Company / Organisation">
+          <Field label="Select company">
+            {companies.length === 0 ? (
+              <div className="muted" style={{ fontSize: 13, padding: "10px 0" }}>
+                No companies registered yet. Ask your internship admin to create an account first.
+              </div>
+            ) : (
+              <select
+                value={form.selected_company}
+                onChange={e => update("selected_company", e.target.value)}
+                required
+              >
+                <option value="">Choose a company…</option>
+                {companies.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            )}
           </Field>
         </Card>
 
@@ -139,53 +185,61 @@ export default function OnboardingPage() {
         </Card>
 
         <Card label="Workplace Supervisor">
-          <div className="col" style={{ gap: 12 }}>
-            <Field label="Select workplace supervisor">
-              <select
-                value={form.supervisor}
-                onChange={e => update("supervisor", e.target.value)}
-              >
-                <option value="">Choose…</option>
-                {wsSupervisors.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.first_name} {s.last_name} ({s.email})
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
+          <Field label="Select workplace supervisor">
+            <select
+              value={form.supervisor}
+              onChange={e => update("supervisor", e.target.value)}
+              disabled={!form.selected_company || loadingWs}
+            >
+              <option value="">
+                {!form.selected_company
+                  ? "Select a company first…"
+                  : loadingWs
+                  ? "Loading supervisors…"
+                  : wsSupervisors.length === 0
+                  ? "No supervisors for this company"
+                  : "Choose supervisor…"}
+              </option>
+              {wsSupervisors.map(s => (
+                <option key={s.id} value={s.id}>
+                  {s.first_name} {s.last_name} ({s.email})
+                </option>
+              ))}
+            </select>
+          </Field>
           <div className="field__hint" style={{ marginTop: 12 }}>
-            {wsSupervisors.length === 0 ? "No workplace supervisors available." : "Your day-to-day supervisor at the company."}
+            Your day-to-day supervisor at the company.
           </div>
         </Card>
 
         <Card label="Academic Supervisor">
-          <div className="col" style={{ gap: 12 }}>
-            <Field label="Select academic supervisor">
-              <select
-                value={form.academic_supervisor}
-                onChange={e => update("academic_supervisor", e.target.value)}
-              >
-                <option value="">Choose…</option>
-                {asSupervisors.map(s => (
-                  <option key={s.id} value={s.id}>
-                    {s.first_name} {s.last_name} ({s.email})
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
+          <Field label="Select academic supervisor">
+            <select
+              value={form.academic_supervisor}
+              onChange={e => update("academic_supervisor", e.target.value)}
+            >
+              <option value="">Choose academic supervisor…</option>
+              {asSupervisors.map(s => (
+                <option key={s.id} value={s.id}>
+                  {s.first_name} {s.last_name} — {s.university || s.email}
+                </option>
+              ))}
+            </select>
+          </Field>
           <div className="field__hint" style={{ marginTop: 12 }}>
-            {asSupervisors.length === 0 ? "No academic supervisors available." : "Your faculty supervisor at the university."}
+            {asSupervisors.length === 0
+              ? "No academic supervisors available."
+              : "Your faculty supervisor at the university."}
           </div>
         </Card>
       </div>
 
       <Card kind="ghost" label="What happens next">
         <ol style={{ margin: 0, paddingLeft: 20, fontSize: 14, lineHeight: 1.8, color: "var(--color-text-muted)" }}>
+          <li>Select your company — this links you to the right workplace supervisor.</li>
           <li>Admin reviews and approves your placement.</li>
           <li>Your dashboard, logbook, and evaluations unlock once approved.</li>
-          <li>You can submit another placement while waiting.</li>
+          <li>You can submit another placement request while waiting.</li>
         </ol>
       </Card>
     </div>
