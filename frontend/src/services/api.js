@@ -62,6 +62,10 @@ export function getCompanies() {
   return request("/users/companies/");
 }
 
+export function getInstitutions() {
+  return request("/users/?role=academic_supervisor");
+}
+
 // ---- AUTH ENDPOINTS-----
 export async function loginUser({ username, password }) {
   const data = await request("/auth/login/", {
