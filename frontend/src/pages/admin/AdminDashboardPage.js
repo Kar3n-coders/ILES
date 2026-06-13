@@ -112,7 +112,7 @@ function AdminDashboardPage() {
       <PageHead
         crumb="System · Overview"
         title="Admin dashboard"
-        sub="Manage users, pairings, cohorts, and system health."
+        sub={adminCompany ? `Managing ${adminCompany} internship placements` : "Manage users, pairings, cohorts, and system health."}
         actions={
           <Btn sm kind="ghost">
             Export CSV
