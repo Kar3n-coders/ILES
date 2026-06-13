@@ -228,9 +228,10 @@ export default function OnboardingPage() {
 
       <Card kind="ghost" label="What happens next">
         <ol style={{ margin: 0, paddingLeft: 20, fontSize: 14, lineHeight: 1.8, color: "var(--color-text-muted)" }}>
+          <li>Select your company — this links you to the right workplace supervisor.</li>
           <li>Admin reviews and approves your placement.</li>
           <li>Your dashboard, logbook, and evaluations unlock once approved.</li>
-          <li>You can submit another placement while waiting.</li>
+          <li>You can submit another placement request while waiting.</li>
         </ol>
       </Card>
     </div>
