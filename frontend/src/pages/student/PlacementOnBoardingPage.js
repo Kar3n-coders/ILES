@@ -17,6 +17,7 @@ export default function OnboardingPage() {
   const [wsSupervisors, setWsSupervisors] = useState([]);
   const [asSupervisors, setAsSupervisors] = useState([]);
   const [loadingWs, setLoadingWs] = useState(false);
+  const [loadingInitial, setLoadingInitial] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -30,7 +31,8 @@ export default function OnboardingPage() {
         setCompanies(Array.isArray(cos) ? cos : []);
         setAsSupervisors(Array.isArray(as) ? as : []);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoadingInitial(false));
   }, []);
 
   // When company changes, load WS for that company
@@ -73,6 +75,15 @@ export default function OnboardingPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (loadingInitial) {
+    return (
+      <div className="page">
+        <PageHead crumb="Onboarding" title="Set up your internship placement" />
+        <p className="muted" style={{ padding: 24, textAlign: "center" }}>Loading available companies…</p>
+      </div>
+    );
   }
 
   return (
