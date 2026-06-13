@@ -70,9 +70,11 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
         return CustomUser.objects.filter(id=user.id)
 
-    @action(detail=False, methods=['get'], url_path='companies')
+    @action(detail=False, methods=['get'], url_path='companies', permission_classes=[permissions.IsAuthenticated])
     def companies(self, request):
-        """Return distinct company names from internship_admin accounts."""
+        """Return distinct company names from internship_admin accounts.
+        Used by student onboarding to populate the company dropdown.
+        """
         companies = (
             CustomUser.objects
             .filter(role='internship_admin')
