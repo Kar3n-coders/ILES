@@ -20,6 +20,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'role',
             'role_display',
             'phone_number',
+            'company',
             'university',
             'course',
             'department',
@@ -51,6 +52,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'last_name',
             'role',
             'phone_number',
+            'company',
             'university',
             'course',
             'department',
@@ -68,7 +70,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 "password_confirm": "Passwords do not match."
             })
-        return data 
+        role = data.get('role', '')
+        if role in ['internship_admin', 'workplace_supervisor'] and not data.get('company', '').strip():
+            raise serializers.ValidationError({
+                "company": "Company name is required for admin and workplace supervisor accounts."
+            })
+        return data
 
     def create(self, validated_data):
         validated_data.pop('password_confirm')

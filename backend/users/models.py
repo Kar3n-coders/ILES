@@ -15,9 +15,13 @@ class CustomUser(AbstractUser):
     # student_id = models.CharField( unique=True, blank=True, null=True, max_length=20, help_text="25/U/0001")
 
     phone_number = models.CharField(max_length=20, blank=True)
+    company = models.CharField(max_length=200, blank=True)
     university = models.CharField(max_length=200, blank=True)
     course = models.CharField(max_length=200, blank=True)
     department = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
-        return f"{self.username} ({self.get_role_display()})"
+        display = f"{self.username} ({self.get_role_display()})"
+        if self.company:
+            display += f" @ {self.company}"
+        return display
