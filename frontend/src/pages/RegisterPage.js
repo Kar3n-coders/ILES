@@ -205,8 +205,13 @@ export default function RegisterPage() {
 
           {step === 2 && (
             <form onSubmit={handleStep2Submit}>
-              <h1 className="reg-step__title">Basic Information</h1>
-              <p className="reg-step__sub">Your credentials and personal details.</p>
+              <h1 className="reg-step__title">Account Details</h1>
+              <p className="reg-step__sub">
+                {role === "internship_admin" ? "Your credentials and company information." :
+                 role === "workplace_supervisor" ? "Your credentials and employer details." :
+                 role === "academic_supervisor" ? "Your credentials and institution details." :
+                 "Your credentials and personal details."}
+              </p>
               <div className="reg-row">
                 <div className="reg-group">
                   <label className="reg-label">First Name</label>
