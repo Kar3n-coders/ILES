@@ -29,6 +29,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         company_param = self.request.query_params.get('company')
 
         # Role + optional company filter (used by student onboarding dropdowns)
+        # ?role=workplace_supervisor&company=Acme Ltd → WS from that company only
         if role_param:
             valid_roles = dict(CustomUser.ROLES)
             if role_param in valid_roles:
