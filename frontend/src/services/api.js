@@ -15,11 +15,14 @@ async function request(endpoint, options = {}) {
     ...options,
   });
 
-  //Token expired - clear storage and redirect to login
+  // Token expired — clear storage and redirect to login, but not from public pages
   if (response.status === 401) {
     localStorage.removeItem("iles_auth_token");
     localStorage.removeItem("iles_refresh_token");
-    window.location.href = "/login";
+    const publicPaths = ["/login", "/register", "/"];
+    if (!publicPaths.includes(window.location.pathname)) {
+      window.location.href = "/login";
+    }
     return null;
   }
 
