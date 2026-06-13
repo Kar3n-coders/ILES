@@ -341,7 +341,14 @@ export default function RegisterPage() {
                 <label className="reg-label">University / Institution</label>
                 <div className="reg-input-wrap">
                   <Building2 size={14} className="reg-input-icon" />
-                  <input className="reg-input reg-input--icon" value={form.university} onChange={(e) => update("university", e.target.value)} placeholder="Makerere University" />
+                  <select
+                    className="reg-input reg-input--icon"
+                    value={form.university}
+                    onChange={(e) => update("university", e.target.value)}
+                  >
+                    <option value="">Select your university…</option>
+                    {institutions.map((i) => <option key={i} value={i}>{i}</option>)}
+                  </select>
                 </div>
               </div>
               <div className="reg-row">
