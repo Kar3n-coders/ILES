@@ -70,16 +70,19 @@ export default function RegisterPage() {
   }
 
   function handleStep2Submit(e) {
-  e.preventDefault();
-  const err = validatePassword(form.password);
-  if (err) { setError(err); return; }
-  if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
-  setError("");
-  if (role === "student") {
-    setStep(3);
-  } else {
-    handleSubmitDirect();
-  }
+    e.preventDefault();
+    const pwErr = validatePassword(form.password);
+    if (pwErr) { setError(pwErr); return; }
+    if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
+    if ((role === "internship_admin" || role === "workplace_supervisor") && !form.company.trim()) {
+      setError("Company name is required."); return;
+    }
+    setError("");
+    if (role === "student") {
+      setStep(3);
+    } else {
+      handleSubmitDirect();
+    }
   }
 
   async function handleSubmitDirect() {
