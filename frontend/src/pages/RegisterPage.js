@@ -18,7 +18,7 @@ const ROLES = [
 function getSteps(role) {
   const base = [
     { n: 1, label: "Choose your role" },
-    { n: 2, label: "Basic information" },
+    { n: 2, label: "Account details" },
   ];
   if (role === "student") base.push({ n: 3, label: "Academic details" });
   return base;
