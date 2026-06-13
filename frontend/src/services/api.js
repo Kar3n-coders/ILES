@@ -63,7 +63,7 @@ export function getCompanies() {
 }
 
 export function getInstitutions() {
-  return request("/users/?role=academic_supervisor");
+  return request("/users/institutions/");
 }
 
 // ---- AUTH ENDPOINTS-----
