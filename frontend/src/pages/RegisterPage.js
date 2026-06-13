@@ -40,6 +40,7 @@ export default function RegisterPage() {
   const [form, setForm]   = useState({
     username: "", email: "", firstName: "", lastName: "",
     password: "", confirmPassword: "", phone: "",
+    company: "",
     university: "Makerere University", course: "", department: "",
   });
   const [showPass, setShowPass] = useState(false);
@@ -234,6 +235,43 @@ export default function RegisterPage() {
                   <input type="tel" className="reg-input reg-input--icon" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+256 700 000000" />
                 </div>
               </div>
+
+              {(role === "internship_admin" || role === "workplace_supervisor") && (
+                <div className="reg-group">
+                  <label className="reg-label">Company / Organisation <span style={{ color: "red" }}>*</span></label>
+                  <div className="reg-input-wrap">
+                    <Building2 size={14} className="reg-input-icon" />
+                    <input
+                      className="reg-input reg-input--icon"
+                      value={form.company}
+                      onChange={(e) => update("company", e.target.value)}
+                      placeholder="e.g. Acme Telecoms Ltd."
+                      required
+                    />
+                  </div>
+                  <p className="reg-hint" style={{ marginTop: 4 }}>
+                    {role === "internship_admin"
+                      ? "This becomes your company on the platform. Students will select it during onboarding."
+                      : "Enter your employer's company name exactly as the admin registered it."}
+                  </p>
+                </div>
+              )}
+
+              {role === "academic_supervisor" && (
+                <div className="reg-group">
+                  <label className="reg-label">Institution / University</label>
+                  <div className="reg-input-wrap">
+                    <Building2 size={14} className="reg-input-icon" />
+                    <input
+                      className="reg-input reg-input--icon"
+                      value={form.university}
+                      onChange={(e) => update("university", e.target.value)}
+                      placeholder="e.g. Makerere University"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="reg-row">
                 <div className="reg-group">
                   <label className="reg-label">Password</label>
