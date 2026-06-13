@@ -18,7 +18,7 @@ const ROLES = [
 function getSteps(role) {
   const base = [
     { n: 1, label: "Choose your role" },
-    { n: 2, label: "Basic information" },
+    { n: 2, label: "Account details" },
   ];
   if (role === "student") base.push({ n: 3, label: "Academic details" });
   return base;
@@ -40,6 +40,7 @@ export default function RegisterPage() {
   const [form, setForm]   = useState({
     username: "", email: "", firstName: "", lastName: "",
     password: "", confirmPassword: "", phone: "",
+    company: "",
     university: "Makerere University", course: "", department: "",
   });
   const [showPass, setShowPass] = useState(false);
@@ -69,16 +70,19 @@ export default function RegisterPage() {
   }
 
   function handleStep2Submit(e) {
-  e.preventDefault();
-  const err = validatePassword(form.password);
-  if (err) { setError(err); return; }
-  if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
-  setError("");
-  if (role === "student") {
-    setStep(3);
-  } else {
-    handleSubmitDirect();
-  }
+    e.preventDefault();
+    const pwErr = validatePassword(form.password);
+    if (pwErr) { setError(pwErr); return; }
+    if (form.password !== form.confirmPassword) { setError("Passwords do not match."); return; }
+    if ((role === "internship_admin" || role === "workplace_supervisor") && !form.company.trim()) {
+      setError("Company name is required."); return;
+    }
+    setError("");
+    if (role === "student") {
+      setStep(3);
+    } else {
+      handleSubmitDirect();
+    }
   }
 
   async function handleSubmitDirect() {
@@ -201,8 +205,13 @@ export default function RegisterPage() {
 
           {step === 2 && (
             <form onSubmit={handleStep2Submit}>
-              <h1 className="reg-step__title">Basic Information</h1>
-              <p className="reg-step__sub">Your credentials and personal details.</p>
+              <h1 className="reg-step__title">Account Details</h1>
+              <p className="reg-step__sub">
+                {role === "internship_admin" ? "Your credentials and company information." :
+                 role === "workplace_supervisor" ? "Your credentials and employer details." :
+                 role === "academic_supervisor" ? "Your credentials and institution details." :
+                 "Your credentials and personal details."}
+              </p>
               <div className="reg-row">
                 <div className="reg-group">
                   <label className="reg-label">First Name</label>
@@ -234,6 +243,43 @@ export default function RegisterPage() {
                   <input type="tel" className="reg-input reg-input--icon" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+256 700 000000" />
                 </div>
               </div>
+
+              {(role === "internship_admin" || role === "workplace_supervisor") && (
+                <div className="reg-group">
+                  <label className="reg-label">Company / Organisation <span style={{ color: "red" }}>*</span></label>
+                  <div className="reg-input-wrap">
+                    <Building2 size={14} className="reg-input-icon" />
+                    <input
+                      className="reg-input reg-input--icon"
+                      value={form.company}
+                      onChange={(e) => update("company", e.target.value)}
+                      placeholder="e.g. Acme Telecoms Ltd."
+                      required
+                    />
+                  </div>
+                  <p className="reg-hint" style={{ marginTop: 4 }}>
+                    {role === "internship_admin"
+                      ? "This becomes your company on the platform. Students will select it during onboarding."
+                      : "Enter your employer's company name exactly as the admin registered it."}
+                  </p>
+                </div>
+              )}
+
+              {role === "academic_supervisor" && (
+                <div className="reg-group">
+                  <label className="reg-label">Institution / University</label>
+                  <div className="reg-input-wrap">
+                    <Building2 size={14} className="reg-input-icon" />
+                    <input
+                      className="reg-input reg-input--icon"
+                      value={form.university}
+                      onChange={(e) => update("university", e.target.value)}
+                      placeholder="e.g. Makerere University"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="reg-row">
                 <div className="reg-group">
                   <label className="reg-label">Password</label>
