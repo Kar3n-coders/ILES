@@ -55,8 +55,16 @@ export default function OnboardingPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!form.selected_company || !form.start_date || !form.end_date) {
-      setError("Company, start date, and end date are required.");
+    if (!form.selected_company) {
+      setError("Please select a company.");
+      return;
+    }
+    if (!form.start_date || !form.end_date) {
+      setError("Start date and end date are required.");
+      return;
+    }
+    if (new Date(form.end_date) <= new Date(form.start_date)) {
+      setError("End date must be after start date.");
       return;
     }
     setLoading(true);
