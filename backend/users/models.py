@@ -21,4 +21,7 @@ class CustomUser(AbstractUser):
     department = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
-        return f"{self.username} ({self.get_role_display()})"
+        display = f"{self.username} ({self.get_role_display()})"
+        if self.company:
+            display += f" @ {self.company}"
+        return display
