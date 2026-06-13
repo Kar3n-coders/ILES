@@ -10,9 +10,10 @@ import { registerUser } from "../services/api";
 import "./RegisterPage.css";
 
 const ROLES = [
-  { value: "student",              label: "Student Intern",           icon: GraduationCap,   desc: "Submit weekly logs, track your internship",       color: "#1a365d" },
-  { value: "workplace_supervisor", label: "Workplace Supervisor",     icon: ClipboardCheck,  desc: "Review logs from your assigned interns",          color: "#276749" },
-  { value: "academic_supervisor",  label: "Academic Supervisor",      icon: BookOpen,        desc: "Evaluate and grade students academically",        color: "#c05621" },
+  { value: "student",              label: "Student Intern",             icon: GraduationCap,   desc: "Submit weekly logs, track your internship",                       color: "#1a365d" },
+  { value: "workplace_supervisor", label: "Workplace Supervisor",       icon: ClipboardCheck,  desc: "Review logs from your assigned interns",                          color: "#276749" },
+  { value: "academic_supervisor",  label: "Academic Supervisor",        icon: BookOpen,        desc: "Evaluate and grade students academically",                        color: "#c05621" },
+  { value: "internship_admin",     label: "Internship Administrator",   icon: Building2,       desc: "Manage company placements and workplace supervisors",              color: "#6b21a8" },
 ];
 
 function getSteps(role) {
