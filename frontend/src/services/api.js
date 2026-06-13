@@ -197,7 +197,7 @@ export function createReview(data) {
   });
 }
 
-export async function registerUser({ username, email, password, confirmPassword, firstName, lastName, phone, role, university, course, department }) {
+export async function registerUser({ username, email, password, confirmPassword, firstName, lastName, phone, role, company, university, course, department }) {
   return request("/auth/register/", {
     method: "POST",
     body: JSON.stringify({
@@ -209,6 +209,7 @@ export async function registerUser({ username, email, password, confirmPassword,
       last_name: lastName,
       phone_number: phone,
       role,
+      company: company || "",
       university,
       course,
       department,
