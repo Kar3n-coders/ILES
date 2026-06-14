@@ -200,6 +200,24 @@ export function createReview(data) {
   });
 }
 
+// ---- NOTIFICATION ENDPOINTS ----
+
+export function getNotifications() {
+  return request("/notifications/");
+}
+
+export function getUnreadCount() {
+  return request("/notifications/unread_count/");
+}
+
+export function markNotificationRead(id) {
+  return request(`/notifications/${id}/read/`, { method: "POST" });
+}
+
+export function markAllNotificationsRead() {
+  return request("/notifications/read_all/", { method: "POST" });
+}
+
 export async function registerUser({ username, email, password, confirmPassword, firstName, lastName, phone, role, company, university, course, department }) {
   return request("/auth/register/", {
     method: "POST",

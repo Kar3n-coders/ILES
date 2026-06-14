@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { ThemeContext } from "../../context/ThemeContext";
+import { useNotifications } from "../../context/NotificationContext";
+import NotificationPanel from "../notifications/NotificationPanel";
 import "./Navbar.css";
 
 const PROFILE_PATHS = {
@@ -72,9 +74,12 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [time, setTime] = useState(new Date());
   const menuRef = useRef(null);
+  const notifRef = useRef(null);
+  const { unreadCount } = useNotifications() ?? {};
 
   const { isDark, toggleTheme } = useContext(ThemeContext);
   const roleConfig = user
@@ -221,27 +226,36 @@ function Navbar() {
           </span>
 
           {/* Notification bell button */}
-          <button
-            className="iles-navbar__icon-btn"
-            aria-label="Notifications"
-            type="button"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+          <div style={{ position: "relative" }} ref={notifRef}>
+            <button
+              className="iles-navbar__icon-btn"
+              aria-label="Notifications"
+              aria-expanded={notifOpen}
+              type="button"
+              onClick={() => setNotifOpen((v) => !v)}
             >
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-            </svg>
-            <span className="iles-navbar__notif-dot" aria-hidden="true" />
-          </button>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+              {unreadCount > 0 && (
+                <span className="iles-navbar__notif-dot" aria-hidden="true" />
+              )}
+            </button>
+            {notifOpen && (
+              <NotificationPanel onClose={() => setNotifOpen(false)} />
+            )}
+          </div>
 
           {/* Avatar button + dropdown — ref attached so outside clicks close it */}
           <div className="iles-navbar__user-menu" ref={menuRef}>
