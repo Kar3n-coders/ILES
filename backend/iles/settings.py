@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "reviews",
     "logbook",
     "placements",
+    "notifications",
 ]
 
 AUTH_USER_MODEL = "users.CustomUser"
