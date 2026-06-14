@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { NotificationProvider } from "./context/NotificationContext";
 
 import "./styles/base.css";
 import AppRoutes from "./routes/AppRoutes";
@@ -12,7 +13,9 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AppRoutes />
+        <NotificationProvider>
+          <AppRoutes />
+        </NotificationProvider>
       </AuthProvider>
     </ThemeProvider>
   );
