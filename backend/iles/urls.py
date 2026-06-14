@@ -20,6 +20,7 @@ from django.http import JsonResponse
 from django.urls import include, path
 from evaluation.views import EvaluationCriteriaViewSet, EvaluationViewSet
 from logbook.views import LogbookViewSet
+from notifications.views import NotificationViewSet
 from placements.views import PlacementViewSet
 from rest_framework.routers import DefaultRouter
 from reviews.views import LogReviewViewSet
@@ -42,6 +43,7 @@ router.register("evaluation", EvaluationViewSet, basename="evaluation")
 router.register("evaluation-criteria", EvaluationCriteriaViewSet, basename="criteria")
 router.register("reviews", LogReviewViewSet, basename="review")
 router.register("placements", PlacementViewSet, basename="placement")
+router.register("notifications", NotificationViewSet, basename="notification")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
